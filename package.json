@@ -1,0 +1,36 @@
+{
+  "name": "@flashbacktech/flashonstellar",
+  "version": "0.0.1",
+  "description": "",
+  "main": "./dist/.min.js",
+  "types": "./dist/.d.ts",
+  "scripts": {
+    "dev": "npm run tslint && tsc",
+    "dev:watch": "nodemon --exec 'npm run dev || exit 1'",
+    "tslint": "tslint --project .",
+    "build": "npm run dev && uglifyjs ./dist/.js -o ./dist/.min.js",
+    "test": "npm run clean && jest && npm run clean",
+    "test:coverage": "npm run clean && jest --coverage && npm run clean",
+    "clean": "rm -rf dist",
+	"format": "eslint . --ext .ts --fix && prettier --write ."
+  },
+  "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
+  "license": "MIT",
+  "dependencies": {
+	"@stellar/stellar-sdk": "^13.0.0"
+  },
+  "devDependencies": {
+  },
+  "bin": {
+    "": "./dist/.min.js"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./stellar": "./dist/stellar/index.js",
+    "./provider": "./dist/provider/index.js",
+    "./consumer": "./dist/consumer/index.js"
+  },
+  "files": [
+    "dist"
+  ]
+}
