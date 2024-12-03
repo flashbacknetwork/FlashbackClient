@@ -1,5 +1,5 @@
 // Polyfill for BigInt JSON serialization
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+
 (BigInt.prototype as unknown as { toJSON: () => string }).toJSON = function () {
   return this.toString();
 };
@@ -13,9 +13,13 @@ import {
 } from '@stellar/stellar-sdk';
 
 import { rpc } from '@stellar/stellar-sdk';
-import { Network } from './index';
 
-const getServer = (network: Network): rpc.Server => {
+interface StellarNetwork {
+  network: string;
+  networkPassphrase: string;
+}
+
+const getServer = (network: StellarNetwork): rpc.Server => {
   let serverUrl = '';
   switch (network.network) {
     case 'TESTNET':
@@ -47,7 +51,7 @@ interface ContractMethodResponse {
 
 const prepareTransaction = async (
   address: string,
-  network: Network,
+  network: StellarNetwork,
   contractCall: ContractMethodCall
 ): Promise<ContractMethodResponse> => {
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS || '';
@@ -96,7 +100,7 @@ const prepareTransaction = async (
   }
 };
 
-const sendTransaction = async (signedTransactionXDR: string, network: Network) => {
+const sendTransaction = async (signedTransactionXDR: string, network: StellarNetwork) => {
   const server = getServer(network);
 
   const signedTransaction = TransactionBuilder.fromXDR(
@@ -148,4 +152,4 @@ const sendTransaction = async (signedTransactionXDR: string, network: Network) =
   }
 };
 
-export { prepareTransaction, sendTransaction };
+export { prepareTransaction, sendTransaction, StellarNetwork };

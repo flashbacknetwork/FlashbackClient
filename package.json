@@ -5,21 +5,19 @@
   "main": "./dist/.min.js",
   "types": "./dist/.d.ts",
   "scripts": {
-    "dev": "npm run tslint && tsc",
+    "dev": "tsc",
     "dev:watch": "nodemon --exec 'npm run dev || exit 1'",
-    "tslint": "tslint --project .",
+    "lint": "eslint . --ext .ts",
     "build": "npm run dev && uglifyjs ./dist/.js -o ./dist/.min.js",
     "test": "npm run clean && jest && npm run clean",
     "test:coverage": "npm run clean && jest --coverage && npm run clean",
     "clean": "rm -rf dist",
-	"format": "eslint . --ext .ts --fix && prettier --write ."
+    "format": "eslint \"**/*.ts\" --fix && prettier --write ."
   },
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
   "license": "MIT",
   "dependencies": {
-	"@stellar/stellar-sdk": "^13.0.0"
-  },
-  "devDependencies": {
+    "@stellar/stellar-sdk": "^13.0.0"
   },
   "bin": {
     "": "./dist/.min.js"
@@ -32,5 +30,17 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "@eslint/js": "^8.56.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.4.1",
+    "typescript": "^5.7.2"
+  },
+  "type": "module"
 }

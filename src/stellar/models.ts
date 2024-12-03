@@ -1,5 +1,4 @@
 interface StorageConsumer {
-  units: Map<number, boolean>;
   description: string;
   reputation: number;
   registered_ts: number;
