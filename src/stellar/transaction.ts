@@ -1,3 +1,5 @@
+import { setTimeout } from 'timers/promises';
+
 // Polyfill for BigInt JSON serialization
 
 (BigInt.prototype as unknown as { toJSON: () => string }).toJSON = function () {
@@ -13,6 +15,7 @@ import {
 } from '@stellar/stellar-sdk';
 
 import { rpc } from '@stellar/stellar-sdk';
+import { ClientContext } from './client';
 
 interface StellarNetwork {
   network: string;
@@ -50,13 +53,13 @@ interface ContractMethodResponse {
 }
 
 const prepareTransaction = async (
+  context: ClientContext,
   address: string,
-  network: StellarNetwork,
   contractCall: ContractMethodCall
 ): Promise<ContractMethodResponse> => {
-  const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS || '';
+  const contractAddress = context.contractAddress;
   const contract = new Contract(contractAddress);
-  const server = getServer(network);
+  const server = getServer(context.network);
   const sourceAccount = await server.getAccount(address);
   const response: ContractMethodResponse = {
     isSuccess: false,
@@ -70,7 +73,7 @@ const prepareTransaction = async (
 
   const builtTransaction = new TransactionBuilder(sourceAccount, {
     fee: BASE_FEE,
-    networkPassphrase: network.networkPassphrase,
+    networkPassphrase: context.network.networkPassphrase,
   })
     .addOperation(contract.call(contractCall.method, ...convertedArgs))
     .setTimeout(TIMEOUT_TRANSACTION)
@@ -94,18 +97,18 @@ const prepareTransaction = async (
     return response;
   } else {
     if (rpc.Api.isSimulationError(sim)) {
-      console.log('Simulation error:', JSON.stringify(sim.error));
+      throw new Error(`Tansaction simulation error: ${JSON.stringify(sim.error)}`);
     }
     throw new Error('Transaction simulation failed');
   }
 };
 
-const sendTransaction = async (signedTransactionXDR: string, network: StellarNetwork) => {
-  const server = getServer(network);
+const sendTransaction = async (context: ClientContext, signedTransactionXDR: string) => {
+  const server = getServer(context.network);
 
   const signedTransaction = TransactionBuilder.fromXDR(
     signedTransactionXDR,
-    network.networkPassphrase
+    context.network.networkPassphrase
   );
 
   // Submit the transaction to the Stellar-RPC server. The RPC server will
@@ -113,17 +116,15 @@ const sendTransaction = async (signedTransactionXDR: string, network: StellarNet
   // wait, polling `getTransaction` until the transaction completes.
   try {
     const sendResponse = await server.sendTransaction(signedTransaction);
-    console.log(`Sent transaction: ${JSON.stringify(sendResponse)}`);
 
     if (sendResponse.status === 'PENDING') {
       let getResponse = await server.getTransaction(sendResponse.hash);
       // Poll `getTransaction` until the status is not "NOT_FOUND"
       while (getResponse.status === 'NOT_FOUND') {
-        console.log('Waiting for transaction confirmation...');
         // See if the transaction is complete
         getResponse = await server.getTransaction(sendResponse.hash);
         // Wait one second
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await setTimeout(1000);
       }
 
       //console.log(`getTransaction response: ${JSON.stringify(getResponse)}`);
@@ -137,7 +138,7 @@ const sendTransaction = async (signedTransactionXDR: string, network: StellarNet
         const transactionMeta = getResponse.resultMetaXdr;
         const returnValue = transactionMeta.v3().sorobanMeta()?.returnValue();
         if (returnValue) {
-          console.log(`Transaction result: ${returnValue.value()}`);
+          return scValToNative(returnValue);
         }
       } else {
         throw new Error(`Transaction failed: ${getResponse.resultXdr}`);
@@ -147,8 +148,7 @@ const sendTransaction = async (signedTransactionXDR: string, network: StellarNet
     }
   } catch (err) {
     // Catch and report any errors we've thrown
-    console.log('Sending transaction failed');
-    console.log(JSON.stringify(err));
+    throw new Error(`Transaction sending error: ${JSON.stringify(err)}`);
   }
 };
 

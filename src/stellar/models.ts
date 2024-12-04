@@ -22,6 +22,13 @@ interface StorageReservation {
 }
 
 type StorageUnitStatus = 'Available' | 'Reserved' | 'In Use' | 'Maintenance' | 'Decommissioning';
+type DeletionStatus =
+  | 'ReservationInUse'
+  | 'UnitInUse'
+  | 'UnitNotDecommissioned'
+  | 'Unauthorized'
+  | 'NotFound'
+  | 'Success';
 
 // TypeScript interfaces
 interface StorageUnit {
@@ -37,6 +44,7 @@ interface StorageUnit {
   inuse_bytes_provider: number;
   inuse_bytes_provider_ts: number;
   reservations_count: number;
+  reservations: Map<number, StorageReservation>;
 }
 
 interface StorageProvider {
@@ -69,4 +77,5 @@ export type {
   DashboardStats,
   StorageUnitStatus,
   StorageReservationStatus,
+  DeletionStatus,
 };

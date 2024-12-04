@@ -1,19 +1,20 @@
+import { ClientContext } from './client';
 import { StorageProvider, StorageUnit } from './models';
-import { prepareTransaction, sendTransaction, StellarNetwork } from './transaction';
+import { prepareTransaction, sendTransaction } from './transaction';
 
 const get_provider = async (
+  context: ClientContext,
   wallet_address: string,
   provider_address: string,
-  network: StellarNetwork,
   load_units: boolean = false
 ): Promise<StorageProvider | null> => {
   const [provider, units] = await Promise.all([
-    prepareTransaction(wallet_address, network, {
+    prepareTransaction(context, wallet_address, {
       method: 'get_provider',
       args: [{ value: provider_address, type: 'address' }],
     }),
     load_units
-      ? get_provider_units(wallet_address, provider_address, network)
+      ? get_provider_units(context, wallet_address, provider_address)
       : new Map<number, StorageUnit>(),
   ]);
 
@@ -25,11 +26,11 @@ const get_provider = async (
 };
 
 const get_provider_units = async (
+  context: ClientContext,
   wallet_address: string,
-  provider_address: string,
-  network: StellarNetwork
+  provider_address: string
 ): Promise<Map<number, StorageUnit>> => {
-  const response = await prepareTransaction(wallet_address, network, {
+  const response = await prepareTransaction(context, wallet_address, {
     method: 'get_provider_units',
     args: [{ value: provider_address, type: 'address' }],
   });
@@ -41,23 +42,24 @@ const get_provider_units = async (
 };
 
 const register_provider = async (
+  context: ClientContext,
   wallet_address: string,
   provider_address: string,
-  provider_description: string,
-  network: StellarNetwork,
-  signTransaction: (xdrToSign: string) => Promise<string>
+  provider_description: string
 ): Promise<void> => {
-  const response = await prepareTransaction(wallet_address, network, {
+  const isOwner = wallet_address !== provider_address;
+
+  const response = await prepareTransaction(context, wallet_address, {
     method: 'register_provider',
     args: [
       { value: provider_address, type: 'address' },
       { value: provider_description, type: 'string' },
-      { value: false, type: 'bool' },
+      { value: isOwner, type: 'bool' },
     ],
   });
   if (response.isSuccess && !response.isReadOnly) {
-    const signedTxXDR = await signTransaction(response.result as string);
-    await sendTransaction(signedTxXDR, network);
+    const signedTxXDR = await context.signTransaction!(response.result as string);
+    await sendTransaction(context, signedTxXDR);
   }
 };
 

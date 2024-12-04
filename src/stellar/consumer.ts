@@ -1,19 +1,20 @@
+import { ClientContext } from './client';
 import { StorageConsumer, StorageReservation } from './models';
-import { prepareTransaction, StellarNetwork } from './transaction';
+import { prepareTransaction, sendTransaction } from './transaction';
 
 const get_consumer = async (
+  context: ClientContext,
   wallet_address: string,
   consumer_address: string,
-  network: StellarNetwork,
   load_reservations: boolean = false
 ): Promise<StorageConsumer | null> => {
   const [consumer, reservations] = await Promise.all([
-    prepareTransaction(wallet_address, network, {
+    prepareTransaction(context, wallet_address, {
       method: 'get_consumer',
       args: [{ value: consumer_address, type: 'address' }],
     }),
     load_reservations
-      ? get_consumer_reservations(wallet_address, consumer_address, network)
+      ? get_consumer_reservations(context, wallet_address, consumer_address)
       : new Map<number, StorageReservation>(),
   ]);
 
@@ -25,11 +26,11 @@ const get_consumer = async (
 };
 
 const get_consumer_reservations = async (
+  context: ClientContext,
   wallet_address: string,
-  consumer_address: string,
-  network: StellarNetwork
+  consumer_address: string
 ): Promise<Map<number, StorageReservation>> => {
-  const response = await prepareTransaction(wallet_address, network, {
+  const response = await prepareTransaction(context, wallet_address, {
     method: 'get_consumer_reservations',
     args: [{ value: consumer_address, type: 'address' }],
   });
@@ -40,4 +41,26 @@ const get_consumer_reservations = async (
   return typedConsumerReservations;
 };
 
-export { get_consumer, get_consumer_reservations };
+const register_consumer = async (
+  context: ClientContext,
+  wallet_address: string,
+  consumer_address: string,
+  consumer_description: string
+): Promise<void> => {
+  const isOwner = wallet_address !== consumer_address;
+
+  const response = await prepareTransaction(context, wallet_address, {
+    method: 'register_consumer',
+    args: [
+      { value: consumer_address, type: 'address' },
+      { value: consumer_description, type: 'string' },
+      { value: isOwner, type: 'bool' },
+    ],
+  });
+  if (response.isSuccess && !response.isReadOnly) {
+    const signedTxXDR = await context.signTransaction!(response.result as string);
+    await sendTransaction(context, signedTxXDR);
+  }
+};
+
+export { get_consumer, get_consumer_reservations, register_consumer };
