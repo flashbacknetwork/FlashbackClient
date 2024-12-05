@@ -41,26 +41,61 @@ const get_provider_units = async (
   return typedProviderUnits;
 };
 
-const register_provider = async (
+// Helper function to handle write-mode contract calls
+const executeProviderTransaction = async (
   context: ClientContext,
   wallet_address: string,
   provider_address: string,
-  provider_description: string
+  method: string,
+  additionalArgs: Array<{
+    value: string | number | bigint | boolean | null | undefined;
+    type: 'string' | 'symbol' | 'address' | 'u32' | 'i32' | 'u64' | 'i64' | 'bool';
+  }> = []
 ): Promise<void> => {
   const isOwner = wallet_address !== provider_address;
-
   const response = await prepareTransaction(context, wallet_address, {
-    method: 'register_provider',
+    method,
     args: [
       { value: provider_address, type: 'address' },
-      { value: provider_description, type: 'string' },
+      ...additionalArgs,
       { value: isOwner, type: 'bool' },
     ],
   });
+
   if (response.isSuccess && !response.isReadOnly) {
     const signedTxXDR = await context.signTransaction!(response.result as string);
     await sendTransaction(context, signedTxXDR);
   }
 };
 
-export { get_provider, get_provider_units, register_provider };
+const register_provider = async (
+  context: ClientContext,
+  wallet_address: string,
+  provider_address: string,
+  provider_description: string
+): Promise<void> => {
+  await executeProviderTransaction(context, wallet_address, provider_address, 'register_provider', [
+    { value: provider_description, type: 'string' },
+  ]);
+};
+
+const delete_provider = async (
+  context: ClientContext,
+  wallet_address: string,
+  provider_address: string
+): Promise<void> => {
+  await executeProviderTransaction(context, wallet_address, provider_address, 'delete_provider');
+};
+
+const update_provider = async (
+  context: ClientContext,
+  wallet_address: string,
+  provider_address: string,
+  provider_description: string
+): Promise<void> => {
+  await executeProviderTransaction(context, wallet_address, provider_address, 'update_provider', [
+    { value: provider_description, type: 'string' },
+  ]);
+};
+
+export { get_provider, get_provider_units, register_provider, delete_provider, update_provider };

@@ -12,6 +12,12 @@ import {
   nativeToScVal,
   BASE_FEE,
   scValToNative,
+  Transaction,
+  Memo,
+  MemoType,
+  Operation,
+  Keypair,
+  FeeBumpTransaction,
 } from '@stellar/stellar-sdk';
 
 import { rpc } from '@stellar/stellar-sdk';
@@ -21,6 +27,24 @@ interface StellarNetwork {
   network: string;
   networkPassphrase: string;
 }
+
+const getNetwork = (network: string): StellarNetwork => {
+  let networkPassphrase = '';
+  switch (network) {
+    case 'TESTNET':
+      networkPassphrase = 'Test SDF Network ; September 2015';
+      break;
+    case 'PUBLIC':
+      networkPassphrase = 'Public Global Stellar Network ; September 2015';
+      break;
+  }
+  return { network, networkPassphrase };
+};
+
+const getPublicKeyFromPrivateKey = (privateKey: string): string => {
+  const keypair = Keypair.fromSecret(privateKey);
+  return keypair.publicKey();
+};
 
 const getServer = (network: StellarNetwork): rpc.Server => {
   let serverUrl = '';
@@ -64,7 +88,7 @@ const prepareTransaction = async (
   const response: ContractMethodResponse = {
     isSuccess: false,
     isReadOnly: false,
-    result: null,
+    result: '',
   };
 
   // Convert raw values to ScVal
@@ -101,6 +125,20 @@ const prepareTransaction = async (
     }
     throw new Error('Transaction simulation failed');
   }
+};
+
+const signTransaction = async (
+  context: ClientContext,
+  xdrToSign: string,
+  privateKey: string
+): Promise<Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction> => {
+  const preparedTransaction = TransactionBuilder.fromXDR(
+    xdrToSign,
+    context.network.networkPassphrase
+  );
+  const sourceKeypair = Keypair.fromSecret(privateKey);
+  preparedTransaction.sign(sourceKeypair);
+  return preparedTransaction;
 };
 
 const sendTransaction = async (context: ClientContext, signedTransactionXDR: string) => {
@@ -152,4 +190,11 @@ const sendTransaction = async (context: ClientContext, signedTransactionXDR: str
   }
 };
 
-export { prepareTransaction, sendTransaction, StellarNetwork };
+export {
+  prepareTransaction,
+  sendTransaction,
+  signTransaction,
+  getNetwork,
+  StellarNetwork,
+  getPublicKeyFromPrivateKey,
+};

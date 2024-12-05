@@ -41,26 +41,66 @@ const get_consumer_reservations = async (
   return typedConsumerReservations;
 };
 
-const register_consumer = async (
+const executeConsumerTransaction = async (
   context: ClientContext,
   wallet_address: string,
   consumer_address: string,
-  consumer_description: string
+  method: string,
+  additionalArgs: Array<{
+    value: string | number | bigint | boolean | null | undefined;
+    type: 'string' | 'symbol' | 'address' | 'u32' | 'i32' | 'u64' | 'i64' | 'bool';
+  }> = []
 ): Promise<void> => {
   const isOwner = wallet_address !== consumer_address;
-
   const response = await prepareTransaction(context, wallet_address, {
-    method: 'register_consumer',
+    method,
     args: [
       { value: consumer_address, type: 'address' },
-      { value: consumer_description, type: 'string' },
+      ...additionalArgs,
       { value: isOwner, type: 'bool' },
     ],
   });
+
   if (response.isSuccess && !response.isReadOnly) {
     const signedTxXDR = await context.signTransaction!(response.result as string);
     await sendTransaction(context, signedTxXDR);
   }
 };
 
-export { get_consumer, get_consumer_reservations, register_consumer };
+const register_consumer = async (
+  context: ClientContext,
+  wallet_address: string,
+  consumer_address: string,
+  consumer_description: string
+): Promise<void> => {
+  await executeConsumerTransaction(context, wallet_address, consumer_address, 'register_consumer', [
+    { value: consumer_description, type: 'string' },
+  ]);
+};
+
+const delete_consumer = async (
+  context: ClientContext,
+  wallet_address: string,
+  consumer_address: string
+): Promise<void> => {
+  await executeConsumerTransaction(context, wallet_address, consumer_address, 'delete_consumer');
+};
+
+const update_consumer = async (
+  context: ClientContext,
+  wallet_address: string,
+  consumer_address: string,
+  consumer_description: string
+): Promise<void> => {
+  await executeConsumerTransaction(context, wallet_address, consumer_address, 'update_consumer', [
+    { value: consumer_description, type: 'string' },
+  ]);
+};
+
+export {
+  get_consumer,
+  get_consumer_reservations,
+  register_consumer,
+  delete_consumer,
+  update_consumer,
+};

@@ -48,6 +48,33 @@ const get_unit_reservations = async (
   return typedUnitReservations;
 };
 
+const executeUnitTransaction = async <T>(
+  context: ClientContext,
+  wallet_address: string,
+  provider_address: string,
+  method: string,
+  additionalArgs: Array<{
+    value: string | number | bigint | boolean | null | undefined;
+    type: 'string' | 'symbol' | 'address' | 'u32' | 'i32' | 'u64' | 'i64' | 'bool';
+  }> = []
+): Promise<T | null> => {
+  const isOwner = wallet_address !== provider_address;
+  const response = await prepareTransaction(context, wallet_address, {
+    method,
+    args: [
+      { value: provider_address, type: 'address' },
+      ...additionalArgs,
+      { value: isOwner, type: 'bool' },
+    ],
+  });
+
+  if (response.isSuccess && !response.isReadOnly) {
+    const signedTxXDR = await context.signTransaction!(response.result as string);
+    return sendTransaction(context, signedTxXDR) as T;
+  }
+  return null;
+};
+
 const register_unit = async (
   context: ClientContext,
   wallet_address: string,
@@ -55,23 +82,16 @@ const register_unit = async (
   capacity: number,
   endpoint: string
 ): Promise<RegisterUnitResponse | null> => {
-  const isOwner = wallet_address !== provider_address;
-
-  const response = await prepareTransaction(context, wallet_address, {
-    method: 'register_unit',
-    args: [
-      { value: provider_address, type: 'address' },
+  return executeUnitTransaction<RegisterUnitResponse>(
+    context,
+    wallet_address,
+    provider_address,
+    'register_unit',
+    [
       { value: capacity, type: 'u32' },
       { value: endpoint, type: 'string' },
-      { value: isOwner, type: 'bool' },
-    ],
-  });
-  if (response.isSuccess && !response.isReadOnly) {
-    const signedTxXDR = await context.signTransaction!(response.result as string);
-    const responseSend = (await sendTransaction(context, signedTxXDR)) as RegisterUnitResponse;
-    return responseSend;
-  }
-  return null;
+    ]
+  );
 };
 
 const delete_unit = async (
@@ -80,21 +100,13 @@ const delete_unit = async (
   provider_address: string,
   unit_id: number
 ): Promise<DeletionStatus | null> => {
-  const isOwner = wallet_address !== provider_address;
-  const response = await prepareTransaction(context, wallet_address, {
-    method: 'delete_unit',
-    args: [
-      { value: provider_address, type: 'address' },
-      { value: unit_id, type: 'u32' },
-      { value: isOwner, type: 'bool' },
-    ],
-  });
-  if (response.isSuccess && !response.isReadOnly) {
-    const signedTxXDR = await context.signTransaction!(response.result as string);
-    const responseSend = (await sendTransaction(context, signedTxXDR)) as DeletionStatus;
-    return responseSend;
-  }
-  return null;
+  return executeUnitTransaction<DeletionStatus>(
+    context,
+    wallet_address,
+    provider_address,
+    'delete_unit',
+    [{ value: unit_id, type: 'u32' }]
+  );
 };
 
 const change_unit_status = async (
