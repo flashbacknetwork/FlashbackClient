@@ -25,6 +25,32 @@ const get_consumer = async (
   return typedConsumerData;
 };
 
+const get_consumers = async (
+  context: ClientContext,
+  wallet_address: string,
+  skip: number = 0,
+  take: number = 10
+): Promise<StorageConsumer[]> => {
+  const response = await prepareTransaction(context, wallet_address, {
+    method: 'get_consumers',
+    args: [
+      { value: skip, type: 'u32' },
+      { value: take, type: 'u32' },
+    ],
+  });
+  return response.isSuccess ? (response.result as StorageConsumer[]) : [];
+};
+
+const get_consumer_count = async (
+  context: ClientContext,
+  wallet_address: string
+): Promise<number> => {
+  const response = await prepareTransaction(context, wallet_address, {
+    method: 'get_consumer_count',
+  });
+  return response.isSuccess ? (response.result as number) : 0;
+};
+
 const get_consumer_reservations = async (
   context: ClientContext,
   wallet_address: string,
@@ -99,6 +125,8 @@ const update_consumer = async (
 
 export {
   get_consumer,
+  get_consumers,
+  get_consumer_count,
   get_consumer_reservations,
   register_consumer,
   delete_consumer,

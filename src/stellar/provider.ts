@@ -41,6 +41,32 @@ const get_provider_units = async (
   return typedProviderUnits;
 };
 
+const get_providers = async (
+  context: ClientContext,
+  wallet_address: string,
+  skip: number = 0,
+  take: number = 10
+): Promise<StorageProvider[]> => {
+  const response = await prepareTransaction(context, wallet_address, {
+    method: 'get_providers',
+    args: [
+      { value: skip, type: 'u32' },
+      { value: take, type: 'u32' },
+    ],
+  });
+  return response.isSuccess ? (response.result as StorageProvider[]) : [];
+};
+
+const get_provider_count = async (
+  context: ClientContext,
+  wallet_address: string
+): Promise<number> => {
+  const response = await prepareTransaction(context, wallet_address, {
+    method: 'get_provider_count',
+  });
+  return response.isSuccess ? (response.result as number) : 0;
+};
+
 // Helper function to handle write-mode contract calls
 const executeProviderTransaction = async (
   context: ClientContext,
@@ -98,4 +124,12 @@ const update_provider = async (
   ]);
 };
 
-export { get_provider, get_provider_units, register_provider, delete_provider, update_provider };
+export {
+  get_provider,
+  get_provider_units,
+  get_providers,
+  get_provider_count,
+  register_provider,
+  delete_provider,
+  update_provider,
+};

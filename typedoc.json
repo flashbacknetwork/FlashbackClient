@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/stellar/index.ts"],
+  "out": "docs",
+  "name": "@flashbacktech/flashonstellar",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "theme": "default",
+  "plugin": ["typedoc-plugin-markdown"]
+} 

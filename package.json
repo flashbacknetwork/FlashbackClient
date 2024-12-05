@@ -13,7 +13,8 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "clean": "rm -rf dist",
-    "format": "eslint \"**/*.ts\" --fix && prettier --write ."
+    "format": "eslint \"**/*.ts\" --fix && prettier --write .",
+    "docs": "typedoc"
   },
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
   "license": "MIT",

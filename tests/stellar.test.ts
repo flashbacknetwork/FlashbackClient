@@ -3,7 +3,7 @@ import { jest } from '@jest/globals';
 import dotenv from 'dotenv';
 import { getNetwork } from '../src/stellar/transaction';
 
-dotenv.config(); // This loads the .env file
+dotenv.config(); // loads the .env file
 
 const privateKey = process.env.TEST_PRIVATE_KEY || '';
 const contractAddress = process.env.TEST_CONTRACT_ADDRESS || '';
