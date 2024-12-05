@@ -1,11 +1,12 @@
-# @flashbacktech/flashonstellar-client
+# @flashbacktech/flashonstellar
 
 TypeScript/JavaScript client for interacting with the FlashOnStellar storage system on the Stellar blockchain.
 
 ## Installation 
 
-bash
+```bash
 npm install @flashbacktech/flashonstellar
+```
 
 ```typescript
 import { FlashOnStellarClient, StellarNetwork } from '@flashbacktech/flashonstellar/client';
