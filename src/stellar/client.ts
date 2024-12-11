@@ -24,6 +24,7 @@ import {
   exit_maintenance,
   enter_decommissioning,
   exit_decommissioning,
+  register_unit,
 } from './unit';
 import {
   create_reservation,
@@ -293,6 +294,25 @@ class FlashOnStellarClient {
   }
 
   // Unit methods
+  /**
+   * Registers a new storage unit in the system
+   * @param wallet_address - Address of the wallet registering the unit
+   * @param provider_address - Address of the provider owning the unit
+   * @param capacity - Capacity of the storage unit in gigabytes
+   * @param endpoint - Endpoint for the storage unit
+   * @returns Promise resolving to the registration transaction result
+   * @requires Signature - This method requires a transaction signature
+   */
+  @requiresSignature
+  register_unit(
+    wallet_address: string,
+    provider_address: string,
+    capacity: number,
+    endpoint: string
+  ) {
+    return register_unit(this.getContext(), wallet_address, provider_address, capacity, endpoint);
+  }
+
   /**
    * Retrieves storage unit information
    * @param wallet_address - Address of the wallet requesting the information
