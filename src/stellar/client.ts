@@ -35,6 +35,7 @@ import {
 
 import { signTransaction, StellarNetwork, getPublicKeyFromPrivateKey } from './transaction';
 import { requiresSignature } from './decorator';
+import { get_stats } from './stats';
 
 /**
  * Configuration interface for the FlashOnStellar client
@@ -101,6 +102,16 @@ class FlashOnStellarClient {
   signTransactionWithKey = async (xdrToSign: string, privateKey: string): Promise<string> => {
     const signedTx = await signTransaction(this.getContext(), xdrToSign, privateKey);
     return signedTx.toXDR();
+  };
+
+  // Stats methods
+  /**
+   * Retrieves stats for the current user
+   * @param wallet_address - Address of the wallet requesting the information
+   * @returns Promise resolving to DashboardStats object
+   */
+  get_stats = (wallet_address: string) => {
+    return get_stats(this.getContext(), wallet_address);
   };
 
   // Provider methods

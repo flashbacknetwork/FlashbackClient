@@ -1,6 +1,9 @@
 {
   "name": "@flashbacktech/flashonstellar",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "",
   "main": "./dist/.min.js",
   "types": "./dist/.d.ts",
@@ -13,11 +16,11 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "clean": "rm -rf dist",
-    "format": "eslint \"**/*.ts\" --fix && prettier --write .",
+    "format": "eslint \"**/*.ts\" --ignore-pattern 'dist/**' --fix && prettier --write . --ignore-path .gitignore",
     "docs": "typedoc"
   },
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
-  "license": "MIT",
+  "license": "ISC",
   "dependencies": {
     "@stellar/stellar-sdk": "^13.0.0"
   },
@@ -26,8 +29,8 @@
   },
   "exports": {
     "./stellar": "./dist/stellar/index.js",
-    "./provider": "./dist/provider/index.js",
-    "./consumer": "./dist/consumer/index.js"
+    "./path2": "./dist/path2/index.js",
+    "./path3": "./dist/path3/index.js"
   },
   "files": [
     "dist"
@@ -48,5 +51,18 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2"
   },
-  "type": "module"
+  "type": "module",
+  "typesVersions": {
+    "*": {
+      "stellar": [
+        "./dist/stellar/index.d.ts"
+      ],
+      "path2": [
+        "./dist/path2/index.d.ts"
+      ],
+      "path3": [
+        "./dist/path3/index.d.ts"
+      ]
+    }
+  }
 }

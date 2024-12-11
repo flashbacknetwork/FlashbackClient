@@ -56,25 +56,22 @@ interface StorageProvider {
   units_count: number;
 }
 
-interface DashboardStats {
-  providerCount: number;
-  consumerCount: number;
-  stats?: {
-    unit_count: number;
-    total_capacity_gb: number;
-    total_reserved_gb: number;
-    total_inuse_bytes_consumer: number;
-    total_inuse_bytes_provider: number;
-    total_maintenance_gb: number;
-    total_decommissioning_gb: number;
-  };
+interface ContractStats {
+  unit_count: number;
+  total_capacity_gb: number;
+  total_reserved_gb: number;
+  total_inuse_bytes_consumer: number;
+  total_inuse_bytes_provider: number;
+  total_maintenance_gb: number;
+  total_decommissioning_gb: number;
 }
+
 export type {
   StorageConsumer,
   StorageReservation,
   StorageUnit,
   StorageProvider,
-  DashboardStats,
+  ContractStats,
   StorageUnitStatus,
   StorageReservationStatus,
   DeletionStatus,

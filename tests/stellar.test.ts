@@ -73,6 +73,21 @@ describe('FlashOnStellarClient', () => {
     // Test structure for reservation-related methods
   });
 
+  describe('Stats methods', () => {
+    /*
+    test('get_stats should return values of current test data', async () => {
+      const stats = await client.get_stats(publicKey);
+      expect(stats).toBeDefined();
+      expect(stats!.total_capacity_gb).toBe(0);
+      expect(stats!.total_reserved_gb).toBe(0);
+      expect(stats!.total_inuse_bytes_consumer).toBe(0);
+      expect(stats!.total_inuse_bytes_provider).toBe(0);
+      expect(stats!.total_maintenance_gb).toBe(0);
+      expect(stats!.total_decommissioning_gb).toBe(0);
+    });
+	*/
+  });
+
   describe('Cleanup methods', () => {
     // Test structure for cleanup-related methods
     test('delete_provider + get_provider should return null', async () => {
@@ -86,6 +101,18 @@ describe('FlashOnStellarClient', () => {
       const consumer = await client.get_consumer(publicKey, publicKey);
       expect(consumer).toBeNull();
     });
+    /*
+    test('get_stats should return values of current test data', async () => {
+      const stats = await client.get_stats(publicKey);
+      expect(stats).toBeDefined();
+      expect(stats!.total_capacity_gb).toBe(0);
+      expect(stats!.total_reserved_gb).toBe(0);
+      expect(stats!.total_inuse_bytes_consumer).toBe(0);
+      expect(stats!.total_inuse_bytes_provider).toBe(0);
+      expect(stats!.total_maintenance_gb).toBe(0);
+      expect(stats!.total_decommissioning_gb).toBe(0);
+    });
+	*/
   });
 
   // Additional test groups for Unit and Reservation methods...

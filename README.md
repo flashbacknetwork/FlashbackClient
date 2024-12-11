@@ -20,7 +20,7 @@ npm install @flashbacktech/flashonstellar
 import { FlashOnStellarClient, StellarNetwork } from '@flashbacktech/flashonstellar/client';
 ```
 
-See the [Stellar README](./src/stellar/README.md) for usage instructions.
+See the [Stellar README](STELLAR.md) for usage instructions.
 
 ### Consumer API reference
 
@@ -32,4 +32,4 @@ See the [Provider README](./src/provider/README.md) for usage instructions.
 
 ## License
 
-MIT © [2025] FlashBack Inc.
+ISC © [2025] FlashBack Inc.
