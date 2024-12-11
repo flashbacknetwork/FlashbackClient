@@ -8,4 +8,4 @@
   "excludeExternals": true,
   "theme": "default",
   "plugin": ["typedoc-plugin-markdown"]
-} 
+}
