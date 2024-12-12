@@ -43,10 +43,18 @@ describe('FlashOnStellarClient', () => {
     });
 
     test('register_provider + get_provider should return the provider data', async () => {
+      const provider_count = await client.get_provider_count(publicKey);
+
       await client.register_provider(publicKey, publicKey, 'test provider');
       const provider = await client.get_provider(publicKey, publicKey);
       expect(provider).toBeDefined();
       expect(provider!.description).toBe('test provider');
+
+      const providers = await client.get_providers(publicKey);
+      expect(providers).toBeDefined();
+      expect(providers.size).toBe(provider_count + 1);
+      expect(providers.get(publicKey)).toBeDefined();
+      expect(providers.get(publicKey)!.description).toBe('test provider');
     });
   });
 
@@ -62,10 +70,18 @@ describe('FlashOnStellarClient', () => {
     });
 
     test('register_consumer + get_consumer should return the consumer data', async () => {
+      const consumer_count = await client.get_consumer_count(publicKey);
+
       await client.register_consumer(publicKey, publicKey, 'test consumer');
       const consumer = await client.get_consumer(publicKey, publicKey);
       expect(consumer).toBeDefined();
       expect(consumer!.description).toBe('test consumer');
+
+      const consumers = await client.get_consumers(publicKey);
+      expect(consumers).toBeDefined();
+      expect(consumers.size).toBe(consumer_count + 1);
+      expect(consumers.get(publicKey)).toBeDefined();
+      expect(consumers.get(publicKey)!.description).toBe('test consumer');
     });
   });
 

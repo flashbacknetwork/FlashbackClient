@@ -46,7 +46,7 @@ const get_providers = async (
   wallet_address: string,
   skip: number = 0,
   take: number = 10
-): Promise<StorageProvider[]> => {
+): Promise<Map<string, StorageProvider>> => {
   const response = await prepareTransaction(context, wallet_address, {
     method: 'get_providers',
     args: [
@@ -54,7 +54,13 @@ const get_providers = async (
       { value: take, type: 'u32' },
     ],
   });
-  return response.isSuccess ? (response.result as StorageProvider[]) : [];
+
+  if (!response.isSuccess) {
+    return new Map<string, StorageProvider>();
+  }
+
+  const providersObj = response.result as Record<string, StorageProvider>;
+  return new Map(Object.entries(providersObj));
 };
 
 const get_provider_count = async (

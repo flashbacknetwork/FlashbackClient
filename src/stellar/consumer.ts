@@ -30,7 +30,7 @@ const get_consumers = async (
   wallet_address: string,
   skip: number = 0,
   take: number = 10
-): Promise<StorageConsumer[]> => {
+): Promise<Map<string, StorageConsumer>> => {
   const response = await prepareTransaction(context, wallet_address, {
     method: 'get_consumers',
     args: [
@@ -38,7 +38,14 @@ const get_consumers = async (
       { value: take, type: 'u32' },
     ],
   });
-  return response.isSuccess ? (response.result as StorageConsumer[]) : [];
+
+  if (!response.isSuccess) {
+    return new Map<string, StorageConsumer>();
+  }
+
+  // Convert the plain object to a Map
+  const consumersObj = response.result as Record<string, StorageConsumer>;
+  return new Map(Object.entries(consumersObj));
 };
 
 const get_consumer_count = async (
