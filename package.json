@@ -5,8 +5,8 @@
     "access": "public"
   },
   "description": "",
-  "main": "./dist/.min.js",
-  "types": "./dist/.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "tsc",
     "dev:watch": "nodemon --exec 'npm run dev || exit 1'",
@@ -17,7 +17,8 @@
     "test:coverage": "jest --coverage",
     "clean": "rm -rf dist",
     "format": "eslint \"**/*.ts\" --ignore-pattern 'dist/**' --fix && prettier --write . --ignore-path .gitignore",
-    "docs": "typedoc"
+    "docs": "typedoc",
+    "publish": "npm run build && npm run docs && npm version patch && npm publish --access public"
   },
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
   "license": "ISC",
@@ -28,9 +29,21 @@
     "": "./dist/.min.js"
   },
   "exports": {
-    "./stellar": "./dist/stellar/index.js",
-    "./path2": "./dist/path2/index.js",
-    "./path3": "./dist/path3/index.js"
+    "./stellar": {
+      "types": "./dist/stellar/index.d.ts",
+      "import": "./dist/stellar/index.js",
+      "default": "./dist/stellar/index.js"
+    },
+    "./path2": {
+      "types": "./dist/path2/index.d.ts",
+      "import": "./dist/path2/index.js",
+      "default": "./dist/path2/index.js"
+    },
+    "./path3": {
+      "types": "./dist/path3/index.d.ts",
+      "import": "./dist/path3/index.js",
+      "default": "./dist/path3/index.js"
+    }
   },
   "files": [
     "dist"
