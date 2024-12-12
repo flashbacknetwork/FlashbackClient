@@ -18,7 +18,7 @@
     "clean": "rm -rf dist",
     "format": "eslint \"**/*.ts\" --ignore-pattern 'dist/**' --fix && prettier --write . --ignore-path .gitignore",
     "docs": "typedoc",
-    "publish": "npm run build && npm version patch && npm publish --access public"
+    "pub": "npm run build && npm version patch && npm publish --access public"
   },
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
   "license": "ISC",
