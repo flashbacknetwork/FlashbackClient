@@ -1,4 +1,4 @@
-import { setTimeout } from 'timers/promises';
+import { sleep } from '../utils/timing.js';
 
 // Polyfill for BigInt JSON serialization
 
@@ -162,7 +162,7 @@ const sendTransaction = async (context: ClientContext, signedTransactionXDR: str
         // See if the transaction is complete
         getResponse = await server.getTransaction(sendResponse.hash);
         // Wait one second
-        await setTimeout(1000);
+        await sleep(1000);
       }
 
       //console.log(`getTransaction response: ${JSON.stringify(getResponse)}`);
