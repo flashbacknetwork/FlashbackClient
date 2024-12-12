@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "commonjs",
+    "module": "es2020",
     "declaration": true,
     "outDir": "./dist",
     "rootDir": "./src",
@@ -11,7 +11,8 @@
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "moduleResolution": "node"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
