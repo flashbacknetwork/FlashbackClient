@@ -21,7 +21,7 @@ import {
 } from '@stellar/stellar-sdk';
 
 import { rpc } from '@stellar/stellar-sdk';
-import { ClientContext } from './client';
+import { ClientContext } from './client.js';
 
 interface StellarNetwork {
   network: string;

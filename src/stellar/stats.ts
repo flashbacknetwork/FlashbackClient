@@ -1,6 +1,6 @@
-import { ClientContext } from './client';
-import { ContractStats } from './models';
-import { prepareTransaction } from './transaction';
+import { ClientContext } from './client.js';
+import { ContractStats } from './models.js';
+import { prepareTransaction } from './transaction.js';
 
 const get_stats = async (
   context: ClientContext,

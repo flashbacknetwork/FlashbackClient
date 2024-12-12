@@ -1,6 +1,6 @@
-import { ClientContext } from './client';
-import { DeletionStatus, StorageReservation } from './models';
-import { prepareTransaction, sendTransaction } from './transaction';
+import { ClientContext } from './client.js';
+import { DeletionStatus, StorageReservation } from './models.js';
+import { prepareTransaction, sendTransaction } from './transaction.js';
 
 const get_reservation = async (
   context: ClientContext,

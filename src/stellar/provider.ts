@@ -1,6 +1,6 @@
-import { ClientContext } from './client';
-import { StorageProvider, StorageUnit } from './models';
-import { prepareTransaction, sendTransaction } from './transaction';
+import { ClientContext } from './client.js';
+import { StorageProvider, StorageUnit } from './models.js';
+import { prepareTransaction, sendTransaction } from './transaction.js';
 
 const get_provider = async (
   context: ClientContext,

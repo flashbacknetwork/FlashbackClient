@@ -6,7 +6,7 @@ import {
   register_provider,
   delete_provider,
   update_provider,
-} from './provider';
+} from './provider.js';
 import {
   get_consumer,
   get_consumer_reservations,
@@ -15,7 +15,7 @@ import {
   register_consumer,
   delete_consumer,
   update_consumer,
-} from './consumer';
+} from './consumer.js';
 import {
   get_unit,
   get_unit_reservations,
@@ -25,18 +25,18 @@ import {
   enter_decommissioning,
   exit_decommissioning,
   register_unit,
-} from './unit';
+} from './unit.js';
 import {
   create_reservation,
   get_reservation,
   delete_reservation,
   update_inuse_bytes_consumer,
   update_inuse_bytes_provider,
-} from './reservation';
+} from './reservation.js';
 
-import { signTransaction, StellarNetwork, getPublicKeyFromPrivateKey } from './transaction';
-import { requiresSignature } from './decorator';
-import { get_stats } from './stats';
+import { signTransaction, StellarNetwork, getPublicKeyFromPrivateKey } from './transaction.js';
+import { requiresSignature } from './decorator.js';
+import { get_stats } from './stats.js';
 
 /**
  * Configuration interface for the FlashOnStellar client

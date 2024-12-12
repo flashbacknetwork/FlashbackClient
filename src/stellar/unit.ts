@@ -1,6 +1,6 @@
-import { ClientContext } from './client';
-import { DeletionStatus, StorageReservation, StorageUnit } from './models';
-import { prepareTransaction, sendTransaction } from './transaction';
+import { ClientContext } from './client.js';
+import { DeletionStatus, StorageReservation, StorageUnit } from './models.js';
+import { prepareTransaction, sendTransaction } from './transaction.js';
 
 type RegisterUnitResponse = [unitId: number, unit: StorageUnit];
 type UnitStatusMethod =
