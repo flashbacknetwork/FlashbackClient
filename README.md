@@ -1,4 +1,4 @@
-# @flashbacktech/flashonstellar
+# @flashbacktech/flashbackclient
 
 TypeScript/JavaScript client for:
 
@@ -9,7 +9,7 @@ TypeScript/JavaScript client for:
 ## Installation
 
 ```bash
-npm install @flashbacktech/flashonstellar
+npm install @flashbacktech/flashbackclient
 ```
 
 ## Usage
@@ -17,7 +17,7 @@ npm install @flashbacktech/flashonstellar
 ### Client Library
 
 ```typescript
-import { FlashOnStellarClient, StellarNetwork } from '@flashbacktech/flashonstellar/client';
+import { FlashOnStellarClient, StellarNetwork } from '@flashbacktech/flashbackclient/client';
 ```
 
 See the [Stellar README](STELLAR.md) for usage instructions.
