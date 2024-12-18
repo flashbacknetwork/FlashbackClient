@@ -84,13 +84,13 @@ const executeConsumerTransaction = async (
     type: 'string' | 'symbol' | 'address' | 'u32' | 'i32' | 'u64' | 'i64' | 'bool';
   }> = []
 ): Promise<void> => {
-  const isOwner = wallet_address !== consumer_address;
+  const is_owner = wallet_address !== consumer_address;
   const response = await prepareTransaction(context, wallet_address, {
     method,
     args: [
       { value: consumer_address, type: 'address' },
       ...additionalArgs,
-      { value: isOwner, type: 'bool' },
+      { value: is_owner, type: 'bool' },
     ],
   });
 

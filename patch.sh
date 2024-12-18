@@ -28,6 +28,8 @@ git tag -a v$(node -p "require('./package.json').version") -m "v$(node -p "requi
 # Push both the commit and the tag
 git push && git push --tags
 
+npm run format
+npm run build
 npm publish --access public
 
 echo "Successfully bumped version and pushed changes"

@@ -44,12 +44,12 @@ const create_reservation = async (
   unit_id: number,
   reserved_gb: number
 ): Promise<boolean> => {
-  const isOwner = wallet_address !== consumer_address;
+  const is_owner = wallet_address !== consumer_address;
   return executeReservationTransaction<boolean>(context, wallet_address, 'create_reservation', [
     { value: consumer_address, type: 'address' },
     { value: unit_id, type: 'u32' },
     { value: reserved_gb, type: 'u64' },
-    { value: isOwner, type: 'bool' },
+    { value: is_owner, type: 'bool' },
   ]);
 };
 
@@ -59,11 +59,11 @@ const delete_reservation = async (
   consumer_address: string,
   reservation_id: number
 ): Promise<DeletionStatus> => {
-  const isOwner = wallet_address !== consumer_address;
+  const is_owner = wallet_address !== consumer_address;
   return (
     executeReservationTransaction<DeletionStatus>(context, wallet_address, 'delete_reservation', [
       { value: reservation_id, type: 'u32' },
-      { value: isOwner, type: 'bool' },
+      { value: is_owner, type: 'bool' },
     ]) || 'NotFound'
   );
 };
@@ -75,7 +75,7 @@ const update_inuse_bytes_consumer = async (
   reservation_id: number,
   inuse_bytes: number
 ): Promise<boolean> => {
-  const isOwner = wallet_address !== consumer_address;
+  const is_owner = wallet_address !== consumer_address;
   return executeReservationTransaction<boolean>(
     context,
     wallet_address,
@@ -84,7 +84,7 @@ const update_inuse_bytes_consumer = async (
       { value: reservation_id, type: 'u32' },
       { value: consumer_address, type: 'address' },
       { value: inuse_bytes, type: 'u64' },
-      { value: isOwner, type: 'bool' },
+      { value: is_owner, type: 'bool' },
     ]
   );
 };
@@ -96,7 +96,7 @@ const update_inuse_bytes_provider = async (
   reservation_id: number,
   inuse_bytes: number
 ): Promise<boolean> => {
-  const isOwner = wallet_address !== provider_address;
+  const is_owner = wallet_address !== provider_address;
   return executeReservationTransaction<boolean>(
     context,
     wallet_address,
@@ -105,7 +105,7 @@ const update_inuse_bytes_provider = async (
       { value: reservation_id, type: 'u32' },
       { value: provider_address, type: 'address' },
       { value: inuse_bytes, type: 'u64' },
-      { value: isOwner, type: 'bool' },
+      { value: is_owner, type: 'bool' },
     ]
   );
 };

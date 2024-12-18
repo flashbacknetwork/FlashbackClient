@@ -58,13 +58,13 @@ const executeUnitTransaction = async <T>(
     type: 'string' | 'symbol' | 'address' | 'u32' | 'i32' | 'u64' | 'i64' | 'bool';
   }> = []
 ): Promise<T | null> => {
-  const isOwner = wallet_address !== provider_address;
+  const is_owner = wallet_address !== provider_address;
   const response = await prepareTransaction(context, wallet_address, {
     method,
     args: [
       { value: provider_address, type: 'address' },
       ...additionalArgs,
-      { value: isOwner, type: 'bool' },
+      { value: is_owner, type: 'bool' },
     ],
   });
 
@@ -118,7 +118,7 @@ const change_unit_status = async (
   maintenanceStart?: Date,
   maintenanceEnd?: Date
 ): Promise<boolean | null> => {
-  const isOwner = wallet_address !== provider_address;
+  const is_owner = wallet_address !== provider_address;
 
   const response = await prepareTransaction(context, wallet_address, {
     method: method,
@@ -131,7 +131,7 @@ const change_unit_status = async (
             { value: Math.floor(maintenanceEnd!.getTime() / 1000), type: 'u64' as const },
           ]
         : []),
-      { value: isOwner, type: 'bool' },
+      { value: is_owner, type: 'bool' },
     ],
   });
   if (response.isSuccess && !response.isReadOnly) {
