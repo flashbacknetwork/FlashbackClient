@@ -48,7 +48,7 @@ const create_reservation = async (
   return executeReservationTransaction<boolean>(context, wallet_address, 'create_reservation', [
     { value: consumer_address, type: 'address' },
     { value: unit_id, type: 'u32' },
-    { value: reserved_gb, type: 'u64' },
+    { value: reserved_gb, type: 'u32' },
     { value: is_owner, type: 'bool' },
   ]);
 };
