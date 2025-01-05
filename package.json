@@ -1,6 +1,6 @@
 {
   "name": "@flashbacktech/flashbackclient",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "publishConfig": {
     "access": "public"
   },
@@ -21,9 +21,11 @@
     "pub": "npm run build && npm version patch && npm publish --access public"
   },
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "@stellar/stellar-sdk": "^13.0.0"
+    "@stellar/stellar-sdk": "^13.0.0",
+    "axios": "^1.7.9",
+    "formdata-node": "^6.0.3"
   },
   "bin": {
     "": "./dist/.min.js"

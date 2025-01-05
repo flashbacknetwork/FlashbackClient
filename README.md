@@ -17,7 +17,7 @@ npm install @flashbacktech/flashbackclient
 ### Client Library
 
 ```typescript
-import { FlashOnStellarClient, StellarNetwork } from '@flashbacktech/flashbackclient/client';
+import { FlashOnStellarClient, StellarNetwork } from '@flashbacktech/flashbackclient/stellar';
 ```
 
 See the [Stellar README](STELLAR.md) for usage instructions.
