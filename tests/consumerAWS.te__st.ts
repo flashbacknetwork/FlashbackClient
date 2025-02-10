@@ -47,6 +47,7 @@ describe('StorageClient', () => {
         })
       );
       expect(headBucketResponse.$metadata.httpStatusCode).toBe(200);
+      expect(headBucketResponse.BucketLocationType).toBe('Single');
     } catch (error) {
       console.error('Error checking bucket existence:', error);
     }

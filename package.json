@@ -53,6 +53,7 @@
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.726.1",
     "@eslint/js": "^8.56.0",
+    "@google-cloud/storage": "^7.15.0",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.1",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
