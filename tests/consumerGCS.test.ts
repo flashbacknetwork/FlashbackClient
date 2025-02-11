@@ -37,46 +37,70 @@ describe('StorageClient', () => {
 
     // 2. Upload File
     try {
-      await bucket.upload(testFilePath, {
+      const uploadResponse = await bucket.upload(testFilePath, {
         destination: filePath,
         metadata: {
           contentType: 'image/jpeg',
         },
       });
+      console.log(uploadResponse);
     } catch (error) {
       console.error('Error uploading file:', error);
       throw error;
     }
 
     // 3. List Bucket Contents
-    const [files] = await bucket.getFiles({
-      prefix: 'flashback/',
-    });
-    expect(files.length).toEqual(1);
-    expect(files[0].name).toEqual(filePath);
+    try {
+      const [files] = await bucket.getFiles({
+        prefix: 'flashback/',
+        delimiter: '/',
+        startOffset: '0',
+        maxResults: 10,
+      });
+      expect(files.length).toEqual(1);
+      expect(files[0].name).toEqual(filePath);
+    } catch (error) {
+      console.error('Error listing bucket contents:', error);
+      throw error;
+    }
 
     // 4. Get File Metadata
-    const [metadata] = await file.getMetadata();
-    expect(metadata.size).toBe(String(fileStats.size));
-    expect(metadata.contentType).toBe('image/jpeg');
+    try {
+      const [metadata] = await file.getMetadata();
+      expect(metadata.size).toBe(String(fileStats.size));
+      expect(metadata.contentType).toBe('image/jpeg');
+    } catch (error) {
+      console.error('Error getting file metadata:', error);
+      throw error;
+    }
 
     // 5. Download File using streams
-    const downloadStream = file.createReadStream();
-    const chunks: Buffer[] = [];
+    try {
+      const downloadStream = file.createReadStream();
+      const chunks: Buffer[] = [];
 
-    await new Promise((resolve, reject) => {
-      downloadStream
-        .on('data', (chunk: Buffer) => chunks.push(chunk))
-        .on('error', reject)
-        .on('end', resolve);
-    });
+      await new Promise((resolve, reject) => {
+        downloadStream
+          .on('data', (chunk: Buffer) => chunks.push(chunk))
+          .on('error', reject)
+          .on('end', resolve);
+      });
 
-    const downloadedData = Buffer.concat(chunks);
-    expect(downloadedData.length).toBe(fileStats.size);
+      const downloadedData = Buffer.concat(chunks);
+      expect(downloadedData.length).toBe(fileStats.size);
+    } catch (error) {
+      console.error('Error downloading file:', error);
+      throw error;
+    }
 
     // 6. Delete File
-    await file.delete();
-    const [existsAfterDelete] = await file.exists();
-    expect(existsAfterDelete).toBe(false);
+    try {
+      await file.delete();
+      const [existsAfterDelete] = await file.exists();
+      expect(existsAfterDelete).toBe(false);
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      throw error;
+    }
   });
 });
