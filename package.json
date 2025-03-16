@@ -1,6 +1,6 @@
 {
   "name": "@flashbacktech/flashbackclient",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "publishConfig": {
     "access": "public"
   },
@@ -69,11 +69,8 @@
       "stellar": [
         "./dist/stellar/index.d.ts"
       ],
-      "path2": [
-        "./dist/path2/index.d.ts"
-      ],
-      "path3": [
-        "./dist/path3/index.d.ts"
+      "api": [
+        "./dist/api/index.d.ts"
       ]
     }
   }
