@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { CreateUnitRequest, CreateUnitResponse } from './types';
 
 export class ApiClient {
   private apiClient: AxiosInstance;
@@ -27,5 +28,10 @@ export class ApiClient {
   public authenticateGithub = async (code: string) => {
     const response = await this.apiClient.post('/auth/github', { code });
     return response.data;
+  };
+
+  public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
+    const response = await this.apiClient.post('/unit', data);
+    return response.data as CreateUnitResponse;
   };
 }
