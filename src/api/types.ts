@@ -23,6 +23,7 @@ export interface CreateUnitResponse {
 
 export interface CreateRepoRequest {
   name: string;
+  storageType: StorageType;
   storageUnitIds: string[];
 }
 
@@ -34,13 +35,13 @@ export interface CreateRepoResponse {
 
 export interface CreateRepoKeyRequest {
   repoId: string;
-  keyName: string;
+  name: string;
 }
 
 export interface CreateRepoKeyResponse {
   // TODO: Define response fields based on backend requirements
   success: boolean;
-  keyId: string;
-  keyValue: string;
-  keySecret: string;
+  id: string;
+  key: string;
+  secret: string;
 }
