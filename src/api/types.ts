@@ -4,6 +4,12 @@ export enum StorageType {
   AZURE = 'AZURE',
 }
 
+export enum AccessType {
+  READ = 'READ',
+  WRITE = 'WRITE',
+  ADMIN = 'ADMIN',
+}
+
 export interface CreateUnitRequest {
   name: string;
   bucket: string;
@@ -36,6 +42,7 @@ export interface CreateRepoResponse {
 export interface CreateRepoKeyRequest {
   repoId: string;
   name: string;
+  accessType: AccessType;
 }
 
 export interface CreateRepoKeyResponse {
