@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import type { Blob } from 'buffer';
+//import type { Blob } from 'buffer';
 import { FormData } from 'formdata-node';
 
 import { UploadRequest, UploadResponse, ErrorResponse } from './types';
