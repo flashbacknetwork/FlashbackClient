@@ -1,6 +1,6 @@
 {
   "name": "@flashbacktech/flashbackclient",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "publishConfig": {
     "access": "public"
   },
@@ -36,15 +36,10 @@
       "import": "./dist/stellar/index.js",
       "default": "./dist/stellar/index.js"
     },
-    "./path2": {
-      "types": "./dist/path2/index.d.ts",
-      "import": "./dist/path2/index.js",
-      "default": "./dist/path2/index.js"
-    },
-    "./path3": {
-      "types": "./dist/path3/index.d.ts",
-      "import": "./dist/path3/index.js",
-      "default": "./dist/path3/index.js"
+    "./api": {
+      "types": "./dist/api/index.d.ts",
+      "import": "./dist/api/index.js",
+      "default": "./dist/api/index.js"
     }
   },
   "files": [
