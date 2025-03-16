@@ -11,8 +11,8 @@ export interface CreateUnitRequest {
   storageType: StorageType;
   key: string;
   secret: string;
-  endpoint: string;
-  regionId: string;
+  endpoint?: string;
+  regionId?: string;
 }
 
 export interface CreateUnitResponse {
@@ -23,7 +23,7 @@ export interface CreateUnitResponse {
 
 export interface CreateRepoRequest {
   name: string;
-  storageUnitId: string[];
+  storageUnitIds: string[];
 }
 
 export interface CreateRepoResponse {
