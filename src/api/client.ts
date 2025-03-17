@@ -2,7 +2,7 @@ import { CreateUnitRequest, CreateUnitResponse } from './types';
 
 export class ApiClient {
   private baseURL: string;
-  private headers: HeadersInit;
+  private headers: Record<string, string>;
 
   constructor(baseURL: string = 'https://api.flashback.tech') {
     this.baseURL = baseURL;

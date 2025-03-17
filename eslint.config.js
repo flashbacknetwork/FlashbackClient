@@ -7,6 +7,9 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 export default [
   eslint.configs.recommended,
   {
+    globals: {
+      fetch: 'readonly',
+    },
     files: ['**/*.ts'],
     languageOptions: {
       parser: tsparser,
