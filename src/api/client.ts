@@ -90,6 +90,7 @@ export class ApiClient implements IApiClient {
       method: 'GET',
       headers: this.headers,
     });
+    console.log('Response status:', response.status, response.ok, response.body);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
