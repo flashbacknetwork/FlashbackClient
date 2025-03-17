@@ -89,3 +89,18 @@ export interface StorageUnit {
   endpoint?: string;
   regionId?: string;
 }
+
+export interface GetUnitsResponse {
+  success: boolean;
+  units: StorageUnit[];
+}
+
+export interface GetReposResponse {
+  success: boolean;
+  repos: StorageRepo[];
+}
+
+export interface GetRepoKeysResponse {
+  success: boolean;
+  keys: ApiKey[];
+}

@@ -1,5 +1,5 @@
 import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
-  CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey } from './types';
+  CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse } from './types';
 import { IApiClient, ProviderType } from './interfaces';
 
 export class ApiClient implements IApiClient {
@@ -85,21 +85,18 @@ export class ApiClient implements IApiClient {
     return ret as CreateUnitResponse;
   };
 
-  public getStorageUnits = async (): Promise<StorageUnit[]> => {
+  public getStorageUnits = async (): Promise<GetUnitsResponse> => {
     const response = await fetch(`${this.baseURL}/unit`, {
       method: 'GET',
       headers: this.headers,
     });
-    console.log('Response status:', response.status, response.ok);
-    const text = await response.text(); // Get raw response text
-    console.log('Response body:', text);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    const ret = JSON.parse(text); // Parse manually to see if this throws
-    return ret as StorageUnit[];
+    const ret = await response.json();
+    return { success: true, units: ret as StorageUnit[] } as GetUnitsResponse;
   };
 
   public createRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
@@ -115,7 +112,7 @@ export class ApiClient implements IApiClient {
     return ret as CreateRepoResponse;
   };
 
-  public getRepos = async (): Promise<StorageRepo[]> => {
+  public getRepos = async (): Promise<GetReposResponse> => {
     const response = await fetch(`${this.baseURL}/repo`, {
       method: 'GET',
       headers: this.headers,
@@ -124,7 +121,7 @@ export class ApiClient implements IApiClient {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const ret = await response.json();
-    return ret as StorageRepo[];
+    return { success: true, repos: ret as StorageRepo[] } as GetReposResponse;
   };
 
   public createRepoKey = async (data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse> => {
@@ -140,7 +137,7 @@ export class ApiClient implements IApiClient {
     return ret as CreateRepoKeyResponse;
   };
 
-  public getRepoKeys = async (repoId: string): Promise<ApiKey[]> => {
+  public getRepoKeys = async (repoId: string): Promise<GetRepoKeysResponse> => {
     const response = await fetch(`${this.baseURL}/repo/${repoId}/apikey`, {
       method: 'GET',
       headers: this.headers,
@@ -149,6 +146,6 @@ export class ApiClient implements IApiClient {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const ret = await response.json();
-    return ret as ApiKey[];
+    return { success: true, keys: ret as ApiKey[] } as GetRepoKeysResponse;
   };
 }

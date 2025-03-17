@@ -6,7 +6,9 @@ import { StorageUnit,
     CreateRepoResponse, 
     CreateRepoKeyRequest, 
     CreateRepoKeyResponse, 
-    ApiKey 
+    GetUnitsResponse,
+    GetReposResponse,
+    GetRepoKeysResponse
 } from "./types";
 
 export enum ProviderType {
@@ -18,9 +20,9 @@ export enum ProviderType {
 export interface IApiClient {
     authenticate(token: string, provider: ProviderType): Promise<any>;
     createStorageUnit(data: CreateUnitRequest): Promise<CreateUnitResponse>;
-    getStorageUnits(): Promise<StorageUnit[]>;
+    getStorageUnits(): Promise<GetUnitsResponse>;
     createRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
-    getRepos(): Promise<StorageRepo[]>;
+    getRepos(): Promise<GetReposResponse>;
     createRepoKey(data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse>;
-    getRepoKeys(repoId: string): Promise<ApiKey[]>;
+    getRepoKeys(repoId: string): Promise<GetRepoKeysResponse>;
 }
