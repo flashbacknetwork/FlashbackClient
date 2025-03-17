@@ -1,37 +1,56 @@
-import axios, { AxiosInstance } from 'axios';
 import { CreateUnitRequest, CreateUnitResponse } from './types';
 
 export class ApiClient {
-  private apiClient: AxiosInstance;
+  private baseURL: string;
+  private headers: HeadersInit;
 
   constructor(baseURL: string = 'https://api.flashback.tech') {
-    this.apiClient = axios.create({
-      baseURL: baseURL,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    this.baseURL = baseURL;
+    this.headers = {
+      'Content-Type': 'application/json',
+    };
   }
+
   public setAuthToken = (token: string | null) => {
     if (token) {
-      this.apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      this.headers = {
+        ...this.headers,
+        Authorization: `Bearer ${token}`,
+      };
     } else {
-      delete this.apiClient.defaults.headers.common['Authorization'];
+      this.headers = {
+        'Content-Type': 'application/json',
+      };
     }
   };
 
   public authenticateGoogle = async (token: string) => {
-    const response = await this.apiClient.post('/auth/google', { token });
-    return response.data;
+    const response = await fetch(`${this.baseURL}/auth/google`, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify({ token }),
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
   };
 
   public authenticateGithub = async (code: string) => {
-    const response = await this.apiClient.post('/auth/github', { code });
-    return response.data;
+    const response = await fetch(`${this.baseURL}/auth/github`, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify({ code }),
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json();
   };
 
   public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
-    const response = await this.apiClient.post('/unit', data);
-    return response.data as CreateUnitResponse;
+    const response = await fetch(`${this.baseURL}/unit`, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return response.json() as Promise<CreateUnitResponse>;
   };
 }
