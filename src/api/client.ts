@@ -1,7 +1,8 @@
 import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
   CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey } from './types';
+import { IApiClient, ProviderType } from './interfaces';
 
-export class ApiClient {
+export class ApiClient implements IApiClient {
   private baseURL: string;
   private headers: Record<string, string>;
 
@@ -25,7 +26,25 @@ export class ApiClient {
     }
   };
 
-  public authenticateGoogle = async (token: string) => {
+  public authenticate = async (token: string, provider: ProviderType): Promise<any> => {
+    this.setAuthToken(token);
+    switch (provider) {
+      case ProviderType.GOOGLE:
+        return this.authenticateGoogle(token);
+      case ProviderType.GITHUB:
+        return this.authenticateGithub(token);
+      case ProviderType.WEB3_STELLAR:
+        return this.authenticateWeb3Stellar(token);
+      default:
+        throw new Error(`Unsupported provider: ${provider}`);
+    }
+  }
+
+  private authenticateWeb3Stellar = async (token: string): Promise<any> => {
+    throw new Error('Not implemented');
+  }
+
+  private authenticateGoogle = async (token: string): Promise<any>  => {
     this.setAuthToken(token);
     const response = await fetch(`${this.baseURL}/auth/google`, {
       method: 'POST',
@@ -36,7 +55,7 @@ export class ApiClient {
     return response.json();
   };
 
-  public authenticateGithub = async (code: string) => {
+  private authenticateGithub = async (code: string): Promise<any> => {
     this.setAuthToken(code);
     const response = await fetch(`${this.baseURL}/auth/github`, {
       method: 'POST',
