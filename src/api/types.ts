@@ -62,3 +62,32 @@ export interface CreateRepoKeyResponse {
   key: string;
   secret: string;
 }
+
+export interface StorageRepo {
+  id: string;
+  name: string;
+  storageType: StorageType;
+  mode: ModeType;
+  repoUnits: RepoUnitInfo[];
+  apiKeys: ApiKey[];
+}
+
+export interface ApiKey {
+  id: string;
+  name: string;
+  accessType: AccessType;
+  key: string;
+  secret: string;
+}
+
+export interface StorageUnit {
+  id: string;
+  name: string;
+  bucket: string;
+  storageTypeId: string;
+  storageType: StorageType;
+  key: string;
+  secret: string;
+  endpoint?: string;
+  regionId?: string;
+}
