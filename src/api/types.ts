@@ -10,6 +10,11 @@ export enum AccessType {
   ADMIN = 'ADMIN',
 }
 
+export enum ModeType {
+  NORMAL = 'NORMAL',
+  MIRROR = 'MIRROR',
+}
+
 export interface CreateUnitRequest {
   name: string;
   bucket: string;
@@ -35,6 +40,7 @@ export interface RepoUnitInfo {
 export interface CreateRepoRequest {
   name: string;
   storageType: StorageType;
+  mode: ModeType;
   repoUnits: RepoUnitInfo[];
 }
 
