@@ -96,7 +96,7 @@ export class ApiClient implements IApiClient {
     }
     
     const ret = await response.json();
-    return { success: true, units: ret as StorageUnit[] } as GetUnitsResponse;
+    return ret as GetUnitsResponse;
   };
 
   public createRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
@@ -121,7 +121,7 @@ export class ApiClient implements IApiClient {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const ret = await response.json();
-    return { success: true, repos: ret as StorageRepo[] } as GetReposResponse;
+    return ret as GetReposResponse;
   };
 
   public createRepoKey = async (data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse> => {
@@ -146,6 +146,6 @@ export class ApiClient implements IApiClient {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const ret = await response.json();
-    return { success: true, keys: ret as ApiKey[] } as GetRepoKeysResponse;
+    return ret as GetRepoKeysResponse;
   };
 }
