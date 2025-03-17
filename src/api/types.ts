@@ -84,7 +84,6 @@ export interface StorageUnit {
   id: string;
   name: string;
   bucket: string;
-  storageTypeId: string;
   storageType: StorageType;
   key: string;
   secret: string;

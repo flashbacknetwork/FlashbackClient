@@ -51,8 +51,11 @@ export class ApiClient implements IApiClient {
       headers: this.headers,
       body: JSON.stringify({ token }),
     });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret;
   };
 
   private authenticateGithub = async (code: string): Promise<any> => {
@@ -62,8 +65,11 @@ export class ApiClient implements IApiClient {
       headers: this.headers,
       body: JSON.stringify({ code }),
     });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret;
   };
 
   public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
@@ -72,8 +78,11 @@ export class ApiClient implements IApiClient {
       headers: this.headers,
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json() as Promise<CreateUnitResponse>;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret as CreateUnitResponse;
   };
 
   public getStorageUnits = async (): Promise<StorageUnit[]> => {
@@ -84,7 +93,8 @@ export class ApiClient implements IApiClient {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return response.json() as Promise<StorageUnit[]>;
+    const ret = await response.json();
+    return ret as StorageUnit[];
   };
 
   public createRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
@@ -93,8 +103,11 @@ export class ApiClient implements IApiClient {
       headers: this.headers,
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json() as Promise<CreateRepoResponse>;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret as CreateRepoResponse;
   };
 
   public getRepos = async (): Promise<StorageRepo[]> => {
@@ -102,8 +115,11 @@ export class ApiClient implements IApiClient {
       method: 'GET',
       headers: this.headers,
     });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json() as Promise<StorageRepo[]>;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret as StorageRepo[];
   };
 
   public createRepoKey = async (data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse> => {
@@ -112,8 +128,11 @@ export class ApiClient implements IApiClient {
       headers: this.headers,
       body: JSON.stringify(data),
     });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json() as Promise<CreateRepoKeyResponse>;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret as CreateRepoKeyResponse;
   };
 
   public getRepoKeys = async (repoId: string): Promise<ApiKey[]> => {
@@ -121,7 +140,10 @@ export class ApiClient implements IApiClient {
       method: 'GET',
       headers: this.headers,
     });
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return response.json() as Promise<ApiKey[]>;
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret as ApiKey[];
   };
 }
