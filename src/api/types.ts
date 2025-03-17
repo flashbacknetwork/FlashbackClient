@@ -18,7 +18,6 @@ export enum ModeType {
 export interface CreateUnitRequest {
   name: string;
   bucket: string;
-  storageTypeId: string;
   storageType: StorageType;
   key: string;
   secret: string;
