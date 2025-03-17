@@ -1,6 +1,6 @@
 {
   "name": "@flashbacktech/flashbackclient",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "publishConfig": {
     "access": "public"
   },
@@ -33,12 +33,12 @@
   "exports": {
     "./stellar": {
       "types": "./dist/stellar/index.d.ts",
-      "import": "./dist/stellar/index.js",
+      "require": "./dist/stellar/index.js",
       "default": "./dist/stellar/index.js"
     },
     "./api": {
       "types": "./dist/api/index.d.ts",
-      "import": "./dist/api/index.js",
+      "require": "./dist/api/index.js",
       "default": "./dist/api/index.js"
     }
   },
@@ -63,7 +63,6 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2"
   },
-  "type": "module",
   "typesVersions": {
     "*": {
       "stellar": [
