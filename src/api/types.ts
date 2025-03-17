@@ -27,14 +27,18 @@ export interface CreateUnitResponse {
   unitId: string;
 }
 
+export interface RepoUnitInfo {
+  id: string;
+  folder: string;
+}
+
 export interface CreateRepoRequest {
   name: string;
   storageType: StorageType;
-  storageUnitIds: string[];
+  repoUnits: RepoUnitInfo[];
 }
 
 export interface CreateRepoResponse {
-  // TODO: Define response fields based on backend requirements
   success: boolean;
   repoId: string;
 }
