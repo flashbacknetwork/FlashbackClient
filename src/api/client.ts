@@ -90,11 +90,15 @@ export class ApiClient implements IApiClient {
       method: 'GET',
       headers: this.headers,
     });
-    console.log('Response status:', response.status, response.ok, response.body);
+    console.log('Response status:', response.status, response.ok);
+    const text = await response.text(); // Get raw response text
+    console.log('Response body:', text);
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    const ret = await response.json();
+    
+    const ret = JSON.parse(text); // Parse manually to see if this throws
     return ret as StorageUnit[];
   };
 
