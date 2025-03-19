@@ -40,6 +40,18 @@ export class ApiClient implements IApiClient {
     }
   }
 
+  public refreshToken = async (refreshToken: string, provider: ProviderType): Promise<any> => {
+    switch (provider) {
+      case ProviderType.GOOGLE:
+        return this.refreshTokenGoogle(refreshToken);
+      case ProviderType.GITHUB:
+        // TODO: Implement refresh token for Github
+        throw new Error('Not implemented');
+      default:
+        throw new Error(`Unsupported provider: ${provider}`);
+    }
+  }
+
   private authenticateWeb3Stellar = async (token: string): Promise<any> => {
     throw new Error('Not implemented');
   }
@@ -64,6 +76,19 @@ export class ApiClient implements IApiClient {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify({ code }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret;
+  };
+
+  private refreshTokenGoogle = async (refreshToken: string): Promise<any> => {
+    const response = await fetch(`${this.baseURL}/auth/google/refresh`, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify({ refresh_token: refreshToken }),
     });
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
