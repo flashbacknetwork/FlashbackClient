@@ -40,6 +40,46 @@ export class ApiClient implements IApiClient {
     }
   }
 
+  public exchangeCode = async (code: string, provider: ProviderType): Promise<any> => {
+    switch (provider) {
+      case ProviderType.GOOGLE:
+        return this.exchangeGoogleCode(code);
+      case ProviderType.GITHUB:
+        return this.exchangeGithubCode(code);
+      case ProviderType.WEB3_STELLAR:
+        return this.exchangeWeb3StellarCode(code);
+      default:
+        throw new Error(`Unsupported provider: ${provider}`);
+    }
+  }
+
+  private exchangeGoogleCode = async (code: string): Promise<any> => {
+    const response = await fetch(`${this.baseURL}/auth/google/exchange`, {
+      method: 'POST',
+      headers: this.headers,
+      body: JSON.stringify({ code }),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const ret = await response.json();
+    return ret;
+  }
+
+  private exchangeGithubCode = async (code: string): Promise<any> => {
+    throw new Error('Not implemented');
+  }
+
+  private exchangeWeb3StellarCode = async (code: string): Promise<any> => {
+    throw new Error('Not implemented');
+  }
+
+  /**
+   * Refresh the token for the given provider
+   * @param refreshToken - The refresh token to use
+   * @param provider - The provider to refresh the token for
+   * @returns The refreshed token
+   */
   public refreshToken = async (refreshToken: string, provider: ProviderType): Promise<any> => {
     switch (provider) {
       case ProviderType.GOOGLE:
