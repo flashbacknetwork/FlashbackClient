@@ -15,3 +15,10 @@ export interface OAuth2ResponseDTO {
   success: boolean;
   authState: AuthState;
 }
+
+export interface RefreshTokenResponse {
+    ok: boolean;
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: number;
+}
