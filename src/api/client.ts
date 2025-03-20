@@ -109,7 +109,8 @@ export class ApiClient implements IApiClient {
         headers: this.headers,
         body: data ? JSON.stringify(data) : null,
     }
-    const response = await fetch(`${this.baseURL}/${path}`, options);
+    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    const response = await fetch(`${this.baseURL}/${cleanPath}`, options);
     
     // If response is not ok, handle it before trying to parse JSON
     if (!response.ok) {
