@@ -1,3 +1,5 @@
+import { ProviderType } from "../interfaces";
+
 export interface AuthState {
     user: {
       email: string;
@@ -8,7 +10,7 @@ export interface AuthState {
     accessToken: string | null;
     refreshToken?: string | null;
     expiresAt?: number | null;
-    provider?: 'google' | 'github';
+    provider?: ProviderType;
   }
 
 export interface OAuth2ResponseDTO {
@@ -17,7 +19,7 @@ export interface OAuth2ResponseDTO {
 }
 
 export interface RefreshTokenResponse {
-    ok: boolean;
+    success: boolean;
     accessToken: string;
     refreshToken: string;
     expiresAt: number;

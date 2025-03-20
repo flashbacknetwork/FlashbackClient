@@ -1,6 +1,7 @@
 import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
   CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
+import { RefreshTokenResponse } from './types/auth';
 
 export class ApiClient implements IApiClient {
   private baseURL: string;
@@ -124,7 +125,7 @@ export class ApiClient implements IApiClient {
     return ret;
   };
 
-  private refreshTokenGoogle = async (refreshToken: string): Promise<any> => {
+  private refreshTokenGoogle = async (refreshToken: string): Promise<RefreshTokenResponse> => {
     const response = await fetch(`${this.baseURL}/auth/google/refresh`, {
       method: 'POST',
       headers: this.headers,
