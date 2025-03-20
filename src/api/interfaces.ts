@@ -8,7 +8,14 @@ import { StorageUnit,
     CreateRepoKeyResponse, 
     GetUnitsResponse,
     GetReposResponse,
-    GetRepoKeysResponse
+    GetRepoKeysResponse,
+    UpdateUnitRequest,
+    UpdateUnitResponse,
+    ActionResponse,
+    UpdateRepoResponse,
+    UpdateRepoRequest,
+    UpdateRepoKeyRequest,
+    UpdateRepoKeyResponse
 } from "./types/storage";
 
 export enum ProviderType {
@@ -21,8 +28,14 @@ export interface IApiClient {
     authenticate(token: string, provider: ProviderType): Promise<any>;
     createStorageUnit(data: CreateUnitRequest): Promise<CreateUnitResponse>;
     getStorageUnits(): Promise<GetUnitsResponse>;
+    updateStorageUnit(unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse>;
+    deleteStorageUnit(unitId: string): Promise<ActionResponse>;
     createRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
     getRepos(): Promise<GetReposResponse>;
+    updateRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;
+    deleteRepo(repoId: string): Promise<ActionResponse>;
     createRepoKey(data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse>;
     getRepoKeys(repoId: string): Promise<GetRepoKeysResponse>;
+    updateRepoKey(repoId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse>;
+    deleteRepoKey(repoId: string, keyId: string): Promise<ActionResponse>;
 }

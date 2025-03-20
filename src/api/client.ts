@@ -1,5 +1,8 @@
 import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
-  CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse } from './types/storage';
+  CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse,
+  UpdateUnitRequest, UpdateUnitResponse, ActionResponse, UpdateRepoRequest, UpdateRepoResponse, 
+  UpdateRepoKeyRequest, UpdateRepoKeyResponse 
+} from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import { RefreshTokenResponse } from './types/auth';
 
@@ -138,80 +141,68 @@ export class ApiClient implements IApiClient {
     return ret;
   };
 
-  public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
-    const response = await fetch(`${this.baseURL}/unit`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify(data),
-    });
+  private makeRequest = async <T>(path: string, method: string, data: any | null): Promise<T> => {
+    const options: RequestInit = {
+        method,
+        headers: this.headers,
+        body: data ? JSON.stringify(data) : null,
+    }
+    const response = await fetch(`${this.baseURL}/${path}`, options);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const ret = await response.json();
-    return ret as CreateUnitResponse;
+    return ret as T;
+  }
+
+  ////// Units API
+  public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
+    return this.makeRequest<CreateUnitResponse>('unit', 'POST', data);
   };
 
   public getStorageUnits = async (): Promise<GetUnitsResponse> => {
-    const response = await fetch(`${this.baseURL}/unit`, {
-      method: 'GET',
-      headers: this.headers,
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const ret = await response.json();
-    return ret as GetUnitsResponse;
+    return this.makeRequest<GetUnitsResponse>('unit', 'GET', {});
   };
 
+  public updateStorageUnit = async (unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse> => {
+    return this.makeRequest<UpdateUnitResponse>(`unit/${unitId}`, 'PUT', data);
+  }
+
+  public deleteStorageUnit = async (unitId: string): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>(`unit/${unitId}`, 'DELETE', {});
+  }
+
+  ////// Repos API
   public createRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
-    const response = await fetch(`${this.baseURL}/repo`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret as CreateRepoResponse;
+    return this.makeRequest<CreateRepoResponse>('repo', 'POST', data);
   };
 
   public getRepos = async (): Promise<GetReposResponse> => {
-    const response = await fetch(`${this.baseURL}/repo`, {
-      method: 'GET',
-      headers: this.headers,
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret as GetReposResponse;
+    return this.makeRequest<GetReposResponse>('repo', 'GET', {});
   };
 
+  public updateRepo = async (repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse> => {
+    return this.makeRequest<UpdateRepoResponse>(`repo/${repoId}`, 'PUT', data);
+  };
+
+  public deleteRepo = async (repoId: string): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>(`repo/${repoId}`, 'DELETE', {});
+  };
+
+  ////// Keys API
   public createRepoKey = async (data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse> => {
-    const response = await fetch(`${this.baseURL}/repo/${data.repoId}/apikey`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret as CreateRepoKeyResponse;
+    return this.makeRequest<CreateRepoKeyResponse>(`repo/${data.repoId}/apikey`, 'POST', data);
   };
 
   public getRepoKeys = async (repoId: string): Promise<GetRepoKeysResponse> => {
-    const response = await fetch(`${this.baseURL}/repo/${repoId}/apikey`, {
-      method: 'GET',
-      headers: this.headers,
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret as GetRepoKeysResponse;
+    return this.makeRequest<GetRepoKeysResponse>(`repo/${repoId}/apikey`, 'GET', {});
   };
-}
+
+  public updateRepoKey = async (repoId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse> => {
+    return this.makeRequest<UpdateRepoKeyResponse>(`repo/${repoId}/apikey`, 'PUT', data);
+  };
+
+  public deleteRepoKey = async (repoId: string, keyId: string): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>(`repo/${repoId}/apikey/${keyId}`, 'DELETE', {});
+  };
+} 

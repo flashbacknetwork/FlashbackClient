@@ -15,6 +15,11 @@ export enum ModeType {
   MIRROR = 'MIRROR',
 }
 
+export interface ActionResponse {
+  success: boolean;
+  message?: string;
+}
+
 export interface CreateUnitRequest {
   name: string;
   bucket: string;
@@ -25,11 +30,14 @@ export interface CreateUnitRequest {
   regionId?: string;
 }
 
+export interface UpdateUnitRequest extends CreateUnitRequest {}
+
 export interface CreateUnitResponse {
-  // TODO: Define response fields based on backend requirements
   success: boolean;
   unitId: string;
 }
+
+export interface UpdateUnitResponse extends CreateUnitResponse {}
 
 export interface RepoUnitInfo {
   id: string;
@@ -48,6 +56,9 @@ export interface CreateRepoResponse {
   repoId: string;
 }
 
+export interface UpdateRepoRequest extends CreateRepoRequest {}
+export interface UpdateRepoResponse extends CreateRepoResponse {}
+
 export interface CreateRepoKeyRequest {
   repoId: string;
   name: string;
@@ -55,12 +66,14 @@ export interface CreateRepoKeyRequest {
 }
 
 export interface CreateRepoKeyResponse {
-  // TODO: Define response fields based on backend requirements
   success: boolean;
   id: string;
   key: string;
   secret: string;
 }
+
+export interface UpdateRepoKeyRequest extends CreateRepoKeyRequest {}
+export interface UpdateRepoKeyResponse extends CreateRepoKeyResponse {}
 
 export interface StorageRepo {
   id: string;
