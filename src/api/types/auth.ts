@@ -10,4 +10,8 @@ export interface AuthState {
     expiresAt?: number | null;
     provider?: 'google' | 'github';
   }
-  
+
+export interface OAuth2ResponseDTO {
+  success: boolean;
+  authState: AuthState;
+}
