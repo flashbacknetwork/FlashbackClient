@@ -103,24 +103,44 @@ export class ApiClient implements IApiClient {
     throw new Error('Not implemented');
   }
 
-  private makeRequest = async <T>(path: string, method: string, data: any | null): Promise<T> => {
+  private makeRequest = async <T>(method: string, path: string, data?: any): Promise<T> => {
     const options: RequestInit = {
         method,
         headers: this.headers,
         body: data ? JSON.stringify(data) : null,
     }
     const response = await fetch(`${this.baseURL}/${path}`, options);
-    const responseData = await response.json();
     
+    // If response is not ok, handle it before trying to parse JSON
     if (!response.ok) {
+        let errorData = null;
+        
+        // Only try to parse JSON if we have content
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            try {
+                const text = await response.text(); 
+                errorData = text ? JSON.parse(text) : null; // Parse if not empty
+            } catch (e) {
+                console.debug('Failed to parse error response:', e);
+            }
+        }
+
         throw new HttpError(
             response.status,
             response.statusText,
-            responseData
+            errorData
         );
     }
-    
-    return responseData as T;
+
+    // For successful responses, parse JSON if we have content
+    try {
+        const text = await response.text();
+        return text ? JSON.parse(text) : null as T;
+    } catch (e) {
+        console.error('Failed to parse success response:', e);
+        throw new Error('Invalid JSON response from server');
+    }
   }
 
   ////// Auth API
