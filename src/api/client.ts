@@ -4,7 +4,23 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
   UpdateRepoKeyRequest, UpdateRepoKeyResponse 
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
-import { RefreshTokenResponse } from './types/auth';
+import { OAuth2ResponseDTO, RefreshTokenResponse } from './types/auth';
+
+interface ErrorResponse {
+  message?: string;
+  [key: string]: any;
+}
+
+export class HttpError extends Error {
+  constructor(
+    public status: number,
+    public statusText: string,
+    public data: ErrorResponse
+  ) {
+    super(`HTTP Error ${status}: ${statusText}`);
+    this.name = 'HttpError'; // This helps in instanceof checks
+  }
+}
 
 export class ApiClient implements IApiClient {
   private baseURL: string;
@@ -44,7 +60,7 @@ export class ApiClient implements IApiClient {
     }
   }
 
-  public exchangeCode = async (code: string, provider: ProviderType): Promise<any> => {
+  public exchangeCode = async (code: string, provider: ProviderType): Promise<OAuth2ResponseDTO> => {
     switch (provider) {
       case ProviderType.GOOGLE:
         return this.exchangeGoogleCode(code);
@@ -57,24 +73,11 @@ export class ApiClient implements IApiClient {
     }
   }
 
-  private exchangeGoogleCode = async (code: string): Promise<any> => {
-    const response = await fetch(`${this.baseURL}/auth/google/exchange`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ code }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret;
-  }
-
-  private exchangeGithubCode = async (code: string): Promise<any> => {
+  private exchangeGithubCode = async (code: string): Promise<OAuth2ResponseDTO> => {
     throw new Error('Not implemented');
   }
 
-  private exchangeWeb3StellarCode = async (code: string): Promise<any> => {
+  private exchangeWeb3StellarCode = async (code: string): Promise<OAuth2ResponseDTO> => {
     throw new Error('Not implemented');
   }
 
@@ -84,10 +87,10 @@ export class ApiClient implements IApiClient {
    * @param provider - The provider to refresh the token for
    * @returns The refreshed token
    */
-  public refreshToken = async (refreshToken: string, provider: ProviderType): Promise<any> => {
+  public refreshToken = async (refreshToken: string, provider: ProviderType): Promise<RefreshTokenResponse> => {
     switch (provider) {
       case ProviderType.GOOGLE:
-        return this.refreshTokenGoogle(refreshToken);
+        return this.refreshGoogleToken(refreshToken);
       case ProviderType.GITHUB:
         // TODO: Implement refresh token for Github
         throw new Error('Not implemented');
@@ -100,47 +103,6 @@ export class ApiClient implements IApiClient {
     throw new Error('Not implemented');
   }
 
-  private authenticateGoogle = async (token: string): Promise<any>  => {
-    this.setAuthToken(token);
-    const response = await fetch(`${this.baseURL}/auth/google`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ token }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret;
-  };
-
-  private authenticateGithub = async (code: string): Promise<any> => {
-    this.setAuthToken(code);
-    const response = await fetch(`${this.baseURL}/auth/github`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ code }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret;
-  };
-
-  private refreshTokenGoogle = async (refreshToken: string): Promise<RefreshTokenResponse> => {
-    const response = await fetch(`${this.baseURL}/auth/google/refresh`, {
-      method: 'POST',
-      headers: this.headers,
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const ret = await response.json();
-    return ret;
-  };
-
   private makeRequest = async <T>(path: string, method: string, data: any | null): Promise<T> => {
     const options: RequestInit = {
         method,
@@ -148,11 +110,36 @@ export class ApiClient implements IApiClient {
         body: data ? JSON.stringify(data) : null,
     }
     const response = await fetch(`${this.baseURL}/${path}`, options);
+    const responseData = await response.json();
+    
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        throw new HttpError(
+            response.status,
+            response.statusText,
+            responseData
+        );
     }
-    const ret = await response.json();
-    return ret as T;
+    
+    return responseData as T;
+  }
+
+  ////// Auth API
+  private authenticateGoogle = async (token: string): Promise<any>  => {
+    this.setAuthToken(token);
+    return this.makeRequest<any>('auth/google', 'POST', { token });
+  };
+
+  private authenticateGithub = async (code: string): Promise<any> => {
+    this.setAuthToken(code);
+    return this.makeRequest<any>('auth/github', 'POST', { code });
+  };
+
+  private refreshGoogleToken = async (refreshToken: string): Promise<RefreshTokenResponse> => {
+    return this.makeRequest<RefreshTokenResponse>('auth/google/refresh', 'POST', { refresh_token: refreshToken });
+  };
+  
+  private exchangeGoogleCode = async (code: string): Promise<OAuth2ResponseDTO> => {
+    return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code });
   }
 
   ////// Units API
@@ -161,7 +148,7 @@ export class ApiClient implements IApiClient {
   };
 
   public getStorageUnits = async (): Promise<GetUnitsResponse> => {
-    return this.makeRequest<GetUnitsResponse>('unit', 'GET', {});
+    return this.makeRequest<GetUnitsResponse>('unit', 'GET', null);
   };
 
   public updateStorageUnit = async (unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse> => {
@@ -169,7 +156,7 @@ export class ApiClient implements IApiClient {
   }
 
   public deleteStorageUnit = async (unitId: string): Promise<ActionResponse> => {
-    return this.makeRequest<ActionResponse>(`unit/${unitId}`, 'DELETE', {});
+    return this.makeRequest<ActionResponse>(`unit/${unitId}`, 'DELETE', null);
   }
 
   ////// Repos API
@@ -178,7 +165,7 @@ export class ApiClient implements IApiClient {
   };
 
   public getRepos = async (): Promise<GetReposResponse> => {
-    return this.makeRequest<GetReposResponse>('repo', 'GET', {});
+    return this.makeRequest<GetReposResponse>('repo', 'GET', null);
   };
 
   public updateRepo = async (repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse> => {
@@ -186,7 +173,7 @@ export class ApiClient implements IApiClient {
   };
 
   public deleteRepo = async (repoId: string): Promise<ActionResponse> => {
-    return this.makeRequest<ActionResponse>(`repo/${repoId}`, 'DELETE', {});
+    return this.makeRequest<ActionResponse>(`repo/${repoId}`, 'DELETE', null);
   };
 
   ////// Keys API
@@ -195,7 +182,7 @@ export class ApiClient implements IApiClient {
   };
 
   public getRepoKeys = async (repoId: string): Promise<GetRepoKeysResponse> => {
-    return this.makeRequest<GetRepoKeysResponse>(`repo/${repoId}/apikey`, 'GET', {});
+    return this.makeRequest<GetRepoKeysResponse>(`repo/${repoId}/apikey`, 'GET', null);
   };
 
   public updateRepoKey = async (repoId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse> => {
@@ -203,6 +190,6 @@ export class ApiClient implements IApiClient {
   };
 
   public deleteRepoKey = async (repoId: string, keyId: string): Promise<ActionResponse> => {
-    return this.makeRequest<ActionResponse>(`repo/${repoId}/apikey/${keyId}`, 'DELETE', {});
+    return this.makeRequest<ActionResponse>(`repo/${repoId}/apikey/${keyId}`, 'DELETE', null);
   };
 } 
