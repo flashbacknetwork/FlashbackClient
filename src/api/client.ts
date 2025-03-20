@@ -1,5 +1,5 @@
 import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
-  CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse } from './types';
+  CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 
 export class ApiClient implements IApiClient {

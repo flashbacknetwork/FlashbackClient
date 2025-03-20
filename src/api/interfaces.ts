@@ -9,7 +9,7 @@ import { StorageUnit,
     GetUnitsResponse,
     GetReposResponse,
     GetRepoKeysResponse
-} from "./types";
+} from "./types/storage";
 
 export enum ProviderType {
     GOOGLE = 'GOOGLE',
