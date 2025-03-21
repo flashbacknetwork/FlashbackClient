@@ -101,6 +101,7 @@ export interface StorageUnit {
   bucket: string;
   storageType: StorageType;
   key: string;
+  secret: string;
   endpoint?: string;
   status?: string;
   latency_ms?: number;
