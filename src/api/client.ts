@@ -118,6 +118,7 @@ export class ApiClient implements IApiClient {
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
     if (this.debug) {
       console.log(`DEBUG: ${method} ${cleanPath} ${JSON.stringify(data)}`);
+      console.log(`DEBUG: ${JSON.stringify(this.headers)}`);
     }
     const response = await fetch(`${this.baseURL}/${cleanPath}`, options);
     if (this.debug) {
