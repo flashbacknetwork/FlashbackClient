@@ -98,9 +98,7 @@ export interface StorageUnit {
   bucket: string;
   storageType: StorageType;
   key: string;
-  secret: string;
   endpoint?: string;
-  regionId?: string;
 }
 
 export interface GetUnitsResponse {
@@ -117,3 +115,16 @@ export interface GetRepoKeysResponse {
   success: boolean;
   keys: ApiKey[];
 }
+
+export interface ValidateUnitRequest {
+  key: string;
+  secret: string;
+  endpoint?: string;
+  bucket: string;
+}
+
+export interface ValidateUnitResponse {
+  success: boolean;
+  message?: string;
+}
+

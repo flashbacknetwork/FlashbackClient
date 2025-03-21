@@ -15,7 +15,9 @@ import { StorageUnit,
     UpdateRepoResponse,
     UpdateRepoRequest,
     UpdateRepoKeyRequest,
-    UpdateRepoKeyResponse
+    UpdateRepoKeyResponse,
+    ValidateUnitRequest,
+    ValidateUnitResponse
 } from "./types/storage";
 
 export enum ProviderType {
@@ -30,6 +32,7 @@ export interface IApiClient {
     getStorageUnits(): Promise<GetUnitsResponse>;
     updateStorageUnit(unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse>;
     deleteStorageUnit(unitId: string): Promise<ActionResponse>;
+    validateStorageUnit(unitId: string, data: ValidateUnitRequest): Promise<ValidateUnitResponse>;
     createRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
     getRepos(): Promise<GetReposResponse>;
     updateRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;

@@ -1,7 +1,7 @@
 import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
   CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse,
   UpdateUnitRequest, UpdateUnitResponse, ActionResponse, UpdateRepoRequest, UpdateRepoResponse, 
-  UpdateRepoKeyRequest, UpdateRepoKeyResponse 
+  UpdateRepoKeyRequest, UpdateRepoKeyResponse, ValidateUnitRequest, ValidateUnitResponse
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import { OAuth2ResponseDTO, RefreshTokenResponse } from './types/auth';
@@ -184,6 +184,10 @@ export class ApiClient implements IApiClient {
   public getStorageUnits = async (): Promise<GetUnitsResponse> => {
     return this.makeRequest<GetUnitsResponse>('unit', 'GET', null);
   };
+
+  public validateStorageUnit = async (unitId: string, data: ValidateUnitRequest): Promise<ValidateUnitResponse> => {
+    return this.makeRequest<ValidateUnitResponse>(`unit/${unitId}/validate`, 'POST', data);
+  }
 
   public updateStorageUnit = async (unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse> => {
     return this.makeRequest<UpdateUnitResponse>(`unit/${unitId}`, 'PUT', data);
