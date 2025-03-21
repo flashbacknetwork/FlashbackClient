@@ -27,7 +27,7 @@ export interface CreateUnitRequest {
   key: string;
   secret: string;
   endpoint?: string;
-  regionId?: string;
+  region?: string;
 }
 
 export interface UpdateUnitRequest extends CreateUnitRequest {}
@@ -103,6 +103,7 @@ export interface StorageUnit {
   key: string;
   secret: string;
   endpoint?: string;
+  region?: string;
   status?: string;
   latency_ms?: number;
 }
