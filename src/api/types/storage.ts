@@ -37,7 +37,10 @@ export interface CreateUnitResponse {
   unitId: string;
 }
 
-export interface UpdateUnitResponse extends CreateUnitResponse {}
+export interface UpdateUnitResponse extends CreateUnitResponse {
+  status?: string;
+  latency_ms?: number;
+}
 
 export interface RepoUnitInfo {
   id: string;
@@ -99,6 +102,8 @@ export interface StorageUnit {
   storageType: StorageType;
   key: string;
   endpoint?: string;
+  status?: string;
+  latency_ms?: number;
 }
 
 export interface GetUnitsResponse {
@@ -126,5 +131,7 @@ export interface ValidateUnitRequest {
 export interface ValidateUnitResponse {
   success: boolean;
   message?: string;
+  status?: string;
+  latency_ms?: number;
 }
 
