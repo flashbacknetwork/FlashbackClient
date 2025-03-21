@@ -25,12 +25,18 @@ export class HttpError extends Error {
 export class ApiClient implements IApiClient {
   private baseURL: string;
   private headers: Record<string, string>;
+  private debug: boolean;
 
   constructor(baseURL: string = 'https://api.flashback.tech') {
     this.baseURL = baseURL;
     this.headers = {
       'Content-Type': 'application/json',
     };
+    this.debug = false;
+  }
+
+  public setDebug = (debug: boolean) => {
+    this.debug = debug;
   }
 
   public setAuthToken = (token: string | null) => {
@@ -110,7 +116,13 @@ export class ApiClient implements IApiClient {
         body: data ? JSON.stringify(data) : null,
     }
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    if (this.debug) {
+      console.log(`DEBUG: ${method} ${cleanPath} ${JSON.stringify(data)}`);
+    }
     const response = await fetch(`${this.baseURL}/${cleanPath}`, options);
+    if (this.debug) {
+      console.log(`DEBUG: ${response.status} ${response.statusText}`);
+    }
     
     // If response is not ok, handle it before trying to parse JSON
     if (!response.ok) {
