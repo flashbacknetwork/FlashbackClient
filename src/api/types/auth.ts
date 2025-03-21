@@ -20,6 +20,7 @@ export interface OAuth2ResponseDTO {
 
 export interface RefreshTokenResponse {
     success: boolean;
+    token: string;
     accessToken: string;
     refreshToken: string;
     expiresAt: number;
