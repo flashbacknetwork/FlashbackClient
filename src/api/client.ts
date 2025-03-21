@@ -109,7 +109,7 @@ export class ApiClient implements IApiClient {
     throw new Error('Not implemented');
   }
 
-  private makeRequest = async <T>(method: string, path: string, data?: any): Promise<T> => {
+  private makeRequest = async <T>(path: string, method: string, data?: any): Promise<T> => {
     const options: RequestInit = {
         method,
         headers: this.headers,
