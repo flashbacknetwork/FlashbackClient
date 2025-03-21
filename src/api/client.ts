@@ -29,9 +29,7 @@ export class ApiClient implements IApiClient {
 
   constructor(baseURL: string = 'https://api.flashback.tech') {
     this.baseURL = baseURL;
-    this.headers = {
-      'Content-Type': 'application/json',
-    };
+    this.headers = {};
     this.debug = false;
   }
 
@@ -44,10 +42,6 @@ export class ApiClient implements IApiClient {
       this.headers = {
         ...this.headers,
         Authorization: `Bearer ${token}`,
-      };
-    } else {
-      this.headers = {
-        'Content-Type': 'application/json',
       };
     }
   };
@@ -114,6 +108,12 @@ export class ApiClient implements IApiClient {
         method,
         headers: this.headers,
         body: data ? JSON.stringify(data) : null,
+    }
+    if (data) {
+      options.headers = {
+        ...options.headers,
+        'Content-Type': 'application/json',
+      };
     }
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
     if (this.debug) {
