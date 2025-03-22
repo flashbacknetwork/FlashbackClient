@@ -93,6 +93,7 @@ export interface ApiKey {
   accessType: AccessType;
   key: string;
   secret: string;
+  createdAt: string;
 }
 
 export interface StorageUnit {

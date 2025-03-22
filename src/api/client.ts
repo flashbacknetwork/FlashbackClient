@@ -198,19 +198,19 @@ export class ApiClient implements IApiClient {
   }
 
   ////// Repos API
-  public createRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
+  public createStorageRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
     return this.makeRequest<CreateRepoResponse>('repo', 'POST', data);
   };
 
-  public getRepos = async (): Promise<GetReposResponse> => {
+  public getStorageRepos = async (): Promise<GetReposResponse> => {
     return this.makeRequest<GetReposResponse>('repo', 'GET', null);
   };
 
-  public updateRepo = async (repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse> => {
+  public updateStorageRepo = async (repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse> => {
     return this.makeRequest<UpdateRepoResponse>(`repo/${repoId}`, 'PUT', data);
   };
 
-  public deleteRepo = async (repoId: string): Promise<ActionResponse> => {
+  public deleteStorageRepo = async (repoId: string): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>(`repo/${repoId}`, 'DELETE', null);
   };
 

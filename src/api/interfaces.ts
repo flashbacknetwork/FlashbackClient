@@ -33,10 +33,10 @@ export interface IApiClient {
     updateStorageUnit(unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse>;
     deleteStorageUnit(unitId: string): Promise<ActionResponse>;
     validateStorageUnit(unitId: string, data: ValidateUnitRequest): Promise<ValidateUnitResponse>;
-    createRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
-    getRepos(): Promise<GetReposResponse>;
-    updateRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;
-    deleteRepo(repoId: string): Promise<ActionResponse>;
+    createStorageRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
+    getStorageRepos(): Promise<GetReposResponse>;
+    updateStorageRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;
+    deleteStorageRepo(repoId: string): Promise<ActionResponse>;
     createRepoKey(data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse>;
     getRepoKeys(repoId: string): Promise<GetRepoKeysResponse>;
     updateRepoKey(repoId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse>;
