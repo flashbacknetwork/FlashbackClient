@@ -85,6 +85,7 @@ export interface StorageRepo {
   mode: ModeType;
   repoUnits: RepoUnitInfo[];
   apiKeys: ApiKey[];
+  createdAt: string;
 }
 
 export interface ApiKey {
@@ -108,6 +109,7 @@ export interface StorageUnit {
   status?: string;
   latency_ms?: number;
   projectId?: string;
+  createdAt: string;
 }
 
 export interface GetUnitsResponse {
