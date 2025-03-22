@@ -106,6 +106,7 @@ export interface StorageUnit {
   region?: string;
   status?: string;
   latency_ms?: number;
+  projectId?: string;
 }
 
 export interface GetUnitsResponse {
