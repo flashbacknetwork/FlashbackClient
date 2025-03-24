@@ -201,8 +201,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<ActionResponse>(`unit/${unitId}`, 'DELETE', null);
   }
 
-  public getAvailableStorageUnits = async (): Promise<number[]> => {
-    return this.makeRequest<number[]>('unit/available', 'GET', null);
+  public getAvailableStorageUnits = async (): Promise<StorageUnit[]> => {
+    return this.makeRequest<StorageUnit[]>('unit/available', 'GET', null);
   }
 
   ////// Repos API
