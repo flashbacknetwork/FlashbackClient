@@ -46,7 +46,7 @@ export interface RepoUnitInfo {
   id: string;
   folder: string;
   master: boolean;
-  data?: StorageUnit;
+  unit?: StorageUnit;
 }
 
 export interface CreateRepoRequest {
@@ -87,7 +87,7 @@ export interface StorageRepo {
   name: string;
   storageType: StorageType;
   mode: ModeType;
-  repoUnits: RepoUnitInfo[];
+  units: RepoUnitInfo[];
   apiKeys?: ApiKey[];
   createdAt: string;
 }
@@ -97,7 +97,7 @@ export interface ApiKey {
   name: string;
   accessType: AccessType;
   key: string;
-  secret: string;
+  secret?: string;
   createdAt: string;
 }
 
@@ -107,7 +107,7 @@ export interface StorageUnit {
   bucket: string;
   storageType: StorageType;
   key: string;
-  secret: string;
+  secret?: string;
   endpoint?: string;
   region?: string;
   status?: string;
