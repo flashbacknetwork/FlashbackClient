@@ -58,6 +58,8 @@ export interface CreateRepoRequest {
 
 export interface CreateRepoResponse {
   success: boolean;
+  error_code?: RepoErrorCodes;
+  error_message?: string;
   repoId: string;
 }
 
@@ -156,6 +158,13 @@ export interface ValidateRepoUnitsResponse {
 }
 
 export enum RepoErrorCodes {
+  SUCCESS = 'SUCCESS',
+  NOT_FOUND = 'NOT_FOUND',
+  NAME_ALREADY_USED = 'NAME_ALREADY_USED',
   MIRROR_MASTER_UNIT_COUNT_INVALID = 'MIRROR_MASTER_UNIT_COUNT_INVALID',
+  MIRROR_MASTER_UNIT_MISSING = 'MIRROR_MASTER_UNIT_MISSING',
   MIRROR_UNIT_ALREADY_IN_OTHER_REPO = 'MIRROR_UNIT_ALREADY_IN_OTHER_REPO',
+  NORMAL_UNIT_FOLDER_ALREADY_USED = 'NORMAL_UNIT_FOLDER_ALREADY_USED',
+  NORMAL_UNIT_CANNOT_DELETE = 'NORMAL_UNIT_FOLDER_CANNOT_DELETE',
+  NORMAL_UNIT_CANNOT_EDIT_FOLDER = 'NORMAL_UNIT_CANNOT_EDIT_FOLDER',
 }
