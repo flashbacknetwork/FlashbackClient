@@ -1,10 +1,14 @@
 import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
   CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse,
   UpdateUnitRequest, UpdateUnitResponse, ActionResponse, UpdateRepoRequest, UpdateRepoResponse, 
-  UpdateRepoKeyRequest, UpdateRepoKeyResponse, ValidateUnitRequest, ValidateUnitResponse
+  UpdateRepoKeyRequest, UpdateRepoKeyResponse, ValidateUnitRequest, ValidateUnitResponse,
+  ValidateRepoUnitsRequest,
+  ValidateRepoUnitsResponse,
+  RepoErrorCodes
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import { OAuth2ResponseDTO, RefreshTokenResponse } from './types/auth';
+import { ApiTypes } from '.';
 
 interface ErrorResponse {
   message?: string;
@@ -212,6 +216,14 @@ export class ApiClient implements IApiClient {
 
   public deleteStorageRepo = async (repoId: string): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>(`repo/${repoId}`, 'DELETE', null);
+  };
+
+  public validateNewRepoUnits = async (data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse> => {
+    return this.makeRequest<ValidateRepoUnitsResponse>('repo/validate', 'POST', data);
+  };
+
+  public validateUpdateRepoUnits = async (data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse> => {
+    return this.makeRequest<ValidateRepoUnitsResponse>(`repo/${data.repoId}/validate`, 'POST', data);
   };
 
   ////// Keys API

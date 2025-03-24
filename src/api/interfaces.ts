@@ -17,7 +17,9 @@ import { StorageUnit,
     UpdateRepoKeyRequest,
     UpdateRepoKeyResponse,
     ValidateUnitRequest,
-    ValidateUnitResponse
+    ValidateUnitResponse,
+    ValidateRepoUnitsRequest,
+    ValidateRepoUnitsResponse
 } from "./types/storage";
 
 export enum ProviderType {
@@ -41,4 +43,6 @@ export interface IApiClient {
     getRepoKeys(repoId: string): Promise<GetRepoKeysResponse>;
     updateRepoKey(repoId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse>;
     deleteRepoKey(repoId: string, keyId: string): Promise<ActionResponse>;
+    validateNewRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
+    validateUpdateRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
 }

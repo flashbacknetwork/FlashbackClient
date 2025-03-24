@@ -86,7 +86,7 @@ export interface StorageRepo {
   storageType: StorageType;
   mode: ModeType;
   repoUnits: RepoUnitInfo[];
-  apiKeys: ApiKey[];
+  apiKeys?: ApiKey[];
   createdAt: string;
 }
 
@@ -143,3 +143,19 @@ export interface ValidateUnitResponse {
   latency_ms?: number;
 }
 
+export interface ValidateRepoUnitsRequest {
+  repoId: string;
+  mode: ModeType;
+  repoUnits: RepoUnitInfo[];
+}
+
+export interface ValidateRepoUnitsResponse {
+  success: boolean;
+  error_code?: RepoErrorCodes;
+  error_message?: string;
+}
+
+export enum RepoErrorCodes {
+  MIRROR_MASTER_UNIT_COUNT_INVALID = 'MIRROR_MASTER_UNIT_COUNT_INVALID',
+  MIRROR_UNIT_ALREADY_IN_OTHER_REPO = 'MIRROR_UNIT_ALREADY_IN_OTHER_REPO',
+}
