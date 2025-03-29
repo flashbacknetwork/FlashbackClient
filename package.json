@@ -23,6 +23,7 @@
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-sts": "^3.777.0",
     "@stellar/stellar-sdk": "^13.0.0",
     "formdata-node": "^6.0.3"
   },
@@ -45,7 +46,7 @@
     "dist"
   ],
   "devDependencies": {
-    "@aws-sdk/client-s3": "^3.726.1",
+    "@aws-sdk/client-s3": "^3.777.0",
     "@eslint/js": "^8.56.0",
     "@google-cloud/storage": "^7.15.0",
     "@types/jest": "^29.5.14",
