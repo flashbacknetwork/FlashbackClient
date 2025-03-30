@@ -42,7 +42,7 @@ export interface IApiClient {
     deleteStorageRepo(repoId: string): Promise<ActionResponse>;
     createRepoKey(data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse>;
     getRepoKeys(repoId: string): Promise<GetRepoKeysResponse>;
-    updateRepoKey(repoId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse>;
+    updateRepoKey(repoId: string, keyId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse>;
     deleteRepoKey(repoId: string, keyId: string): Promise<ActionResponse>;
     validateNewRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
     validateUpdateRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;

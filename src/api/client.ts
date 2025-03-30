@@ -239,8 +239,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetRepoKeysResponse>(`repo/${repoId}/apikey`, 'GET', null);
   };
 
-  public updateRepoKey = async (repoId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse> => {
-    return this.makeRequest<UpdateRepoKeyResponse>(`repo/${repoId}/apikey`, 'PUT', data);
+  public updateRepoKey = async (repoId: string, keyId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse> => {
+    return this.makeRequest<UpdateRepoKeyResponse>(`repo/${repoId}/apikey/${keyId}`, 'PUT', data);
   };
 
   public deleteRepoKey = async (repoId: string, keyId: string): Promise<ActionResponse> => {

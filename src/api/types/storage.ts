@@ -78,8 +78,11 @@ export interface CreateRepoKeyResponse {
   secret: string;
 }
 
-export interface UpdateRepoKeyRequest extends CreateRepoKeyRequest {}
-export interface UpdateRepoKeyResponse extends CreateRepoKeyResponse {}
+export interface UpdateRepoKeyRequest {
+  name: string;
+}
+
+export interface UpdateRepoKeyResponse extends ActionResponse { }
 
 export interface StorageRepo {
   id: string;
