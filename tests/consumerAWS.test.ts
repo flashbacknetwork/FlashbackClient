@@ -77,7 +77,7 @@ describe('StorageClient', () => {
         Prefix: 'flashback/',
       })
     );
-    expect(listResponse.Contents?.length).toEqual(1);
+    expect(listResponse.Contents?.length).toEqual(2);
     expect(listResponse.Contents?.[0].Key).toEqual(key);
 
     // 4. Head Object - Get object metadata

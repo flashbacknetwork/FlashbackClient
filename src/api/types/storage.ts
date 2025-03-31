@@ -45,6 +45,7 @@ export interface UpdateUnitResponse extends CreateUnitResponse {
 export interface RepoUnitInfo {
   folder: string;
   master: boolean;
+  unitId?: string;
   unit?: StorageUnit;
 }
 
