@@ -4,3 +4,4 @@ coverage
 .env
 *.tgz
 clood-app-*.json
+flashback-network-*.json

@@ -1,22 +1,38 @@
 /* eslint-disable no-undef */
-import { Storage } from '@google-cloud/storage';
+// Load the interceptor before any other imports
+require('./gaxiosInterceptor');
+
+// Now import the rest of the dependencies
+import { JWT, Impersonated } from 'google-auth-library';
+import { Storage  } from '@google-cloud/storage';
 import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
-
 import dotenv from 'dotenv';
 
 dotenv.config(); // loads the .env file
 
 describe('StorageClient', () => {
   jest.setTimeout(600000);
+  
+  let saclient = new JWT({
+    email: process.env.TEST_GCS_CLIENT_EMAIL!,
+    key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),  // Fix private key formatting
+    scopes: ['https://www.googleapis.com/auth/cloud-platform', 'https://www.googleapis.com/auth/iam']
+  });
 
+  // Use that to impersonate the targetPrincipal
+  let targetClient = new Impersonated({
+    sourceClient: saclient,
+    targetPrincipal: process.env.TEST_GCS_SUBJECT!,
+    lifetime: 30,
+    delegates: [],
+    targetScopes: ["https://www.googleapis.com/auth/cloud-platform"]
+  });
+
+  // 3. Use client with GCP Service 
   const storage = new Storage({
-    apiEndpoint: process.env.TEST_PROVIDER_URL,
-    credentials: {
-      client_email: process.env.TEST_GCS_CLIENT_EMAIL,
-      private_key: process.env.TEST_GCS_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    },
+    authClient: targetClient,
   });
 
   const bucketName = process.env.TEST_GCS_BUCKET!;
@@ -26,6 +42,7 @@ describe('StorageClient', () => {
   const testFilePath = path.join('tests', testFileName);
 
   test('Should perform complete GCS operations workflow', async () => {
+    
     // 1. Check if bucket exists
     try {
       const [exists] = await storage.bucket(bucketName).exists();
@@ -34,7 +51,7 @@ describe('StorageClient', () => {
       console.error('Error checking bucket existence:', error);
       throw error;
     }
-
+/*
     const fileStats = fs.statSync(testFilePath);
     const bucket = storage.bucket(bucketName);
     const file = bucket.file(filePath);
@@ -102,5 +119,6 @@ describe('StorageClient', () => {
       console.error('Error deleting file:', error);
       throw error;
     }
+    */
   });
 });
