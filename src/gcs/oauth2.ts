@@ -14,66 +14,83 @@ export class MockupAuthClient extends OAuth2Client {
 export class FlashbackAuthClient extends OAuth2Client {
     private token: string | null = null;
     private tokenExpiry: number | null = null;
-    private clientEmail: string;
-    private privateKey: string;
 
     constructor(
         private authUrl: string,
         private scopes: string[],
-        credentials: ServiceCredentials
+        private creds: ServiceCredentials
     ) {
         super();
-        this.clientEmail = credentials.client_email;
-        this.privateKey = credentials.private_key;
+        console.log('FlashbackAuthClient created with URL:', authUrl);
     }
 
     private async fetchToken() {
         const response = await axios.post(this.authUrl, {
-            client_email: this.clientEmail,
-            private_key: this.privateKey,
+            client_email: this.creds.client_email,
+            private_key: this.creds.private_key,
             scopes: this.scopes,
         });
 
         const { access_token, expires_in } = response.data;
         this.token = access_token;
         this.tokenExpiry = Date.now() + (expires_in * 1000) - 10_000;
+        this.credentials.access_token = this.token;
+        this.credentials.expiry_date = this.tokenExpiry
     }
 
     private async ensureValidToken() {
-        if (!this.token || !this.tokenExpiry || Date.now() >= this.tokenExpiry) {
+        const now = Date.now();
+
+        if (!this.credentials.access_token || !this.credentials.expiry_date || now >= this.credentials.expiry_date) {
             await this.fetchToken();
         }
-    }
-
-    async getAccessToken(): Promise<{ token: string | null; res?: any }> {
-        await this.ensureValidToken();
-        return { token: this.token };
     }
 
     async getRequestHeaders(): Promise<Record<string, string>> {
         await this.ensureValidToken();
         return {
-            Authorization: `Bearer ${this.token}`,
+          Authorization: `Bearer ${this.credentials.access_token}`,
         };
+      }
+    
+      async getAccessToken(): Promise<{ token: string | null }> {
+        await this.ensureValidToken();
+        return { token: this.credentials.access_token ?? null };
+      }
+
+    async request<T = any>(opts: any): Promise<GaxiosResponse<T>> {
+        console.log('FlashbackAuthClient request called for URL:', opts.url);
+        await this.ensureValidToken();
+        
+        const headers = {
+            ...(opts.headers || {}),
+            Authorization: `Bearer ${this.credentials.access_token}`,
+        };
+        
+        console.log('Request Headers:', headers);
+        
+        return super.request<T>({
+            ...opts,
+            headers,
+        });
     }
 
     async getRequestMetadata(url?: string): Promise<Record<string, string>> {
         await this.ensureValidToken();
+        // Always return auth headers for all requests
         return {
-            Authorization: `Bearer ${this.token}`,
+            Authorization: `Bearer ${this.credentials.access_token}`,
         };
     }
 
-    async request<T = any>(opts: any): Promise<GaxiosResponse<T>> {
+    async authorizeRequest(reqOpts: any): Promise<any> {
         await this.ensureValidToken();
-
-        // Ensure headers are set for all request types
-        const headers = await this.getRequestHeaders();
-        opts.headers = {
-            ...(opts.headers || {}),
-            ...headers,
+        return {
+            ...reqOpts,
+            headers: {
+                ...(reqOpts.headers || {}),
+                Authorization: `Bearer ${this.credentials.access_token}`,
+            },
         };
-
-        return super.request<T>(opts);
     }
 }

@@ -23,8 +23,19 @@ export class FlashbackGCSStorage extends Storage {
 
     const authClient = new FlashbackAuthClient(apiEndpoint + '/token', tokenScopes, credentials!);
 
-    // Ensure the auth client is properly configured
-    const storageOptions: StorageOptions = {
+    // Intercept Gaxios instance creation
+    const originalRequest = require('gaxios').instance.request;
+    require('gaxios').instance.request = async function(opts: any) {
+      // Add auth headers to all requests
+      const headers = await authClient.getRequestHeaders();
+      opts.headers = {
+        ...(opts.headers || {}),
+        ...headers,
+      };
+      return originalRequest.call(this, opts);
+    };
+
+    super({
       ...rest,
       apiEndpoint,
       authClient,
@@ -33,9 +44,8 @@ export class FlashbackGCSStorage extends Storage {
         autoRetry: true,
         maxRetries: 3,
       },
-    };
+    });
 
-    super(storageOptions);
   }
 }
 
