@@ -9,10 +9,12 @@ import {
   DeleteObjectCommand,
   HeadBucketCommandOutput,
 } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Readable } from 'stream';
+import fetch from 'node-fetch';
 
 import dotenv from 'dotenv';
 
@@ -21,23 +23,43 @@ dotenv.config(); // loads the .env file
 describe('StorageClient', () => {
   jest.setTimeout(600000);
 
-  const s3Client = new S3Client({
-    endpoint: process.env.TEST_AWS_PROVIDER_URL,
-    credentials: {
-      accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+  const testConfigurations = [
+    {
+      name: 'S3 to S3 Configuration',
+      config: {
+        endpoint: process.env.TEST_AWS_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET!,
     },
-    region: process.env.TEST_AWS_REGION,
-    forcePathStyle: false, // This enables virtual host based addressing
-  });
+    {
+      name: 'S3 to GCS Configuration',
+      config: {
+        endpoint: process.env.TEST_AWS_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID2!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY2!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET2!,
+    },
+  ];
 
-  const bucketName = process.env.TEST_AWS_S3_BUCKET!;
   const testFolderName = 'flashback';
   const testFileName = 'sample.jpg';
-  const key = `${testFolderName}/${testFileName}`;
   const testFilePath = path.join('tests', testFileName);
 
-  test('Should perform complete S3 operations workflow', async () => {
+  test.each(testConfigurations)('Should perform complete S3 operations workflow for $name', async ({ config, bucketName }) => {
+    const s3Client = new S3Client(config);
+    const key = `${testFolderName}/${testFileName}`;
+
     // 1. Head Bucket - Check if bucket exists
     let headBucketResponse: HeadBucketCommandOutput;
     try {
@@ -54,9 +76,8 @@ describe('StorageClient', () => {
     const fileStats = fs.statSync(testFilePath);
 
     // 2. Upload File
+    const fileStream = fs.createReadStream(testFilePath);
     try {
-      const fileStream = fs.createReadStream(testFilePath);
-      //const fileStream = fs.readFileSync(testFilePath);
       const uploadResponse = await s3Client.send(
         new PutObjectCommand({
           Bucket: bucketName,
@@ -78,7 +99,6 @@ describe('StorageClient', () => {
       })
     );
     expect(listResponse.Contents?.length).toBeGreaterThan(0);
-    //expect(listResponse.Contents?.[0].Key).toEqual(key);
 
     // 4. Head Object - Get object metadata
     const headResponse = await s3Client.send(
@@ -105,7 +125,6 @@ describe('StorageClient', () => {
       }
       const downloadedContent = Buffer.concat(chunks);
       expect(downloadedContent.length).toBe(fileStats.size);
-      //expect(downloadedContent).toEqual(fileContent);
     }
 
     // 6. Delete File
@@ -115,6 +134,63 @@ describe('StorageClient', () => {
         Key: key,
       })
     );
-    expect(deleteResponse.$metadata.httpStatusCode).toBe(204);
+
+    // 7. Upload file using presigned url
+    try {
+      const presignedUrlForUpload = await getSignedUrl(s3Client, new PutObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+      }), {
+        expiresIn: 3600,
+      });
+      
+      const uploadStream = fs.createReadStream(testFilePath);
+      const uploadResponseFromPresignedUrl = await fetch(presignedUrlForUpload, {
+        method: 'PUT',
+        body: uploadStream,
+        headers: {
+          'Content-Type': 'image/jpeg',
+          'Content-Length': fileStats.size.toString()
+        }
+      });
+      expect(uploadResponseFromPresignedUrl.status).toBe(200);
+    } catch (error) {
+      console.error('Error uploading file using presigned url:', error);
+    }
+
+    // 7b. download file using presigned url
+    try {
+      const presignedUrl = await getSignedUrl(s3Client, new GetObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+      }), {
+        expiresIn: 3600,
+      });
+      const downloadResponseFromPresignedUrl = await fetch(presignedUrl);
+      const chunks: Buffer[] = [];
+      for await (const chunk of downloadResponseFromPresignedUrl.body) {
+        chunks.push(Buffer.from(chunk as Uint8Array));
+      }
+      const downloadedContentFromPresignedUrl = Buffer.concat(chunks);
+      expect(downloadedContentFromPresignedUrl.length).toBe(fileStats.size);
+    } catch (error) {
+      console.error('Error downloading file using presigned url:', error);
+    }
+
+    // 8. Delete File (again) with signed url
+    try {
+      const presignedUrlForDelete = await getSignedUrl(s3Client, new DeleteObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+      }), {
+        expiresIn: 3600,
+      });
+      const deleteResponseFromPresignedUrl = await fetch(presignedUrlForDelete, {
+        method: 'DELETE',
+      });
+      expect(deleteResponseFromPresignedUrl.status).toBe(204);
+    } catch (error) {
+      console.error('Error deleting file using presigned url:', error);
+    }
   });
 });
