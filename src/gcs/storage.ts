@@ -21,15 +21,21 @@ export class FlashbackGCSStorage extends Storage {
       ...rest
     } = opts;
 
-    //const authClient = new FlashbackAuthClient(apiEndpoint + '/token', tokenScopes, credentials!);
+    const authClient = new FlashbackAuthClient(apiEndpoint + '/token', tokenScopes, credentials!);
 
-    const authClient = new MockupAuthClient();
-    super({
+    // Ensure the auth client is properly configured
+    const storageOptions: StorageOptions = {
       ...rest,
       apiEndpoint,
       authClient,
       useAuthWithCustomEndpoint: true,
-    });
+      retryOptions: {
+        autoRetry: true,
+        maxRetries: 3,
+      },
+    };
+
+    super(storageOptions);
   }
 }
 
