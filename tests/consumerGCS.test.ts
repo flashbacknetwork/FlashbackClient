@@ -4,18 +4,20 @@ import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
 
+
 import dotenv from 'dotenv';
+import { FlashbackGCSStorage } from '../src/gcs/storage';
 
 dotenv.config(); // loads the .env file
 
 describe('StorageClient', () => {
   jest.setTimeout(600000);
 
-  const storage = new Storage({
+  const storage = new FlashbackGCSStorage({
     apiEndpoint: process.env.TEST_PROVIDER_URL,
     credentials: {
-      client_email: process.env.TEST_GCS_CLIENT_EMAIL,
-      private_key: process.env.TEST_GCS_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+      private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
     },
   });
 
