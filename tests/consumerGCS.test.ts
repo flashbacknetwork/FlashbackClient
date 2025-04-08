@@ -3,10 +3,10 @@ import { Storage } from '@google-cloud/storage';
 import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
-
+import fetch from 'node-fetch';
 
 import dotenv from 'dotenv';
-import { FlashbackGCSStorage } from '../src/gcs/storage';
+import { FlashbackGCSStorage, SignedUrlOptions } from '../src/gcs/storage';
 
 dotenv.config(); // loads the .env file
 
@@ -47,7 +47,6 @@ describe('StorageClient', () => {
         destination: filePath,
         contentType: 'image/jpeg',
       });
-      console.log(uploadResponse);
     } catch (error) {
       console.error('Error uploading file:', error);
       //throw error;
@@ -61,7 +60,7 @@ describe('StorageClient', () => {
         startOffset: '0',
         maxResults: 10,
       });
-      expect(files.length).toEqual(1);
+      expect(files.length).toEqual(2);
       expect(files[0].name).toEqual(filePath);
     } catch (error) {
       console.error('Error listing bucket contents:', error);
@@ -103,6 +102,31 @@ describe('StorageClient', () => {
     } catch (error) {
       console.error('Error deleting file:', error);
       throw error;
+    }
+
+    // 7. Upload through signed url
+    try {
+      const file = bucket.file(filePath);
+
+      const options: SignedUrlOptions = {
+        version: 'v4',
+        action: 'write',
+        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+        contentType: 'image/jpeg', // strongly recommended if you want to enforce content-type
+        file
+      };
+      const [signedUrl] = await storage.getSignedUrl(options);
+      console.log(JSON.stringify(signedUrl));
+      const uploadResponse = await fetch(signedUrl, {
+        method: 'PUT',
+        body: fs.createReadStream(testFilePath),
+        headers: {
+          'Content-Type': 'image/jpeg',
+        },
+      });
+      console.log(uploadResponse);
+    } catch (error) {
+      console.error('Error uploading file through signed url:', error);
     }
   });
 });

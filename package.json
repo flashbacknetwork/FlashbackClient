@@ -1,6 +1,6 @@
 {
   "name": "@flashbacktech/flashbackclient",
-  "version": "0.0.73",
+  "version": "0.0.74",
   "publishConfig": {
     "access": "public"
   },

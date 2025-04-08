@@ -1,4 +1,4 @@
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client, GoogleAuth, Credentials, AuthClient } from 'google-auth-library';
 import axios from 'axios';
 import { ServiceCredentials } from './storage';
 import { GaxiosResponse } from 'gaxios';
@@ -12,16 +12,48 @@ export class MockupAuthClient extends OAuth2Client {
 }
 
 export class FlashbackAuthClient extends OAuth2Client {
-    private token: string | null = null;
-    private tokenExpiry: number | null = null;
+    private creds: ServiceCredentials;
+    private _credentials: Credentials | null = null;
+    private scopes: string[];
 
     constructor(
         private authUrl: string,
-        private scopes: string[],
-        private creds: ServiceCredentials
+        scopes: string[],
+        credentials: ServiceCredentials
     ) {
         super();
+        this.creds = credentials;
+        this.scopes = scopes;
         console.log('FlashbackAuthClient created with URL:', authUrl);
+    }
+
+    async getCredentials() {
+        return {
+            client_email: this.creds.client_email,
+            private_key: this.creds.private_key,
+        };
+    }
+
+    async getAccessToken() {
+        await this.ensureValidToken();
+        return {
+            token: this._credentials?.access_token || null,
+            res: null
+        };
+    }
+
+    async getRequestHeaders(): Promise<Record<string, string>> {
+        await this.ensureValidToken();
+        return {
+          Authorization: `Bearer ${this._credentials?.access_token}`,
+        };
+    }
+
+    private async ensureValidToken() {
+        const now = Date.now();
+        if (!this._credentials?.access_token || !this._credentials?.expiry_date || now >= this._credentials.expiry_date) {
+            await this.fetchToken();
+        }
     }
 
     private async fetchToken() {
@@ -32,54 +64,38 @@ export class FlashbackAuthClient extends OAuth2Client {
         });
 
         const { access_token, expires_in } = response.data;
-        this.token = access_token;
-        this.tokenExpiry = Date.now() + (expires_in * 1000) - 10_000;
-        this.credentials.access_token = this.token;
-        this.credentials.expiry_date = this.tokenExpiry
-    }
-
-    private async ensureValidToken() {
-        const now = Date.now();
-
-        if (!this.credentials.access_token || !this.credentials.expiry_date || now >= this.credentials.expiry_date) {
-            await this.fetchToken();
-        }
-    }
-
-    async getRequestHeaders(): Promise<Record<string, string>> {
-        await this.ensureValidToken();
-        return {
-          Authorization: `Bearer ${this.credentials.access_token}`,
+        this._credentials = {
+            access_token,
+            expiry_date: Date.now() + (expires_in * 1000) - 10_000,
         };
-      }
-    
-      async getAccessToken(): Promise<{ token: string | null }> {
-        await this.ensureValidToken();
-        return { token: this.credentials.access_token ?? null };
-      }
+    }
 
     async request<T = any>(opts: any): Promise<GaxiosResponse<T>> {
-        console.log('FlashbackAuthClient request called for URL:', opts.url);
         await this.ensureValidToken();
         
         const headers = {
             ...(opts.headers || {}),
-            Authorization: `Bearer ${this.credentials.access_token}`,
+            Authorization: `Bearer ${this._credentials?.access_token}`,
         };
         
-        console.log('Request Headers:', headers);
-        
-        return super.request<T>({
+        const response = await axios.request<T>({
             ...opts,
             headers,
         });
+
+        return {
+            config: opts,
+            data: response.data,
+            headers: response.headers,
+            status: response.status,
+            statusText: response.statusText,
+        } as GaxiosResponse<T>;
     }
 
     async getRequestMetadata(url?: string): Promise<Record<string, string>> {
         await this.ensureValidToken();
-        // Always return auth headers for all requests
         return {
-            Authorization: `Bearer ${this.credentials.access_token}`,
+            Authorization: `Bearer ${this._credentials?.access_token}`,
         };
     }
 
@@ -89,7 +105,7 @@ export class FlashbackAuthClient extends OAuth2Client {
             ...reqOpts,
             headers: {
                 ...(reqOpts.headers || {}),
-                Authorization: `Bearer ${this.credentials.access_token}`,
+                Authorization: `Bearer ${this._credentials?.access_token}`,
             },
         };
     }
