@@ -104,18 +104,20 @@ describe('StorageClient', () => {
       throw error;
     }
 
+    
     // 7. Upload through signed url
     try {
       const file = bucket.file(filePath);
 
-      const options: SignedUrlOptions = {
+      const optionsWrite: SignedUrlOptions = {
         version: 'v4',
         action: 'write',
         expires: Date.now() + 15 * 60 * 1000, // 15 minutes
         contentType: 'image/jpeg', // strongly recommended if you want to enforce content-type
         file
       };
-      const [signedUrl] = await storage.getSignedUrl(options);
+
+      const [signedUrl] = await storage.getSignedUrl(optionsWrite);
       console.log(JSON.stringify(signedUrl));
       const uploadResponse = await fetch(signedUrl, {
         method: 'PUT',
@@ -128,5 +130,53 @@ describe('StorageClient', () => {
     } catch (error) {
       console.error('Error uploading file through signed url:', error);
     }
+
+    try {
+      const file = bucket.file(filePath);
+
+      const options: SignedUrlOptions = {
+        version: 'v4',
+        action: 'read',
+        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+        contentType: 'image/jpeg', // strongly recommended if you want to enforce content-type
+        file
+      };
+      const [signedUrl] = await storage.getSignedUrl(options);
+      const downloadResponse = await fetch(signedUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'image/jpeg',
+        },
+      });
+      expect(downloadResponse.status).toBe(200);
+      const downloadData = await downloadResponse.arrayBuffer();
+      expect(downloadData.byteLength).toBe(fileStats.size);
+    } catch (error) {
+      console.error('Error uploading file through signed url:', error);
+    }
+
+    try {
+      const file = bucket.file(filePath);
+
+      const optionsDelete: SignedUrlOptions = {
+        version: 'v4',
+        action: 'delete',
+        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+        contentType: 'image/jpeg', // strongly recommended if you want to enforce content-type
+        file
+      };
+
+      const [signedUrl] = await storage.getSignedUrl(optionsDelete);
+      const deleteResponse = await fetch(signedUrl, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'image/jpeg',
+        },
+      });
+      expect(deleteResponse.status).toBe(200);
+    } catch (error) {
+      console.error('Error deleting file through signed url:', error);
+    }
+
   });
 });

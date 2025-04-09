@@ -17,7 +17,7 @@ export interface FlashbackStorageOptions extends Omit<StorageOptions, 'authClien
 
 export interface SignedUrlOptions {
   version: 'v4';
-  action: 'write' | 'read';
+  action: 'write' | 'read' | 'delete';
   expires: number;
   contentType: string;
   file: File;
@@ -113,8 +113,21 @@ export class FlashbackGCSStorage extends Storage {
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
       .join('&');
 
+    let method;
+    switch (action) {
+      case 'read':
+        method = 'GET';
+        break;
+      case 'delete':
+        method = 'DELETE';
+        break;
+      default:
+        method = 'PUT';
+        break;
+    }
+
     const canonicalRequest = [
-      action === 'read' ? 'GET' : 'PUT',
+      method,
       `/${cfg.file.bucket.name}/${cfg.file.name}`,
       canonicalQueryString,
       canonicalHeaders,
