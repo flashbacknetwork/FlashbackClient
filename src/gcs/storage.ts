@@ -1,8 +1,9 @@
 import { Storage, StorageOptions, File } from '@google-cloud/storage';
 
-
 import { FlashbackAuthClient, MockupAuthClient } from './oauth2';
 import crypto from 'crypto';
+
+const originalRequest = require('gaxios').instance.request;
 
 export interface ServiceCredentials {
     client_email: string;
@@ -35,18 +36,6 @@ export class FlashbackGCSStorage extends Storage {
     } = opts;
 
     const authClient = new FlashbackAuthClient(apiEndpoint + '/token', tokenScopes, credentials);
-
-    // Intercept Gaxios instance creation
-    const originalRequest = require('gaxios').instance.request;
-    require('gaxios').instance.request = async function(opts: any) {
-      // Add auth headers to all requests
-      const headers = await authClient.getRequestHeaders();
-      opts.headers = {
-        ...(opts.headers || {}),
-        ...headers,
-      };
-      return originalRequest.call(this, opts);
-    };
     
     super({
       ...rest,
@@ -60,6 +49,26 @@ export class FlashbackGCSStorage extends Storage {
     });
 
     this.credentials = credentials;
+
+    // Intercept Gaxios instance creation
+    require('gaxios').instance.request = async function(opts: any) {
+      // Add auth headers to all requests
+      const headers = await authClient.getRequestHeaders();
+      opts.headers = {
+        ...(opts.headers || {}),
+        ...headers,
+      };
+      return originalRequest.call(this, opts);
+    };
+  }
+
+  cleanup() {
+    require('gaxios').instance.request = originalRequest;
+  }
+
+  // Override the bucket method to ensure we pass the auth client
+  bucket(name: string) {
+    return super.bucket(name);
   }
 
   // Override the getSignedUrl method
@@ -155,6 +164,5 @@ export class FlashbackGCSStorage extends Storage {
 
     return [`${this.apiEndpoint}/${cfg.file.bucket.name}/${cfg.file.name}?${canonicalQueryString}&X-Goog-Signature=${signature}`];
   }
-
 }
 

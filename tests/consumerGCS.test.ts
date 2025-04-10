@@ -14,7 +14,6 @@ describe('StorageClient', () => {
   jest.setTimeout(600000);
 
   const testConfigurations = [
-    /*
     {
       name: 'GCS to S3 Configuration',
       config: {
@@ -26,7 +25,6 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_GCS_BUCKET!,
     },
-    */
     {
       name: 'GCS to GCS Configuration',
       config: {
@@ -193,5 +191,6 @@ describe('StorageClient', () => {
     } catch (error) {
       console.error('Error deleting file through signed url:', error);
     }
+    storage.cleanup();
   });
 });
