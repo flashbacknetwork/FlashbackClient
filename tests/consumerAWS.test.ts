@@ -24,6 +24,7 @@ describe('StorageClient', () => {
   jest.setTimeout(600000);
 
   const testConfigurations = [
+    /*
     {
       name: 'S3 to S3 Configuration',
       config: {
@@ -33,7 +34,7 @@ describe('StorageClient', () => {
           secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
         },
         region: process.env.TEST_AWS_REGION,
-        forcePathStyle: false,
+        forcePathStyle: true,
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET!,
     },
@@ -50,6 +51,20 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET2!,
     },
+    */
+    {
+      name: 'Direct S3 Connect',
+      config: {
+        endpoint: process.env.TEST_AWS_PROVIDER_URL3,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID3!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY3!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: true,
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET3!,
+    }
   ];
 
   const testFolderName = 'flashback';

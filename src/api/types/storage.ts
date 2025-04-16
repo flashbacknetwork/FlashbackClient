@@ -100,8 +100,15 @@ export interface ApiKey {
   name: string;
   accessType: AccessType;
   key: string;
-  secret?: string;
+  secret?: EncryptedKey;
   createdAt: string;
+}
+
+export interface EncryptedKey {
+  key: string;
+  iv: string;
+  authTag: string;
+  message: string;
 }
 
 export interface StorageUnit {
@@ -110,7 +117,7 @@ export interface StorageUnit {
   bucket: string;
   storageType: StorageType;
   key: string;
-  secret?: string;
+  secret?: EncryptedKey;
   endpoint?: string;
   region?: string;
   status?: string;
