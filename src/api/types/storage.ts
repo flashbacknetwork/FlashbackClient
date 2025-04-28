@@ -81,6 +81,7 @@ export interface CreateRepoKeyResponse {
 
 export interface UpdateRepoKeyRequest {
   name: string;
+  accessType: AccessType;
 }
 
 export interface UpdateRepoKeyResponse extends ActionResponse { }
