@@ -26,6 +26,7 @@ export interface SignedUrlOptions {
 
 export class FlashbackGCSStorage extends Storage {
   protected credentials: ServiceCredentials;
+  private debug: boolean = false;
 
   constructor(opts: FlashbackStorageOptions) {
     const {
@@ -71,6 +72,16 @@ export class FlashbackGCSStorage extends Storage {
     return super.bucket(name);
   }
 
+  setDebug(debug: boolean): void {
+    this.debug = debug;
+  }
+
+  private doLog(...args: any[]): void {
+    if (this.debug) {
+      console.log(...args);
+    }
+  }
+
   // Override the getSignedUrl method
   async getSignedUrl(cfg: SignedUrlOptions): Promise<[string]> {
     const { version, action, expires, contentType } = cfg;
@@ -78,7 +89,7 @@ export class FlashbackGCSStorage extends Storage {
     const millisecondsToSeconds = 1.0 / 1000.0;
     const expiresPeriodInSeconds = Math.floor((expires - accessibleAt.valueOf()) * millisecondsToSeconds);
     
-    console.log('Signing Parameters:', {
+    this.doLog('Signing Parameters:', {
       action,
       expires,
       expiresPeriodInSeconds,
@@ -144,8 +155,8 @@ export class FlashbackGCSStorage extends Storage {
       'UNSIGNED-PAYLOAD',
     ].join('\n');
 
-    console.log('Canonical Request:', canonicalRequest);
-    console.log('Canonical Request Hash:', crypto.createHash('sha256').update(canonicalRequest).digest('hex'));
+    this.doLog('Canonical Request:', canonicalRequest);
+    this.doLog('Canonical Request Hash:', crypto.createHash('sha256').update(canonicalRequest).digest('hex'));
 
     const stringToSign = [
       'GOOG4-RSA-SHA256',
@@ -154,13 +165,13 @@ export class FlashbackGCSStorage extends Storage {
       crypto.createHash('sha256').update(canonicalRequest).digest('hex'),
     ].join('\n');
 
-    console.log('String to Sign:', stringToSign);
+    this.doLog('String to Sign:', stringToSign);
 
     const sign = crypto.createSign('RSA-SHA256');
     sign.update(stringToSign);
     const signature = sign.sign(this.credentials.private_key, 'hex');
 
-    console.log('Generated Signature:', signature);
+    this.doLog('Generated Signature:', signature);
 
     return [`${this.apiEndpoint}/${cfg.file.bucket.name}/${cfg.file.name}?${canonicalQueryString}&X-Goog-Signature=${signature}`];
   }

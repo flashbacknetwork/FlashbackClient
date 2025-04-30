@@ -33,7 +33,7 @@ describe('StorageClient', () => {
           secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
         },
         region: process.env.TEST_AWS_REGION,
-        forcePathStyle: true,
+        forcePathStyle: false,
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET!,
     },
