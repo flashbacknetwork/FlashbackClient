@@ -122,7 +122,6 @@ export interface StorageUnit {
   endpoint?: string;
   region?: string;
   status?: string;
-  latency_ms?: number;
   projectId?: string;
   createdAt: string;
 }

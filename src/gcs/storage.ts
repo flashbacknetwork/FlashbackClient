@@ -31,7 +31,7 @@ export class FlashbackGCSStorage extends Storage {
   constructor(opts: FlashbackStorageOptions) {
     const {
       credentials,
-      apiEndpoint = 'https://gcs.us-east-1.flashback.tech',
+      apiEndpoint = 'https://gcs-us-east-1-gcp.flashback.tech',
       tokenScopes = ['READ', 'WRITE'],
       ...rest
     } = opts;

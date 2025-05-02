@@ -4,6 +4,13 @@ export enum BucketStatusType {
   ERROR = 'ERROR',
 }
 
+interface NodeSignedMessage {
+  ip: string;
+  region: string;
+  timestamp: number;
+  signature: string;
+}
+
 export interface BucketStatus {
   unitId: string;
   status: BucketStatusType;
@@ -11,8 +18,25 @@ export interface BucketStatus {
   createdAt: string;
 }
 
-export interface BucketStatusResponse {
+export interface BucketStatusRequest extends NodeSignedMessage {
+  buckets: BucketStatus[];
+}
+
+export interface NodeStatsResponse {
   nodeIP: string;
   buckets: BucketStatus[];
 }
 
+export interface RegisterRequest extends NodeSignedMessage {
+  provider: string;
+  status: string;
+  region: string;
+  version: string;
+}
+
+export interface RegisterResponse {
+  success: boolean;
+  message: string;
+  error_code?: string;
+  error_message?: string;
+}
