@@ -1,7 +1,7 @@
 export enum BucketStatusType {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
-  ERROR = 'ERROR',
+  DISCONNECTED = 'DISCONNECTED',
 }
 
 interface NodeSignedMessage {
@@ -18,11 +18,11 @@ export interface BucketStatus {
   createdAt: string;
 }
 
-export interface BucketStatusRequest extends NodeSignedMessage {
+export interface NodeStatusRequest extends NodeSignedMessage {
   buckets: BucketStatus[];
 }
 
-export interface NodeStatsResponse {
+export interface NodeStatusResponse {
   nodeIP: string;
   buckets: BucketStatus[];
 }
