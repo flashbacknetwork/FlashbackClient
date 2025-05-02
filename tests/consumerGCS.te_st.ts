@@ -17,7 +17,7 @@ describe('StorageClient', () => {
     {
       name: 'GCS to S3 Configuration',
       config: {
-        apiEndpoint: process.env.TEST_PROVIDER_URL,
+        apiEndpoint: process.env.TEST_GCP_PROVIDER_URL,
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
           private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -25,7 +25,6 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET!,
     },
-    /*
     {
       name: 'GCS to GCS Configuration',
       config: {
@@ -37,7 +36,6 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_GCS_BUCKET2!,
     },
-    */
   ];
 
   const testFolderName = 'flashback';

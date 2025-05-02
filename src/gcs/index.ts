@@ -1,3 +1,4 @@
-import { MockupAuthClient } from "./oauth2";
+import { FlashbackAuthClient } from "./oauth2";
+import { FlashbackGCSStorage, FlashbackStorageOptions } from "./storage";
 
-export { MockupAuthClient };
+export { FlashbackAuthClient,FlashbackGCSStorage,FlashbackStorageOptions };

@@ -25,9 +25,9 @@ describe('StorageClient', () => {
 
   const testConfigurations = [
     {
-      name: 'S3 to S3 Configuration',
+      name: 'S3 to S3 Configuration (AWS endpoint)',
       config: {
-        endpoint: process.env.TEST_AWS_PROVIDER_URL,
+        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
         credentials: {
           accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
           secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
@@ -37,21 +37,46 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET!,
     },
-    /*
     {
-      name: 'S3 to GCS Configuration',
+      name: 'S3 to GCS Configuration (AWS endpoint)',
       config: {
-        endpoint: process.env.TEST_AWS_PROVIDER_URL,
+        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
         credentials: {
-          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID2!,
-          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY2!,
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
         },
         region: process.env.TEST_AWS_REGION,
         forcePathStyle: false,
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET2!,
     },
-    
+    {
+      name: 'S3 to S3 Configuration (GCP endpoint)',
+      config: {
+        endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET!,
+    },
+    {
+      name: 'S3 to GCS Configuration (GCP endpoint)',
+      config: {
+        endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET2!,
+    },
+    /*
     {
       name: 'Direct S3 Connect',
       config: {
@@ -91,7 +116,6 @@ describe('StorageClient', () => {
     } catch (error) {
       console.error('Error checking bucket existence:', error);
     }
-
 
     // 2. Upload File
     try {
