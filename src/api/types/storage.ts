@@ -1,3 +1,5 @@
+import { NodeStatusInfo } from "./bridge";
+
 export enum StorageType {
   S3 = 'S3',
   GCS = 'GCS',
@@ -165,6 +167,11 @@ export interface ValidateRepoUnitsResponse {
   success: boolean;
   error_code?: RepoErrorCodes;
   error_message?: string;
+}
+
+export interface StorageUnitStatusResponse {
+  unitId: string;
+  nodeStatus: NodeStatusInfo[];
 }
 
 export enum RepoErrorCodes {

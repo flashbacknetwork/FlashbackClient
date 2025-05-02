@@ -1,4 +1,4 @@
-export enum BucketStatusType {
+export enum NodeStatusType {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
   DISCONNECTED = 'DISCONNECTED',
@@ -11,9 +11,18 @@ interface NodeSignedMessage {
   signature: string;
 }
 
+export interface NodeStatusInfo {
+  ip: string;
+  region: string;
+  version: string;
+  status: NodeStatusType;
+  latency_ms?: number;
+  lastUpdated: string;
+}
+
 export interface BucketStatus {
   unitId: string;
-  status: BucketStatusType;
+  status: NodeStatusType;
   latency_ms?: number;
   createdAt: string;
 }
@@ -22,10 +31,7 @@ export interface NodeStatusRequest extends NodeSignedMessage {
   buckets: BucketStatus[];
 }
 
-export interface NodeStatusResponse {
-  nodeIP: string;
-  buckets: BucketStatus[];
-}
+export interface NodeStatusResponse extends RegisterResponse {}
 
 export interface RegisterRequest extends NodeSignedMessage {
   provider: string;

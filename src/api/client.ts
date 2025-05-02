@@ -4,7 +4,8 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
   UpdateRepoKeyRequest, UpdateRepoKeyResponse, ValidateUnitRequest, ValidateUnitResponse,
   ValidateRepoUnitsRequest,
   ValidateRepoUnitsResponse,
-  RepoErrorCodes
+  RepoErrorCodes,
+  StorageUnitStatusResponse
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import { OAuth2ResponseDTO, RefreshTokenResponse } from './types/auth';
@@ -203,6 +204,10 @@ export class ApiClient implements IApiClient {
 
   public getAvailableStorageUnits = async (): Promise<StorageUnit[]> => {
     return this.makeRequest<StorageUnit[]>('unit/available', 'GET', null);
+  }
+
+  public getStorageUnitStatus = async (unitId: string): Promise<StorageUnitStatusResponse> => {
+    return this.makeRequest<StorageUnitStatusResponse>(`unit/${unitId}/status`, 'GET', null);
   }
 
   ////// Repos API
