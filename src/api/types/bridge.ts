@@ -16,14 +16,14 @@ export interface NodeStatusInfo {
   region: string;
   version: string;
   status: NodeStatusType;
-  latency_ms?: number;
+  latencyMs?: number;
   lastUpdated: string;
 }
 
 export interface BucketStatus {
   unitId: string;
   status: NodeStatusType;
-  latency_ms?: number;
+  latencyMs?: number;
   createdAt: string;
 }
 
@@ -43,6 +43,6 @@ export interface RegisterRequest extends NodeSignedMessage {
 export interface RegisterResponse {
   success: boolean;
   message: string;
-  error_code?: string;
-  error_message?: string;
+  errorCode?: string;
+  errorMessage?: string;
 }
