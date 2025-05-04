@@ -51,6 +51,32 @@ describe('StorageClient', () => {
       bucketName: process.env.TEST_AWS_S3_BUCKET2!,
     },
     {
+      name: 'S3 to delegated S3 (AWS endpoint)',
+      config: {
+        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET4!,
+    },
+    {
+      name: 'S3 to delegated GCS (AWS endpoint)',
+      config: {
+        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_GCS_BUCKET2!,
+    },
+    {
       name: 'S3 to S3 Configuration (GCP endpoint)',
       config: {
         endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
@@ -76,6 +102,32 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET2!,
     },
+    {
+      name: 'S3 to Delegated S3 Configuration (GCP endpoint)',
+      config: {
+        endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET4!,
+    },
+    {
+      name: 'S3 to delegated GCS (GCP endpoint)',
+      config: {
+        endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_GCS_BUCKET2!,
+    },
     /*
     {
       name: 'Direct S3 Connect',
@@ -91,6 +143,7 @@ describe('StorageClient', () => {
       bucketName: process.env.TEST_AWS_S3_BUCKET3!,
     }
       */
+
   ];
 
   const testFolderName = 'flashback';
@@ -112,7 +165,7 @@ describe('StorageClient', () => {
         })
       );
       expect(headBucketResponse.$metadata.httpStatusCode).toBe(200);
-      expect(headBucketResponse.BucketLocationType).toBe('Single');
+      //expect(headBucketResponse.BucketLocationType).toBe('Single');   // the delegated GCS test bucket clooddevgcp is multi-region
     } catch (error) {
       console.error('Error checking bucket existence:', error);
     }
