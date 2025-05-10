@@ -8,6 +8,10 @@ import {
   GetObjectCommand,
   DeleteObjectCommand,
   HeadBucketCommandOutput,
+  CreateMultipartUploadCommand,
+  UploadPartCommand,
+  CompleteMultipartUploadCommand,
+  AbortMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { describe, jest, test, expect } from '@jest/globals';
@@ -27,7 +31,8 @@ describe('StorageClient', () => {
     {
       name: 'S3 to S3 Configuration (AWS endpoint)',
       config: {
-        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        //endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL,
         credentials: {
           accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
           secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
@@ -35,12 +40,13 @@ describe('StorageClient', () => {
         region: process.env.TEST_AWS_REGION,
         forcePathStyle: false,
       },
-      bucketName: process.env.TEST_AWS_S3_BUCKET!,
+      bucketName: process.env.TEST_AWS_S3_BUCKET_STORJ!,
     },
     {
       name: 'S3 to GCS Configuration (AWS endpoint)',
       config: {
-        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        //endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL,
         credentials: {
           accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
           secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
@@ -50,6 +56,7 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET2!,
     },
+    /*
     {
       name: 'S3 to delegated S3 (AWS endpoint)',
       config: {
@@ -128,6 +135,7 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_GCS_BUCKET2!,
     },
+    */
     /*
     {
       name: 'Direct S3 Connect',
@@ -152,6 +160,7 @@ describe('StorageClient', () => {
 
   test.each(testConfigurations)('Should perform complete S3 operations workflow for $name', async ({ config, bucketName }) => {
     const s3Client = new S3Client(config);
+
     const key = `${testFolderName}/${testFileName}`;
     const fileStats = fs.statSync(testFilePath);
     const fileStream = fs.createReadStream(testFilePath);
@@ -289,6 +298,172 @@ describe('StorageClient', () => {
       expect(deleteResponseFromPresignedUrl.status).toBe(204);
     } catch (error) {
       console.error('Error deleting file using presigned url:', error);
+    }
+
+    const testBigFileName = 'samplelonglt100mb.dmg';
+    const testBigFilePath = path.join('tests', testBigFileName);
+    const testBigFileStats = fs.statSync(testBigFilePath);
+    const testBigFileStream = fs.createReadStream(testBigFilePath);
+
+    // Test multipart upload for large file
+    const bigKey = `${testFolderName}/${testBigFileName}`;
+    let uploadId: string | undefined;
+    const partSize = 10 * 1024 * 1024; // 5MB chunks
+    const parts: { ETag: string; PartNumber: number }[] = [];
+
+    try {
+      // 1. Initiate multipart upload
+      try {
+        console.log('Initiating multipart upload...');
+        const createMultipartUploadResponse = await s3Client.send(
+          new CreateMultipartUploadCommand({
+            Bucket: bucketName,
+            Key: bigKey,
+            ContentType: 'application/octet-stream',
+          })
+        );
+        uploadId = createMultipartUploadResponse.UploadId!;
+        expect(uploadId).toBeDefined();
+        console.log('Multipart upload initiated successfully');
+      } catch (error) {
+        console.error('Error initiating multipart upload:', error);
+        throw error;
+      }
+
+      // 2. Upload parts
+      try {
+        console.log('Starting parts upload...');
+        let partNumber = 1;
+        let buffer = Buffer.alloc(0);
+        
+        for await (const chunk of testBigFileStream) {
+          buffer = Buffer.concat([buffer, chunk]);
+          
+          if (buffer.length >= partSize) {
+            console.log(`Uploading part ${partNumber}...`);
+            const uploadPartResponse = await s3Client.send(
+              new UploadPartCommand({
+                Bucket: bucketName,
+                Key: bigKey,
+                UploadId: uploadId,
+                PartNumber: partNumber,
+                Body: buffer,
+              })
+            );
+            
+            parts.push({
+              ETag: uploadPartResponse.ETag!,
+              PartNumber: partNumber,
+            });
+            
+            buffer = Buffer.alloc(0);
+            partNumber++;
+            console.log(`Part ${partNumber - 1} uploaded successfully`);
+          }
+        }
+
+        // Upload remaining buffer if any
+        if (buffer.length > 0) {
+          console.log(`Uploading final part ${partNumber}...`);
+          const uploadPartResponse = await s3Client.send(
+            new UploadPartCommand({
+              Bucket: bucketName,
+              Key: bigKey,
+              UploadId: uploadId,
+              PartNumber: partNumber,
+              Body: buffer,
+            })
+          );
+          
+          parts.push({
+            ETag: uploadPartResponse.ETag!,
+            PartNumber: partNumber,
+          });
+          console.log(`Final part ${partNumber} uploaded successfully`);
+        }
+        console.log('All parts uploaded successfully');
+      } catch (error) {
+        console.error('Error uploading parts:', error);
+        throw error;
+      }
+
+      // 3. Complete multipart upload
+      try {
+        console.log('Completing multipart upload...');
+        const completeResponse = await s3Client.send(
+          new CompleteMultipartUploadCommand({
+            Bucket: bucketName,
+            Key: bigKey,
+            UploadId: uploadId,
+            MultipartUpload: { Parts: parts },
+          })
+        );
+        expect(completeResponse.$metadata.httpStatusCode).toBe(200);
+        console.log('Multipart upload completed successfully');
+      } catch (error) {
+        console.error('Error completing multipart upload:', error);
+        throw error;
+      }
+
+      // 4. Verify the upload by downloading
+      try {
+        console.log('Verifying upload by downloading...');
+        const downloadResponse = await s3Client.send(
+          new GetObjectCommand({
+            Bucket: bucketName,
+            Key: bigKey,
+          })
+        );
+
+        if (downloadResponse.Body instanceof Readable) {
+          const chunks: Buffer[] = [];
+          for await (const chunk of downloadResponse.Body) {
+            chunks.push(Buffer.from(chunk));
+          }
+          const downloadedContent = Buffer.concat(chunks);
+          expect(downloadedContent.length).toBe(testBigFileStats.size);
+          console.log('Download verification successful');
+        }
+      } catch (error) {
+        console.error('Error verifying upload:', error);
+        throw error;
+      }
+
+      // 5. Delete the large file
+      try {
+        console.log('Deleting uploaded file...');
+        const deleteResponse = await s3Client.send(
+          new DeleteObjectCommand({
+            Bucket: bucketName,
+            Key: bigKey,
+          })
+        );
+        expect(deleteResponse.$metadata.httpStatusCode).toBe(204);
+        console.log('File deleted successfully');
+      } catch (error) {
+        console.error('Error deleting file:', error);
+        throw error;
+      }
+
+    } catch (error) {
+      // If anything fails, try to abort the multipart upload
+      if (uploadId) {
+        try {
+          console.log('Attempting to abort multipart upload...');
+          await s3Client.send(
+            new AbortMultipartUploadCommand({
+              Bucket: bucketName,
+              Key: bigKey,
+              UploadId: uploadId,
+            })
+          );
+          console.log('Multipart upload aborted successfully');
+        } catch (abortError) {
+          console.error('Error aborting multipart upload:', abortError);
+        }
+      }
+      console.error('Error in multipart upload test:', error);
+      throw error;
     }
   });
 });

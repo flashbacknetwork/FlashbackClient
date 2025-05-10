@@ -5,3 +5,4 @@ coverage
 *.tgz
 clood-app-*.json
 flashback-network-*.json
+samplelong*.*

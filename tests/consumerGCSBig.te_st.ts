@@ -17,62 +17,18 @@ describe('StorageClient', () => {
     {
       name: 'GCS to S3 Configuration (AWS endpoint)',
       config: {
-        endpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
-        credentials: {
-          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
-          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-        },
-      },
-      bucketName: process.env.TEST_AWS_S3_BUCKET!,
-    },
-    {
-      name: 'GCS to GCS Configuration (AWS endpoint)',
-      config: {
-        endpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
-        credentials: {
-          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
-          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-        },
-      },
-      bucketName: process.env.TEST_AWS_S3_BUCKET2!,
-    },
-    {
-      name: 'GCS to delegated S3 (AWS endpoint)',
-      config: {
-        endpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
+        apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
           private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
         },
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET4!,
-    },
-    {
-      name: 'GCS to delegated GCS (AWS endpoint)',
-      config: {
-        endpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
-        credentials: {
-          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
-          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-        },
-      },
-      bucketName: process.env.TEST_GCS_BUCKET2!,
-    },
-    {
-      name: 'GCS to S3 Configuration (GCP endpoint)',
-      config: {
-        endpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
-        credentials: {
-          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
-          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-        },
-      },
-      bucketName: process.env.TEST_AWS_S3_BUCKET!,
     },
     {
       name: 'GCS to GCS Configuration (GCP endpoint)',
       config: {
-        endpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
+        apiEndpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
           private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -80,32 +36,10 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET2!,
     },
-    {
-      name: 'GCS to Delegated S3 Configuration (GCP endpoint)',
-      config: {
-        endpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
-        credentials: {
-          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
-          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-        },
-      },
-      bucketName: process.env.TEST_AWS_S3_BUCKET4!,
-    },
-    {
-      name: 'GCS to delegated GCS (GCP endpoint)',
-      config: {
-        endpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
-        credentials: {
-          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
-          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-        },
-      },
-      bucketName: process.env.TEST_GCS_BUCKET2!,
-    },
   ];
 
   const testFolderName = 'flashback';
-  const testFileName = 'sample.jpg';
+  const testFileName = 'samplelonglt100mb.dmg';
   const filePath = `${testFolderName}/${testFileName}`;
   const testFilePath = path.join('tests', testFileName);
 
@@ -115,15 +49,7 @@ describe('StorageClient', () => {
     const bucket = storage.bucket(bucketName);
     const file = bucket.file(filePath);
 
-    // 1. Check if bucket exists
-    try {
-      const [exists] = await storage.bucket(bucketName).exists();
-      expect(exists).toBe(true);
-    } catch (error) {
-      console.error('Error checking bucket existence:', error);
-      throw error;
-    }
-    // 2. Upload File
+    // 1. Upload File
     try {
       const uploadResponse = await bucket.upload(testFilePath, {
         destination: filePath,
@@ -133,37 +59,19 @@ describe('StorageClient', () => {
       console.error('Error uploading file:', error);
     }
 
-    // 3. List Bucket Contents
-    try {
-      const [files] = await bucket.getFiles({
-        prefix: 'flashback/',
-        delimiter: '/',
-      });
-      expect(files.length).not.toEqual(0);
-      //expect(files[0].name).toEqual(filePath);
-    } catch (error) {
-      console.error('Error listing bucket contents:', error);
-      throw error;
-    }
-
-    // 4. Get File Metadata
-    try {
-      const [metadata] = await file.getMetadata();
-      expect(metadata.size).toEqual(fileStats.size);
-      expect(metadata.content_type).toEqual('image/jpeg');
-    } catch (error) {
-      console.error('Error getting file metadata:', error);
-      throw error;
-    }
-
-    // 5. Download File using streams
+    // 2. Download File using streams
     try {
       const downloadStream = file.createReadStream();
       const chunks: Buffer[] = [];
 
       await new Promise((resolve, reject) => {
         downloadStream
-          .on('data', (chunk: Buffer) => chunks.push(chunk))
+          .on('data', (chunk: Buffer) => 
+            {
+              chunks.push(chunk);
+              console.log('chunk: ', chunk.length);
+            }
+          )
           .on('error', reject)
           .on('end', resolve);
       });

@@ -15,9 +15,9 @@ describe('StorageClient', () => {
 
   const testConfigurations = [
     {
-      name: 'GCS to S3 Configuration',
+      name: 'GCS to S3 Configuration (AWS endpoint)',
       config: {
-        apiEndpoint: process.env.TEST_GCP_PROVIDER_URL,
+        apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
           private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -26,12 +26,78 @@ describe('StorageClient', () => {
       bucketName: process.env.TEST_AWS_S3_BUCKET!,
     },
     {
-      name: 'GCS to GCS Configuration',
+      name: 'GCS to GCS Configuration (AWS endpoint)',
       config: {
-        apiEndpoint: process.env.TEST_PROVIDER_URL,
+        apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
         credentials: {
-          client_email: process.env.TEST_GCS_CLIENT_EMAIL2!,
-          private_key: process.env.TEST_GCS_PRIVATE_KEY2!.replace(/\\n/g, '\n'),
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        },
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET2!,
+    },
+    {
+      name: 'GCS to delegated S3 (AWS endpoint)',
+      config: {
+        apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
+        credentials: {
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        },
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET4!,
+    },
+    {
+      name: 'GCS to delegated GCS (AWS endpoint)',
+      config: {
+        apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
+        credentials: {
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        },
+      },
+      bucketName: process.env.TEST_GCS_BUCKET2!,
+    },
+    {
+      name: 'GCS to S3 Configuration (GCP endpoint)',
+      config: {
+        apiEndpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
+        credentials: {
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        },
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET!,
+    },
+    {
+      name: 'GCS to GCS Configuration (GCP endpoint)',
+      config: {
+        apiEndpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
+        credentials: {
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        },
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET2!,
+    },
+    {
+      name: 'GCS to Delegated S3 Configuration (GCP endpoint)',
+      config: {
+        apiEndpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
+        credentials: {
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        },
+      },
+      bucketName: process.env.TEST_AWS_S3_BUCKET4!,
+    },
+    {
+      name: 'GCS to delegated GCS (GCP endpoint)',
+      config: {
+        apiEndpoint: process.env.TEST_GCS_GCP_PROVIDER_URL,
+        credentials: {
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
         },
       },
       bucketName: process.env.TEST_GCS_BUCKET2!,
@@ -57,7 +123,6 @@ describe('StorageClient', () => {
       console.error('Error checking bucket existence:', error);
       throw error;
     }
-
     // 2. Upload File
     try {
       const uploadResponse = await bucket.upload(testFilePath, {
