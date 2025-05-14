@@ -175,6 +175,10 @@ describe('StorageClient', () => {
       throw error;
     }
 
+    // 5b. Copy file into same bucket using rewrite
+    //const copyResponse = await file.copy(`${bucketName}/${filePath}`);
+    //expect(copyResponse.$metadata.httpStatusCode).toBe(200);
+
     // 6. Delete File
     try {
       await file.delete();

@@ -8,7 +8,7 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
   StorageUnitStatusResponse
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
-import { OAuth2ResponseDTO, RefreshTokenResponse } from './types/auth';
+import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshResponse, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
 import { ApiTypes } from '.';
 
 interface ErrorResponse {
@@ -251,4 +251,34 @@ export class ApiClient implements IApiClient {
   public deleteRepoKey = async (repoId: string, keyId: string): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>(`repo/${repoId}/apikey/${keyId}`, 'DELETE', null);
   };
+
+  ////// User API
+  public userRegister = async (data: RegisterBody): Promise<RegisterResponse> => {
+    return this.makeRequest<RegisterResponse>('user/register', 'POST', data);
+  };
+
+  public userLogin = async (data: LoginBody): Promise<LoginResponse> => {
+    return this.makeRequest<LoginResponse>('user/login', 'POST', data);
+  }
+
+  public userRefresh = async (refreshToken: string): Promise<RefreshResponse> => {
+    return this.makeRequest<RefreshResponse>('user/refresh', 'POST', { refresh_token: refreshToken });
+  }
+
+  public userLogout = async (refreshToken: string): Promise<LogoutResponse> => {
+    return this.makeRequest<LogoutResponse>('user/logout', 'POST', { refresh_token: refreshToken });
+  }
+
+  public userActivate = async (): Promise<ActivateResponse> => {
+    return this.makeRequest<ActivateResponse>('user/activate', 'POST', null);
+  }
+
+  public userDeactivate = async (): Promise<DeactivateResponse> => {
+    return this.makeRequest<DeactivateResponse>('user/deactivate', 'POST', null);
+  }
+  
+  
+  
+  
+  
 } 

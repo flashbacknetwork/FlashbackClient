@@ -12,6 +12,8 @@ import {
   UploadPartCommand,
   CompleteMultipartUploadCommand,
   AbortMultipartUploadCommand,
+  ListPartsCommand,
+  CopyObjectCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { describe, jest, test, expect } from '@jest/globals';
@@ -156,12 +158,14 @@ describe('StorageClient', () => {
 
   const testFolderName = 'flashback';
   const testFileName = 'sample.jpg';
+  const testFileName2 = 'sample2.jpg';
   const testFilePath = path.join('tests', testFileName);
 
   test.each(testConfigurations)('Should perform complete S3 operations workflow for $name', async ({ config, bucketName }) => {
     const s3Client = new S3Client(config);
 
     const key = `${testFolderName}/${testFileName}`;
+    const key2 = `${testFolderName}/${testFileName2}`;
     const fileStats = fs.statSync(testFilePath);
     const fileStream = fs.createReadStream(testFilePath);
 
@@ -234,11 +238,29 @@ describe('StorageClient', () => {
       expect(downloadedContent.length).toBe(fileStats.size);
     }
 
+    // 5b. Copy file into same bucket
+    const copyResponse = await s3Client.send(
+      new CopyObjectCommand({
+        Bucket: bucketName,
+        Key: key2,
+        CopySource: `${bucketName}/${key}`,
+      })
+    );
+    expect(copyResponse.$metadata.httpStatusCode).toBe(200);
+
     // 6. Delete File
     const deleteResponse = await s3Client.send(
       new DeleteObjectCommand({
         Bucket: bucketName,
         Key: key,
+      })
+    );
+
+    // 6b. Delete File
+    const deleteResponse2 = await s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: bucketName,
+        Key: key2,
       })
     );
 
@@ -359,9 +381,21 @@ describe('StorageClient', () => {
             buffer = Buffer.alloc(0);
             partNumber++;
             console.log(`Part ${partNumber - 1} uploaded successfully`);
+
+            // if part number is 6, test the ListParts command
+            if (partNumber === 6) {
+              const listPartsResponse = await s3Client.send(
+                new ListPartsCommand({
+                  Bucket: bucketName,
+                  Key: bigKey,
+                  UploadId: uploadId,
+                })
+              );
+              console.log('ListParts response:', listPartsResponse);
+              expect(listPartsResponse.Parts?.length).toBe(parts.length);
+            }
           }
         }
-
         // Upload remaining buffer if any
         if (buffer.length > 0) {
           console.log(`Uploading final part ${partNumber}...`);
