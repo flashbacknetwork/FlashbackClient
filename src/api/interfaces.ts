@@ -21,12 +21,13 @@ import { StorageUnit,
     ValidateRepoUnitsRequest,
     ValidateRepoUnitsResponse,
 } from "./types/storage";
-import { RegisterBody, LoginBody, RegisterResponse, LoginResponse, RefreshResponse, LogoutResponse, ActivateResponse, DeactivateResponse } from "./types/auth";
+import { RegisterBody, LoginBody, RegisterResponse, LoginResponse, LogoutResponse, ActivateResponse, DeactivateResponse, RefreshTokenResponse } from "./types/auth";
 
 export enum ProviderType {
     GOOGLE = 'GOOGLE',
     GITHUB = 'GITHUB',
     WEB3_STELLAR = 'WEB3_STELLAR',
+    LOCAL = 'LOCAL',
 }
 
 export interface IApiClient {
@@ -49,7 +50,7 @@ export interface IApiClient {
     validateUpdateRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
     userRegister(registerBody: RegisterBody): Promise<RegisterResponse>;
     userLogin(loginBody: LoginBody): Promise<LoginResponse>;
-    userRefresh(refreshToken: string): Promise<RefreshResponse>;
+    userRefresh(refreshToken: string): Promise<RefreshTokenResponse>;
     userLogout(refreshToken: string): Promise<LogoutResponse>;
     userActivate(): Promise<ActivateResponse>;
     userDeactivate(): Promise<DeactivateResponse>;

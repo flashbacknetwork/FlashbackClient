@@ -68,19 +68,6 @@ export interface RegisterResponse {
 
 export interface LoginResponse extends RegisterResponse {}
 
-export interface RefreshResponse {
-  success: boolean;
-  accessToken?: string;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    orgId?: string;
-  };
-  error_code?: string;
-  message?: string;
-}
-
 export interface LogoutResponse {
   success: boolean;
   error_code?: string;

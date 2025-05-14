@@ -4,11 +4,10 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
   UpdateRepoKeyRequest, UpdateRepoKeyResponse, ValidateUnitRequest, ValidateUnitResponse,
   ValidateRepoUnitsRequest,
   ValidateRepoUnitsResponse,
-  RepoErrorCodes,
   StorageUnitStatusResponse
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
-import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshResponse, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
+import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
 import { ApiTypes } from '.';
 
 interface ErrorResponse {
@@ -60,6 +59,8 @@ export class ApiClient implements IApiClient {
         return this.authenticateGithub(token);
       case ProviderType.WEB3_STELLAR:
         return this.authenticateWeb3Stellar(token);
+      case ProviderType.LOCAL:
+        throw new Error('Call userLogin for local authentication');
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
@@ -99,6 +100,8 @@ export class ApiClient implements IApiClient {
       case ProviderType.GITHUB:
         // TODO: Implement refresh token for Github
         throw new Error('Not implemented');
+      case ProviderType.LOCAL:
+        return this.userRefresh(refreshToken);
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
@@ -261,8 +264,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<LoginResponse>('user/login', 'POST', data);
   }
 
-  public userRefresh = async (refreshToken: string): Promise<RefreshResponse> => {
-    return this.makeRequest<RefreshResponse>('user/refresh', 'POST', { refresh_token: refreshToken });
+  public userRefresh = async (refreshToken: string): Promise<RefreshTokenResponse> => {
+    return this.makeRequest<RefreshTokenResponse>('user/refresh', 'POST', { refresh_token: refreshToken });
   }
 
   public userLogout = async (refreshToken: string): Promise<LogoutResponse> => {
@@ -276,9 +279,5 @@ export class ApiClient implements IApiClient {
   public userDeactivate = async (): Promise<DeactivateResponse> => {
     return this.makeRequest<DeactivateResponse>('user/deactivate', 'POST', null);
   }
-  
-  
-  
-  
   
 } 
