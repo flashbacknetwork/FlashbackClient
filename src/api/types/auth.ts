@@ -26,6 +26,12 @@ export interface RefreshTokenResponse {
     expiresAt: number;
 }
 
+export interface RefreshTokenErrorResponse {
+  success: boolean;
+  error_code?: string;
+  message?: string;
+}
+
 export interface JwtPayload {
   userId: string;
   email: string;
