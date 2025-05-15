@@ -95,7 +95,7 @@ export class ApiClient implements IApiClient {
    * @param provider - The provider to refresh the token for
    * @returns The refreshed token
    */
-  public refreshToken = async (refreshToken: string, provider: ProviderType): Promise<RefreshTokenResponse> => {
+  public refreshToken = async (refreshToken: string, provider: ProviderType): Promise<RefreshTokenResponse | RefreshTokenErrorResponse> => {
     switch (provider) {
       case ProviderType.GOOGLE:
         return this.refreshGoogleToken(refreshToken);
