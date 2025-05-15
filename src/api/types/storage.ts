@@ -1,4 +1,4 @@
-import { NodeStatusInfo } from "./bridge";
+import { NodeStatusInfo, NodeStatusType } from "./bridge";
 
 export enum StorageType {
   S3 = 'S3',
@@ -46,6 +46,10 @@ export interface UnitNodeStatsDailyInfo {
     host: string;
     perc_uptime: number;
     avg_latency_ms: number;
+    version: string;
+    node_status: NodeStatusType;
+    last_updated: string;
+    last_latency_ms: number;
   }
   
 export interface UpdateUnitRequest extends CreateUnitRequest {}
