@@ -62,6 +62,7 @@ export interface RegisterResponse {
   success: boolean;
   accessToken?: string;
   refreshToken?: string;
+  tokenId?: string;
   user?: {
     id: string;
     email: string;
