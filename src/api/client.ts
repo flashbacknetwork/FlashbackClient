@@ -216,7 +216,7 @@ export class ApiClient implements IApiClient {
   }
 
   public getUnitNodeStats = async (unitId: string, data: GetUnitNodeStatsRequest): Promise<GetUnitNodeStatsResponse> => {
-    return this.makeRequest<GetUnitNodeStatsResponse>(`unit/${unitId}/stats`, 'GET', data);
+    return this.makeRequest<GetUnitNodeStatsResponse>(`unit/${unitId}/stats`, 'POST', data);
   }
 
   ////// Repos API
