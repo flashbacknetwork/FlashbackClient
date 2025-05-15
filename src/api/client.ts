@@ -9,7 +9,7 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
   GetUnitNodeStatsRequest
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
-import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
+import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshTokenErrorResponse, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
 import { ApiTypes } from '.';
 
 interface ErrorResponse {
@@ -270,8 +270,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<LoginResponse>('user/login', 'POST', data);
   }
 
-  public userRefresh = async (refreshToken: string): Promise<RefreshTokenResponse> => {
-    return this.makeRequest<RefreshTokenResponse>('user/refresh', 'POST', { refresh_token: refreshToken });
+  public userRefresh = async (refreshToken: string): Promise<RefreshTokenResponse | RefreshTokenErrorResponse> => {
+    return this.makeRequest<RefreshTokenResponse | RefreshTokenErrorResponse>('user/refresh', 'POST', { refresh_token: refreshToken });
   }
 
   public userLogout = async (refreshToken: string): Promise<LogoutResponse> => {

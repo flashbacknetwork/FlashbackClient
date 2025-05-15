@@ -23,7 +23,7 @@ import { StorageUnit,
     GetUnitNodeStatsRequest,
     GetUnitNodeStatsResponse,
 } from "./types/storage";
-import { RegisterBody, LoginBody, RegisterResponse, LoginResponse, LogoutResponse, ActivateResponse, DeactivateResponse, RefreshTokenResponse } from "./types/auth";
+import { RegisterBody, LoginBody, RegisterResponse, LoginResponse, LogoutResponse, ActivateResponse, DeactivateResponse, RefreshTokenResponse, RefreshTokenErrorResponse } from "./types/auth";
 
 export enum ProviderType {
     GOOGLE = 'GOOGLE',
@@ -53,7 +53,7 @@ export interface IApiClient {
     validateUpdateRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
     userRegister(registerBody: RegisterBody): Promise<RegisterResponse>;
     userLogin(loginBody: LoginBody): Promise<LoginResponse>;
-    userRefresh(refreshToken: string): Promise<RefreshTokenResponse>;
+    userRefresh(refreshToken: string): Promise<RefreshTokenResponse | RefreshTokenErrorResponse>;
     userLogout(refreshToken: string): Promise<LogoutResponse>;
     userActivate(): Promise<ActivateResponse>;
     userDeactivate(): Promise<DeactivateResponse>;
