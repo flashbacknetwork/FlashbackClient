@@ -32,6 +32,22 @@ export interface CreateUnitRequest {
   region?: string;
 }
 
+export interface GetUnitNodeStatsRequest {
+  day: Date;
+}
+
+export interface GetUnitNodeStatsResponse {
+  success: boolean;
+  nodeStats: UnitNodeStatsDailyInfo[];
+}
+
+export interface UnitNodeStatsDailyInfo {
+    ip: string;
+    host: string;
+    perc_uptime: number;
+    avg_latency_ms: number;
+  }
+  
 export interface UpdateUnitRequest extends CreateUnitRequest {}
 
 export interface CreateUnitResponse {

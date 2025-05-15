@@ -4,7 +4,9 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
   UpdateRepoKeyRequest, UpdateRepoKeyResponse, ValidateUnitRequest, ValidateUnitResponse,
   ValidateRepoUnitsRequest,
   ValidateRepoUnitsResponse,
-  StorageUnitStatusResponse
+  StorageUnitStatusResponse,
+  GetUnitNodeStatsResponse,
+  GetUnitNodeStatsRequest
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
@@ -211,6 +213,10 @@ export class ApiClient implements IApiClient {
 
   public getStorageUnitStatus = async (unitId: string): Promise<StorageUnitStatusResponse> => {
     return this.makeRequest<StorageUnitStatusResponse>(`unit/${unitId}/status`, 'GET', null);
+  }
+
+  public getUnitNodeStats = async (unitId: string, data: GetUnitNodeStatsRequest): Promise<GetUnitNodeStatsResponse> => {
+    return this.makeRequest<GetUnitNodeStatsResponse>(`unit/${unitId}/stats`, 'GET', data);
   }
 
   ////// Repos API

@@ -20,6 +20,8 @@ import { StorageUnit,
     ValidateUnitResponse,
     ValidateRepoUnitsRequest,
     ValidateRepoUnitsResponse,
+    GetUnitNodeStatsRequest,
+    GetUnitNodeStatsResponse,
 } from "./types/storage";
 import { RegisterBody, LoginBody, RegisterResponse, LoginResponse, LogoutResponse, ActivateResponse, DeactivateResponse, RefreshTokenResponse } from "./types/auth";
 
@@ -38,6 +40,7 @@ export interface IApiClient {
     deleteStorageUnit(unitId: string): Promise<ActionResponse>;
     validateStorageUnit(unitId: string, data: ValidateUnitRequest): Promise<ValidateUnitResponse>;
     getAvailableStorageUnits(): Promise<StorageUnit[]>;
+    getUnitNodeStats(unitId: string, data: GetUnitNodeStatsRequest): Promise<GetUnitNodeStatsResponse>;
     createStorageRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
     getStorageRepos(): Promise<GetReposResponse>;
     updateStorageRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;
