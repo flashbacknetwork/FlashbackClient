@@ -3,7 +3,7 @@ import { NodeStatusInfo, NodeStatusType } from "./bridge";
 export enum StorageType {
   S3 = 'S3',
   GCS = 'GCS',
-  AZURE = 'AZURE',
+  BLOB = 'BLOB',
 }
 
 export enum AccessType {
