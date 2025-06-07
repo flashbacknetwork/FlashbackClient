@@ -11,6 +11,7 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
 import { IApiClient, ProviderType } from './interfaces';
 import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshTokenErrorResponse, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
 import { ApiTypes } from '.';
+import { StatsQueryParams, StatsResponse } from './types/stats';
 
 interface ErrorResponse {
   message?: string;
@@ -285,5 +286,51 @@ export class ApiClient implements IApiClient {
   public userDeactivate = async (): Promise<DeactivateResponse> => {
     return this.makeRequest<DeactivateResponse>('user/deactivate', 'POST', null);
   }
-  
+
+  ////// Stats API
+  private validateDateRange(startDate?: Date, endDate?: Date): void {
+    if (startDate && endDate) {
+      if (startDate > endDate) {
+        throw new Error('startDate cannot be greater than endDate');
+      }
+    }
+  }
+
+  public getDailyStats = async (params: StatsQueryParams): Promise<StatsResponse> => {
+    this.validateDateRange(params.startDate, params.endDate);
+    
+    const queryParams = new URLSearchParams();
+    
+    if (params.startDate) {
+      queryParams.append('startDate', params.startDate.toISOString().split('T')[0]);
+    }
+    
+    if (params.endDate) {
+      queryParams.append('endDate', params.endDate.toISOString().split('T')[0]);
+    }
+    
+    if (params.repoId && params.repoId.length > 0) queryParams.append('repoId', params.repoId.join(','));
+    if (params.unitId && params.unitId.length > 0) queryParams.append('unitId', params.unitId.join(','));
+    
+    return this.makeRequest<StatsResponse>(`stats/daily?${queryParams.toString()}`, 'GET', null);
+  }
+
+  public getMinuteStats = async (params: StatsQueryParams): Promise<StatsResponse> => {
+    this.validateDateRange(params.startDate, params.endDate);
+    
+    const queryParams = new URLSearchParams();
+    
+    if (params.startDate) {
+      queryParams.append('startDate', params.startDate.toISOString().split('T')[0]);
+    }
+    
+    if (params.endDate) {
+      queryParams.append('endDate', params.endDate.toISOString().split('T')[0]);
+    }
+    
+    if (params.repoId && params.repoId.length > 0) queryParams.append('repoId', params.repoId.join(','));
+    if (params.unitId && params.unitId.length > 0) queryParams.append('unitId', params.unitId.join(','));
+    
+    return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
+  }
 } 

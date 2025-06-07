@@ -24,6 +24,7 @@ import { StorageUnit,
     GetUnitNodeStatsResponse,
 } from "./types/storage";
 import { RegisterBody, LoginBody, RegisterResponse, LoginResponse, LogoutResponse, ActivateResponse, DeactivateResponse, RefreshTokenResponse, RefreshTokenErrorResponse } from "./types/auth";
+import { StatsQueryParams, StatsResponse } from "./types/stats";
 
 export enum ProviderType {
     GOOGLE = 'GOOGLE',
@@ -57,4 +58,6 @@ export interface IApiClient {
     userLogout(refreshToken: string): Promise<LogoutResponse>;
     userActivate(): Promise<ActivateResponse>;
     userDeactivate(): Promise<DeactivateResponse>;
+    getDailyStats(params: StatsQueryParams): Promise<StatsResponse>;
+    getMinuteStats(params: StatsQueryParams): Promise<StatsResponse>;
 }
