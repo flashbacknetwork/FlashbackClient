@@ -2,8 +2,10 @@ import { Storage, StorageOptions, File } from '@google-cloud/storage';
 
 import { FlashbackAuthClient, MockupAuthClient } from './oauth2';
 import crypto from 'crypto';
+import fetch from 'node-fetch';
 
 const originalRequest = require('gaxios').instance.request;
+const originalFetch = fetch;
 
 export interface ServiceCredentials {
     client_email: string;
@@ -27,6 +29,8 @@ export interface SignedUrlOptions {
 export class FlashbackGCSStorage extends Storage {
   protected credentials: ServiceCredentials;
   private debug: boolean = false;
+  public apiEndpoint: string;
+  private currentUploadContentType: string | undefined;
 
   constructor(opts: FlashbackStorageOptions) {
     const {
@@ -36,11 +40,13 @@ export class FlashbackGCSStorage extends Storage {
       ...rest
     } = opts;
 
-    const authClient = new FlashbackAuthClient(apiEndpoint + '/token', tokenScopes, credentials);
+    // Ensure the endpoint doesn't have a trailing slash
+    const cleanEndpoint = apiEndpoint.replace(/\/$/, '');
+    const authClient = new FlashbackAuthClient(cleanEndpoint + '/token', tokenScopes, credentials);
     
     super({
       ...rest,
-      apiEndpoint,
+      apiEndpoint: cleanEndpoint,
       authClient,
       useAuthWithCustomEndpoint: true,
       retryOptions: {
@@ -50,6 +56,7 @@ export class FlashbackGCSStorage extends Storage {
     });
 
     this.credentials = credentials;
+    this.apiEndpoint = cleanEndpoint;
 
     // Intercept Gaxios instance creation
     require('gaxios').instance.request = async function(opts: any) {
@@ -59,17 +66,50 @@ export class FlashbackGCSStorage extends Storage {
         ...(opts.headers || {}),
         ...headers,
       };
+
+      // Ensure the base URL is used and properly handle query parameters
+      if (!opts.url.startsWith('http')) {
+        // Remove any trailing question marks
+        const cleanUrl = opts.url.replace(/\?+$/, '');
+        opts.url = `${cleanEndpoint}${cleanUrl}`;
+      }
       return originalRequest.call(this, opts);
+    };
+
+    // Intercept node-fetch
+    (global as any).fetch = async (url: string, options: any = {}) => {
+      const headers = await authClient.getRequestHeaders();
+      const finalUrl = url.startsWith('http') ? url : `${cleanEndpoint}${url}`;
+      return originalFetch(finalUrl, {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          ...headers,
+        },
+      });
     };
   }
 
   cleanup() {
     require('gaxios').instance.request = originalRequest;
+    (global as any).fetch = originalFetch;
   }
 
   // Override the bucket method to ensure we pass the auth client
   bucket(name: string) {
-    return super.bucket(name);
+    const bucket = super.bucket(name);
+    const originalUpload = bucket.upload.bind(bucket);
+    
+    bucket.upload = async (filePath: string, options?: any) => {
+      this.currentUploadContentType = options?.contentType;
+      try {
+        return await originalUpload(filePath, options);
+      } finally {
+        this.currentUploadContentType = undefined;
+      }
+    };
+    
+    return bucket;
   }
 
   setDebug(debug: boolean): void {
@@ -107,13 +147,15 @@ export class FlashbackGCSStorage extends Storage {
       extensionHeaders['content-type'] = contentType;
     }
 
-    const signedHeaders = Object.keys(extensionHeaders)
+    // Sort headers once and use the same order for both signedHeaders and canonicalHeaders
+    const sortedHeaderKeys = Object.keys(extensionHeaders)
       .map(header => header.toLowerCase())
-      .sort()
-      .join(';');
+      .sort();
 
-    const canonicalHeaders = Object.entries(extensionHeaders)
-      .map(([key, value]) => `${key.toLowerCase()}:${value}`)
+    const signedHeaders = sortedHeaderKeys.join(';');
+
+    const canonicalHeaders = sortedHeaderKeys
+      .map(key => `${key}:${extensionHeaders[key.toLowerCase()]}`)
       .join('\n') + '\n';
 
     const datestamp = accessibleAt.toISOString().split('T')[0];
@@ -165,7 +207,8 @@ export class FlashbackGCSStorage extends Storage {
       crypto.createHash('sha256').update(canonicalRequest).digest('hex'),
     ].join('\n');
 
-    this.doLog('String to Sign:', stringToSign);
+    const canonicalRequestHex = Buffer.from(canonicalRequest).toString('hex');
+    this.doLog('String to Sign:', stringToSign, canonicalRequestHex);
 
     const sign = crypto.createSign('RSA-SHA256');
     sign.update(stringToSign);

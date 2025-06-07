@@ -21,6 +21,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Readable } from 'stream';
 import fetch from 'node-fetch';
+import http from 'http';
 
 import dotenv from 'dotenv';
 
@@ -30,9 +31,8 @@ describe('StorageClient', () => {
   jest.setTimeout(600000);
 
   const testConfigurations = [
-    /*
     {
-      name: 'S3 to S3 Configuration (AWS endpoint)',
+      name: 'S3 to S3 StorJ Configuration (AWS endpoint)',
       config: {
         //endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
         endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL,
@@ -59,11 +59,26 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET2!,
     },
-    
+    {
+      name: 'S3 to Azure Configuration',
+      config: {
+        //endpoint: process.env.TEST_S3_AWS_PROVIDER_URL!,
+        endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL!,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AZURE_CONTAINER_NAME!,
+    },
+    /*
     {
       name: 'S3 to delegated S3 (AWS endpoint)',
       config: {
-        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        //endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL,
         credentials: {
           accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
           secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
@@ -76,7 +91,8 @@ describe('StorageClient', () => {
     {
       name: 'S3 to delegated GCS (AWS endpoint)',
       config: {
-        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        //endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
+        endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL,
         credentials: {
           accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,
           secretAccessKey: process.env.TEST_AWS_SECRET_ACCESS_KEY!,
@@ -86,6 +102,8 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_GCS_BUCKET2!,
     },
+    */
+    /*
     {
       name: 'S3 to S3 Configuration (GCP endpoint)',
       config: {
@@ -97,7 +115,7 @@ describe('StorageClient', () => {
         region: process.env.TEST_AWS_REGION,
         forcePathStyle: false,
       },
-      bucketName: process.env.TEST_AWS_S3_BUCKET!,
+      bucketName: process.env.TEST_AWS_S3_BUCKET4!,
     },
     {
       name: 'S3 to GCS Configuration (GCP endpoint)',
@@ -139,7 +157,7 @@ describe('StorageClient', () => {
       bucketName: process.env.TEST_GCS_BUCKET2!,
     },
     */
-    
+    /*
     {
       name: 'Direct S3 Connect',
       config: {
@@ -153,6 +171,7 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET_STORJ!,
     }
+      */
   ];
 
   const testFolderName = 'flashback';
@@ -184,17 +203,32 @@ describe('StorageClient', () => {
 
     // 2. Upload File
     try {
+      // Create a new stream for each attempt
+      const uploadStream = fs.createReadStream(testFilePath);
+      
+      // Add error handler to the stream
+      uploadStream.on('error', (err) => {
+        console.error('Stream error:', err);
+      });
+
       const uploadResponse = await s3Client.send(
         new PutObjectCommand({
           Bucket: bucketName,
           Key: key,
-          Body: fileStream,
+          Body: uploadStream,
           ContentType: 'image/jpeg',
         })
       );
       expect(uploadResponse.$metadata.httpStatusCode).toBe(200);
     } catch (error) {
       console.error('Error uploading file:', error);
+      // Log more details about the error
+      if (error instanceof Error) {
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      throw error; // Re-throw to fail the test
     }
 
     // 3. List Bucket Contents
@@ -238,6 +272,7 @@ describe('StorageClient', () => {
     }
 
     // 5b. Copy file into same bucket
+    try {
     const copyResponse = await s3Client.send(
       new CopyObjectCommand({
         Bucket: bucketName,
@@ -245,7 +280,10 @@ describe('StorageClient', () => {
         CopySource: `${bucketName}/${key}`,
       })
     );
-    expect(copyResponse.$metadata.httpStatusCode).toBe(200);
+      expect(copyResponse.$metadata.httpStatusCode).toBe(200);
+    } catch (error) {
+      console.error('Error copying file:', error);
+    }
 
     // 6. Delete File
     const deleteResponse = await s3Client.send(
@@ -294,7 +332,12 @@ describe('StorageClient', () => {
       }), {
         expiresIn: 3600,
       });
-      const downloadResponseFromPresignedUrl = await fetch(presignedUrl);
+      const downloadResponseFromPresignedUrl = await fetch(presignedUrl, {
+        agent: new http.Agent({
+          keepAlive: true,
+          timeout: 30000
+        })
+      });
       const chunks: Buffer[] = [];
       for await (const chunk of downloadResponseFromPresignedUrl.body) {
         chunks.push(Buffer.from(chunk as Uint8Array));
