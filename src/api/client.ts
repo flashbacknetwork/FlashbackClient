@@ -302,11 +302,11 @@ export class ApiClient implements IApiClient {
     const queryParams = new URLSearchParams();
     
     if (params.startDate) {
-      queryParams.append('startDate', params.startDate.toISOString().split('T')[0]);
+      queryParams.append('startDate', params.startDate.toISOString());
     }
     
     if (params.endDate) {
-      queryParams.append('endDate', params.endDate.toISOString().split('T')[0]);
+      queryParams.append('endDate', params.endDate.toISOString());
     }
     
     if (params.repoId && params.repoId.length > 0) queryParams.append('repoId', params.repoId.join(','));
@@ -321,11 +321,11 @@ export class ApiClient implements IApiClient {
     const queryParams = new URLSearchParams();
     
     if (params.startDate) {
-      queryParams.append('startDate', params.startDate.toISOString().split('T')[0]);
+      queryParams.append('startDate', params.startDate.toISOString());
     }
     
     if (params.endDate) {
-      queryParams.append('endDate', params.endDate.toISOString().split('T')[0]);
+      queryParams.append('endDate', params.endDate.toISOString());
     }
     
     if (params.repoId && params.repoId.length > 0) queryParams.append('repoId', params.repoId.join(','));
