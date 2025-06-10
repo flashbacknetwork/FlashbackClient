@@ -19,15 +19,4 @@ export interface StatsData {
   dwl_bytes: bigint;
   size_change: bigint;
   latency_ms: number;
-  repo?: {
-    id: string;
-    name: string;
-    orgId: string;
-    deletedAt: Date | null;
-  };
-  unit?: {
-    id: string;
-    name: string;
-    deletedAt: Date | null;
-  };
 } 
