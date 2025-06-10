@@ -17,6 +17,7 @@ import { Readable } from 'stream';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import http from 'http';
+import https from 'https';
 import crypto from 'crypto';
 
 dotenv.config(); // loads the .env file
@@ -28,8 +29,8 @@ describe('StorageClient', () => {
     {
       name: 'Azure to Azure Configuration',
       config: {
-        //endpoint: process.env.TEST_AZURE_ENDPOINT!,
-        endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
+        endpoint: process.env.TEST_AZURE_ENDPOINT!,
+        //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
         accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
         accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,
       },
@@ -38,8 +39,8 @@ describe('StorageClient', () => {
     {
       name: 'Azure to AWS S3 Configuration',
       config: {
-        //endpoint: process.env.TEST_AZURE_ENDPOINT!,
-        endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
+        endpoint: process.env.TEST_AZURE_ENDPOINT!,
+        //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
         accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
         accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,
       },
@@ -48,8 +49,8 @@ describe('StorageClient', () => {
     {
       name: 'Azure to GCS Configuration',
       config: {
-        //endpoint: process.env.TEST_AZURE_ENDPOINT!,
-        endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
+        endpoint: process.env.TEST_AZURE_ENDPOINT!,
+        //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
         accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
         accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,
       },
@@ -73,6 +74,14 @@ describe('StorageClient', () => {
   const testFileName = 'sample.jpg';
   const testFileName2 = 'sample2.jpg';
   const testFilePath = path.join('tests', testFileName);
+
+// Helper function to get the appropriate agent based on URL protocol
+function getAgentForUrl(url: string) {
+  const urlObj = new URL(url);
+  return urlObj.protocol === 'https:' 
+    ? new https.Agent({ keepAlive: true, timeout: 30000 })
+    : new http.Agent({ keepAlive: true, timeout: 30000 });
+}
 
 async function basicTests(containerClient: ContainerClient, key: string, key2: string, fileStats: fs.Stats) {
   // 1. Get Container Properties - Check if container exists
@@ -216,10 +225,7 @@ async function basicTests(containerClient: ContainerClient, key: string, key2: s
         'User-Agent': 'azsdk-js-storageblob/12.17.0',
         "Accept": "*/*"
       },
-      agent: new http.Agent({
-        keepAlive: true,
-        timeout: 30000
-      })
+      agent: getAgentForUrl(sasUrl)
     });
 
     const chunks: Buffer[] = [];
@@ -253,11 +259,7 @@ async function basicTests(containerClient: ContainerClient, key: string, key2: s
         'User-Agent': 'azsdk-js-storageblob/12.17.0',
         'Accept': '*/*'
       },
-      // Add these options to match http module behavior
-      agent: new http.Agent({
-        keepAlive: true,
-        timeout: 30000
-      })
+      agent: getAgentForUrl(sasUrl)
     });
     expect(deleteResponseFromSasUrl.status).toBe(202);
   } catch (error) {
