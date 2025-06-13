@@ -12,6 +12,10 @@ TypeScript/JavaScript client for:
 npm install @flashbacktech/flashbackclient
 ```
 
+## Documentation
+
+For comprehensive API documentation, examples, and usage instructions, see the [Documentation](./docs/index.md).
+
 ## Usage
 
 ### Client Library

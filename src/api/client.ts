@@ -11,7 +11,7 @@ import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoRes
 import { IApiClient, ProviderType } from './interfaces';
 import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshTokenErrorResponse, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
 import { ApiTypes } from '.';
-import { StatsQueryParams, StatsResponse } from './types/stats';
+import { StatsQueryParams, StatsResponse, NodeStatsMinuteResponse, NodeStatsDailyResponse, NodeStatsQueryParams, NodeStatsMinuteData } from './types/stats';
 
 interface ErrorResponse {
   message?: string;
@@ -332,5 +332,41 @@ export class ApiClient implements IApiClient {
     if (params.unitId && params.unitId.length > 0) queryParams.append('unitId', params.unitId.join(','));
     
     return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
+  }
+
+  public getNodeStatsMinute = async (params?: NodeStatsQueryParams): Promise<NodeStatsMinuteResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params && params.unitId && params.unitId.length > 0) {
+      queryParams.append('unitId', params.unitId.join(','));
+    }
+    
+    type ServerResponse = Omit<NodeStatsMinuteResponse, 'data'> & {
+      data: Array<Omit<NodeStatsMinuteData, 'lastUpdated'> & { lastUpdated: string }>;
+    };
+    
+    const response = await this.makeRequest<ServerResponse>(
+      `stats/nodes/minute${queryParams.toString() ? `?${queryParams.toString()}` : ''}`, 
+      'GET', 
+      null
+    );
+
+    // Process the response to convert lastUpdated strings to Date objects
+    const processedData: NodeStatsMinuteData[] = response.data.map(item => ({
+      ...item,
+      lastUpdated: new Date(item.lastUpdated)
+    }));
+
+    return {
+      ...response,
+      data: processedData
+    };
+  }
+
+  public getNodeStatsDaily = async (params?: NodeStatsQueryParams): Promise<NodeStatsDailyResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params && params.unitId && params.unitId.length > 0) {
+      queryParams.append('unitId', params.unitId.join(','));
+    }
+    return this.makeRequest<NodeStatsDailyResponse>(`stats/nodes/daily${queryParams.toString() ? `?${queryParams.toString()}` : ''}`, 'GET', null);
   }
 } 
