@@ -969,8 +969,6 @@ getNodeStatsMinute(params: NodeStatsQueryParams): Promise<NodeStatsMinuteRespons
 ```typescript
 interface NodeStatsQueryParams {
   unitId: string[];     // Array of unit IDs to filter node stats by
-  startDate?: Date;     // Start date for the statistics query (optional)
-  endDate?: Date;       // End date for the statistics query (optional)
 }
 ```
 
@@ -996,9 +994,7 @@ interface NodeStatsMinuteData {
 **Example:**
 ```typescript
 const nodeStats = await client.getNodeStatsMinute({
-  unitId: ['unit-123', 'unit-456'],
-  startDate: new Date('2024-01-01T00:00:00Z'),
-  endDate: new Date('2024-01-01T23:59:59Z')
+  unitId: ['unit-123', 'unit-456']
 });
 nodeStats.data.forEach(stat => {
   console.log(`Node ${stat.nodeId}: ${stat.nodeStatus}, Latency: ${stat.latency_ms}ms`);
@@ -1010,7 +1006,7 @@ nodeStats.data.forEach(stat => {
 Retrieves daily node statistics.
 
 ```typescript
-getNodeStatsDaily(params: NodeStatsQueryParams): Promise<NodeStatsDailyResponse>
+getNodeStatsDaily(params: NodeStatsDailyQueryParams): Promise<NodeStatsDailyResponse>
 ```
 
 **Parameters:**

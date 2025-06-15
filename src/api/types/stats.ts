@@ -58,6 +58,10 @@ export interface NodeStatsDailyData {
 
 export interface NodeStatsQueryParams {
   unitId: string[];
+}
+
+export interface NodeStatsDailyQueryParams {
+  unitId: string[];
   startDate?: Date;
   endDate?: Date;
 }

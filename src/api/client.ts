@@ -46,6 +46,7 @@ import {
   NodeStatsMinuteData,
   UnitStatsResponse,
   RepoStatsResponse,
+  NodeStatsDailyQueryParams,
 } from './types/stats';
 
 interface ErrorResponse {
@@ -414,12 +415,6 @@ export class ApiClient implements IApiClient {
     if (params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
     }
-    if (params.startDate) {
-      queryParams.append('startDate', params.startDate.toISOString());
-    }
-    if (params.endDate) {
-      queryParams.append('endDate', params.endDate.toISOString());
-    }
 
     type ServerResponse = Omit<NodeStatsMinuteResponse, 'data'> & {
       data: Array<Omit<NodeStatsMinuteData, 'lastUpdated'> & { lastUpdated: string }>;
@@ -444,7 +439,7 @@ export class ApiClient implements IApiClient {
   };
 
   public getNodeStatsDaily = async (
-    params: NodeStatsQueryParams
+    params: NodeStatsDailyQueryParams
   ): Promise<NodeStatsDailyResponse> => {
     const queryParams = new URLSearchParams();
     if (params.unitId.length > 0) {
