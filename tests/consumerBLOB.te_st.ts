@@ -27,19 +27,9 @@ describe('StorageClient', () => {
 
   const testConfigurations = [
     {
-      name: 'Azure to Azure Configuration',
-      config: {
-        endpoint: process.env.TEST_AZURE_ENDPOINT!,
-        //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
-        accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
-        accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,
-      },
-      containerName: process.env.TEST_AZURE_CONTAINER_NAME!,
-    },
-    {
       name: 'Azure to AWS S3 Configuration',
       config: {
-        endpoint: process.env.TEST_AZURE_ENDPOINT!,
+        endpoint: process.env.TEST_AZURE_ENDPOINT2!,
         //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
         accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
         accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,
@@ -49,12 +39,22 @@ describe('StorageClient', () => {
     {
       name: 'Azure to GCS Configuration',
       config: {
-        endpoint: process.env.TEST_AZURE_ENDPOINT!,
+        endpoint: process.env.TEST_AZURE_ENDPOINT3!,
         //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
         accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
         accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,
       },
       containerName: process.env.TEST_AWS_S3_BUCKET2!,
+    },
+    {
+      name: 'Azure to Azure Configuration',
+      config: {
+        endpoint: process.env.TEST_AZURE_ENDPOINT!,
+        //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
+        accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
+        accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,
+      },
+      containerName: process.env.TEST_AZURE_CONTAINER_NAME!,
     },
     /*
     {

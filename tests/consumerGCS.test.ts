@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { Storage } from '@google-cloud/storage';
+import { OAuth2Client, GoogleAuth, Credentials, AuthClient, OAuth2ClientOptions } from 'google-auth-library';
 import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -18,8 +19,8 @@ describe('StorageClient', () => {
     {
       name: 'GCS to S3 Configuration (AWS endpoint)',
       config: {
-        //apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
         apiEndpoint: process.env.TEST_GCS_LOCAL_PROVIDER_URL,
+        tokenUri: process.env.TEST_GCS_LOCAL_PROVIDER_URL + '/token',
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
           private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -129,7 +130,19 @@ describe('StorageClient', () => {
   const testFilePath = path.join('tests', testFileName);
 
   test.each(testConfigurations)('Should perform complete GCS operations workflow for $name', async ({ config, bucketName }) => {
-    const storage = new FlashbackGCSStorage(config);
+    const clientOptions: OAuth2ClientOptions = {
+      clientId: config.credentials.client_email,
+      clientSecret: config.credentials.private_key,
+      endpoints: {
+        oauth2TokenUrl: config.tokenUri,
+      },
+    };
+    const authClient = new OAuth2Client(clientOptions);
+
+    const storage = new Storage({
+      ...config,
+      authClient,
+    });
     const fileStats = fs.statSync(testFilePath);
     const bucket = storage.bucket(bucketName);
     const file = bucket.file(filePath);
@@ -210,15 +223,12 @@ describe('StorageClient', () => {
     try {
       const file = bucket.file(filePath);
 
-      const optionsWrite: SignedUrlOptions = {
+      const [signedUrl] = await file.getSignedUrl({
         version: 'v4',
         action: 'write',
         expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-        contentType: 'image/jpeg', // strongly recommended if you want to enforce content-type
-        file
-      };
-
-      const [signedUrl] = await storage.getSignedUrl(optionsWrite);
+        contentType: 'image/jpeg',
+      });
       const uploadResponse = await fetch(signedUrl, {
         method: 'PUT',
         body: fs.createReadStream(testFilePath),
@@ -234,15 +244,12 @@ describe('StorageClient', () => {
     try {
       const file = bucket.file(filePath);
 
-      const options: SignedUrlOptions = {
+      const [signedUrl] = await file.getSignedUrl({
         version: 'v4',
         action: 'read',
         expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-        contentType: 'image/jpeg', // strongly recommended if you want to enforce content-type
-        file
-      };
-
-      const [signedUrl] = await storage.getSignedUrl(options);
+        contentType: 'image/jpeg',
+      });
       const downloadResponse = await fetch(signedUrl, {
         method: 'GET',
         agent: new http.Agent({
@@ -264,15 +271,12 @@ describe('StorageClient', () => {
     try {
       const file = bucket.file(filePath);
 
-      const optionsDelete: SignedUrlOptions = {
+      const [signedUrl] = await file.getSignedUrl({
         version: 'v4',
         action: 'delete',
         expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-        contentType: 'image/jpeg', // strongly recommended if you want to enforce content-type
-        file
-      };
-
-      const [signedUrl] = await storage.getSignedUrl(optionsDelete);
+        contentType: 'image/jpeg',
+      });
       const deleteResponse = await fetch(signedUrl, {
         method: 'DELETE',
         headers: {
@@ -333,7 +337,5 @@ describe('StorageClient', () => {
       console.error('Error deleting file:', error);
       throw error;
     }
-
-    storage.cleanup();
   });
 });
