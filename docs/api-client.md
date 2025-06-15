@@ -1037,6 +1037,50 @@ const dailyNodeStats = await client.getNodeStatsDaily();
 console.log('Daily node statistics:', dailyNodeStats.data);
 ```
 
+### getRepoStats
+
+Retrieves statistics for specific repositories.
+
+```typescript
+getRepoStats(params?: {repoId?: string[]}): Promise<RepoStatsResponse>
+```
+
+**Parameters:**
+- `params` (object, optional): Query parameters
+  - `repoId` (string[], optional): Array of repository IDs to get statistics for
+
+**Returns:** Promise resolving to RepoStatsResponse
+
+**Example:**
+```typescript
+const repoStats = await client.getRepoStats({
+  repoId: ['repo-123', 'repo-456']
+});
+console.log('Repository statistics:', repoStats);
+```
+
+### getUnitStats
+
+Retrieves statistics for specific storage units.
+
+```typescript
+getUnitStats(params?: {unitId?: string[]}): Promise<UnitStatsResponse>
+```
+
+**Parameters:**
+- `params` (object, optional): Query parameters
+  - `unitId` (string[], optional): Array of storage unit IDs to get statistics for
+
+**Returns:** Promise resolving to UnitStatsResponse
+
+**Example:**
+```typescript
+const unitStats = await client.getUnitStats({
+  unitId: ['unit-123', 'unit-456']
+});
+console.log('Storage unit statistics:', unitStats);
+```
+
 ## Error Handling
 
 The API client throws `HttpError` instances for HTTP-related errors:

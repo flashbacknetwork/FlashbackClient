@@ -1,6 +1,12 @@
 /* eslint-disable no-undef */
 import { Storage } from '@google-cloud/storage';
-import { OAuth2Client, GoogleAuth, Credentials, AuthClient, OAuth2ClientOptions } from 'google-auth-library';
+import {
+  OAuth2Client,
+  GoogleAuth,
+  Credentials,
+  AuthClient,
+  OAuth2ClientOptions,
+} from 'google-auth-library';
 import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -129,213 +135,216 @@ describe('StorageClient', () => {
   const filePath = `${testFolderName}/${testFileName}`;
   const testFilePath = path.join('tests', testFileName);
 
-  test.each(testConfigurations)('Should perform complete GCS operations workflow for $name', async ({ config, bucketName }) => {
-    const clientOptions: OAuth2ClientOptions = {
-      clientId: config.credentials.client_email,
-      clientSecret: config.credentials.private_key,
-      endpoints: {
-        oauth2TokenUrl: config.tokenUri,
-      },
-    };
-    const authClient = new OAuth2Client(clientOptions);
-
-    const storage = new Storage({
-      ...config,
-      authClient,
-    });
-    const fileStats = fs.statSync(testFilePath);
-    const bucket = storage.bucket(bucketName);
-    const file = bucket.file(filePath);
-
-    // 1. Check if bucket exists
-    try {
-      const [exists] = await storage.bucket(bucketName).exists();
-      expect(exists).toBe(true);
-    } catch (error) {
-      console.error('Error checking bucket existence:', error);
-      throw error;
-    }
-    // 2. Upload File
-    try {
-      const uploadResponse = await bucket.upload(testFilePath, {
-        destination: filePath,
-        contentType: 'image/jpeg',
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
-
-    // 3. List Bucket Contents
-    try {
-      const [files] = await bucket.getFiles({
-        prefix: 'flashback/',
-        delimiter: '/',
-      });
-      expect(files.length).not.toEqual(0);
-      //expect(files[0].name).toEqual(filePath);
-    } catch (error) {
-      console.error('Error listing bucket contents:', error);
-      throw error;
-    }
-
-    // 4. Get File Metadata
-    try {
-      const [metadata] = await file.getMetadata();
-      expect(metadata.size).toEqual(fileStats.size);
-      //expect(metadata.content_type).toEqual('image/jpeg');
-    } catch (error) {
-      console.error('Error getting file metadata:', error);
-      throw error;
-    }
-
-    // 5. Download File using streams
-    try {
-      const downloadStream = file.createReadStream();
-      const chunks: Buffer[] = [];
-
-      await new Promise((resolve, reject) => {
-        downloadStream
-          .on('data', (chunk: Buffer) => chunks.push(chunk))
-          .on('error', reject)
-          .on('end', resolve);
-      });
-
-      const downloadedData = Buffer.concat(chunks);
-      expect(downloadedData.length).toBe(fileStats.size);
-    } catch (error) {
-      console.error('Error downloading file:', error);
-      throw error;
-    }
-
-    // 5b. Copy file into same bucket using rewrite
-    //const copyResponse = await file.copy(`${bucketName}/${filePath}`);
-    //expect(copyResponse.$metadata.httpStatusCode).toBe(200);
-
-    // 6. Delete File
-    try {
-      const file = bucket.file(filePath);
-      await file.delete();
-    } catch (error) {
-      console.error('Error deleting file:', error);
-    }
-
-    // 7. Upload through signed url
-    try {
-      const file = bucket.file(filePath);
-
-      const [signedUrl] = await file.getSignedUrl({
-        version: 'v4',
-        action: 'write',
-        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-        contentType: 'image/jpeg',
-      });
-      const uploadResponse = await fetch(signedUrl, {
-        method: 'PUT',
-        body: fs.createReadStream(testFilePath),
-        headers: {
-          'Content-Type': 'image/jpeg',
+  test.each(testConfigurations)(
+    'Should perform complete GCS operations workflow for $name',
+    async ({ config, bucketName }) => {
+      const clientOptions: OAuth2ClientOptions = {
+        clientId: config.credentials.client_email,
+        clientSecret: config.credentials.private_key,
+        endpoints: {
+          oauth2TokenUrl: config.tokenUri,
         },
-      });
-    } catch (error) {
-      console.error('Error uploading file through signed url:', error);
-    }
+      };
+      const authClient = new OAuth2Client(clientOptions);
 
-    // 6. Download File through signed url
-    try {
+      const storage = new Storage({
+        ...config,
+        authClient,
+      });
+      const fileStats = fs.statSync(testFilePath);
+      const bucket = storage.bucket(bucketName);
       const file = bucket.file(filePath);
 
-      const [signedUrl] = await file.getSignedUrl({
-        version: 'v4',
-        action: 'read',
-        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-        contentType: 'image/jpeg',
-      });
-      const downloadResponse = await fetch(signedUrl, {
-        method: 'GET',
-        agent: new http.Agent({
-          keepAlive: true,
-          timeout: 30000
-        })
-      });
-      if (!downloadResponse.ok) {
-        throw new Error(`Failed to download file: ${downloadResponse.status} ${downloadResponse.statusText}`);
+      // 1. Check if bucket exists
+      try {
+        const [exists] = await storage.bucket(bucketName).exists();
+        expect(exists).toBe(true);
+      } catch (error) {
+        console.error('Error checking bucket existence:', error);
+        throw error;
       }
-      expect(downloadResponse.status).toBe(200);
-      const downloadData = await downloadResponse.arrayBuffer();
-      expect(downloadData.byteLength).toBe(fileStats.size);
-    } catch (error) {
-      console.error('Error downloading file through signed url:', error);
-    }
+      // 2. Upload File
+      try {
+        const uploadResponse = await bucket.upload(testFilePath, {
+          destination: filePath,
+          contentType: 'image/jpeg',
+        });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
 
-    // 9. Delete File through signed url
-    try {
-      const file = bucket.file(filePath);
+      // 3. List Bucket Contents
+      try {
+        const [files] = await bucket.getFiles({
+          prefix: 'flashback/',
+          delimiter: '/',
+        });
+        expect(files.length).not.toEqual(0);
+        //expect(files[0].name).toEqual(filePath);
+      } catch (error) {
+        console.error('Error listing bucket contents:', error);
+        throw error;
+      }
 
-      const [signedUrl] = await file.getSignedUrl({
-        version: 'v4',
-        action: 'delete',
-        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
-        contentType: 'image/jpeg',
-      });
-      const deleteResponse = await fetch(signedUrl, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'image/jpeg',
-        },
-      });
-      expect(deleteResponse.status).toBe(204);
-    } catch (error) {
-      console.error('Error deleting file through signed url:', error);
-    }
+      // 4. Get File Metadata
+      try {
+        const [metadata] = await file.getMetadata();
+        expect(metadata.size).toEqual(fileStats.size);
+        //expect(metadata.content_type).toEqual('image/jpeg');
+      } catch (error) {
+        console.error('Error getting file metadata:', error);
+        throw error;
+      }
 
-    // 10. Upload File with large size
-    const testFolderNameLarge = 'flashback';
-    const testFileNameLarge = 'samplelonglt100mb.dmg';
-    const filePathLarge = `${testFolderNameLarge}/${testFileNameLarge}`;
-    const testFilePathLarge = path.join('tests', testFileNameLarge);
-    const fileStatsLarge = fs.statSync(testFilePathLarge);
-     
-    try {
-      const uploadResponse = await bucket.upload(testFilePathLarge, {
-        destination: filePathLarge,
-        contentType: 'application/octet-stream',
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error);
-    }
+      // 5. Download File using streams
+      try {
+        const downloadStream = file.createReadStream();
+        const chunks: Buffer[] = [];
 
-    // 11. Download File using streams
-    try {
-      const file = bucket.file(filePathLarge);
-      const downloadStream = file.createReadStream();
-      const chunks: Buffer[] = [];
+        await new Promise((resolve, reject) => {
+          downloadStream
+            .on('data', (chunk: Buffer) => chunks.push(chunk))
+            .on('error', reject)
+            .on('end', resolve);
+        });
 
-      await new Promise((resolve, reject) => {
-        downloadStream
-          .on('data', (chunk: Buffer) => 
-            {
+        const downloadedData = Buffer.concat(chunks);
+        expect(downloadedData.length).toBe(fileStats.size);
+      } catch (error) {
+        console.error('Error downloading file:', error);
+        throw error;
+      }
+
+      // 5b. Copy file into same bucket using rewrite
+      //const copyResponse = await file.copy(`${bucketName}/${filePath}`);
+      //expect(copyResponse.$metadata.httpStatusCode).toBe(200);
+
+      // 6. Delete File
+      try {
+        const file = bucket.file(filePath);
+        await file.delete();
+      } catch (error) {
+        console.error('Error deleting file:', error);
+      }
+
+      // 7. Upload through signed url
+      try {
+        const file = bucket.file(filePath);
+
+        const [signedUrl] = await file.getSignedUrl({
+          version: 'v4',
+          action: 'write',
+          expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+          contentType: 'image/jpeg',
+        });
+        const uploadResponse = await fetch(signedUrl, {
+          method: 'PUT',
+          body: fs.createReadStream(testFilePath),
+          headers: {
+            'Content-Type': 'image/jpeg',
+          },
+        });
+      } catch (error) {
+        console.error('Error uploading file through signed url:', error);
+      }
+
+      // 6. Download File through signed url
+      try {
+        const file = bucket.file(filePath);
+
+        const [signedUrl] = await file.getSignedUrl({
+          version: 'v4',
+          action: 'read',
+          expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+          contentType: 'image/jpeg',
+        });
+        const downloadResponse = await fetch(signedUrl, {
+          method: 'GET',
+          agent: new http.Agent({
+            keepAlive: true,
+            timeout: 30000,
+          }),
+        });
+        if (!downloadResponse.ok) {
+          throw new Error(
+            `Failed to download file: ${downloadResponse.status} ${downloadResponse.statusText}`
+          );
+        }
+        expect(downloadResponse.status).toBe(200);
+        const downloadData = await downloadResponse.arrayBuffer();
+        expect(downloadData.byteLength).toBe(fileStats.size);
+      } catch (error) {
+        console.error('Error downloading file through signed url:', error);
+      }
+
+      // 9. Delete File through signed url
+      try {
+        const file = bucket.file(filePath);
+
+        const [signedUrl] = await file.getSignedUrl({
+          version: 'v4',
+          action: 'delete',
+          expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+          contentType: 'image/jpeg',
+        });
+        const deleteResponse = await fetch(signedUrl, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'image/jpeg',
+          },
+        });
+        expect(deleteResponse.status).toBe(204);
+      } catch (error) {
+        console.error('Error deleting file through signed url:', error);
+      }
+
+      // 10. Upload File with large size
+      const testFolderNameLarge = 'flashback';
+      const testFileNameLarge = 'samplelonglt100mb.dmg';
+      const filePathLarge = `${testFolderNameLarge}/${testFileNameLarge}`;
+      const testFilePathLarge = path.join('tests', testFileNameLarge);
+      const fileStatsLarge = fs.statSync(testFilePathLarge);
+
+      try {
+        const uploadResponse = await bucket.upload(testFilePathLarge, {
+          destination: filePathLarge,
+          contentType: 'application/octet-stream',
+        });
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+
+      // 11. Download File using streams
+      try {
+        const file = bucket.file(filePathLarge);
+        const downloadStream = file.createReadStream();
+        const chunks: Buffer[] = [];
+
+        await new Promise((resolve, reject) => {
+          downloadStream
+            .on('data', (chunk: Buffer) => {
               chunks.push(chunk);
               console.log('chunk: ', chunk.length);
-            }
-          )
-          .on('error', reject)
-          .on('end', resolve);
-      });
+            })
+            .on('error', reject)
+            .on('end', resolve);
+        });
 
-      const downloadedData = Buffer.concat(chunks);
-      expect(downloadedData.length).toBe(fileStatsLarge.size);
-    } catch (error) {
-      console.error('Error downloading file:', error);
-      throw error;
-    }
+        const downloadedData = Buffer.concat(chunks);
+        expect(downloadedData.length).toBe(fileStatsLarge.size);
+      } catch (error) {
+        console.error('Error downloading file:', error);
+        throw error;
+      }
 
-    // 12. Delete File
-    try {
-      const file = bucket.file(filePathLarge);
-      await file.delete();
-    } catch (error) {
-      console.error('Error deleting file:', error);
-      throw error;
+      // 12. Delete File
+      try {
+        const file = bucket.file(filePathLarge);
+        await file.delete();
+      } catch (error) {
+        console.error('Error deleting file:', error);
+        throw error;
+      }
     }
-  });
+  );
 });

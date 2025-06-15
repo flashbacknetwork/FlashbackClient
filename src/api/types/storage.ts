@@ -1,4 +1,4 @@
-import { NodeStatusInfo, NodeStatusType } from "./bridge";
+import { NodeStatusInfo, NodeStatusType } from './bridge';
 
 export enum StorageType {
   S3 = 'S3',
@@ -42,16 +42,16 @@ export interface GetUnitNodeStatsResponse {
 }
 
 export interface UnitNodeStatsDailyInfo {
-    ip: string;
-    host: string;
-    perc_uptime: number;
-    avg_latency_ms: number;
-    version: string;
-    node_status: NodeStatusType;
-    last_updated: string;
-    last_latency_ms: number;
-  }
-  
+  ip: string;
+  host: string;
+  perc_uptime: number;
+  avg_latency_ms: number;
+  version: string;
+  node_status: NodeStatusType;
+  last_updated: string;
+  last_latency_ms: number;
+}
+
 export interface UpdateUnitRequest extends CreateUnitRequest {}
 
 export interface CreateUnitResponse {
@@ -106,7 +106,7 @@ export interface UpdateRepoKeyRequest {
   accessType: AccessType;
 }
 
-export interface UpdateRepoKeyResponse extends ActionResponse { }
+export interface UpdateRepoKeyResponse extends ActionResponse {}
 
 export interface StorageRepo {
   id: string;

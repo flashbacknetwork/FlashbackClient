@@ -1,6 +1,7 @@
 {
   "name": "@flashbacktech/flashbackclient",
-  "version": "0.0.97",
+  "version": "0.0.98",
+  "type": "module",
   "publishConfig": {
     "access": "public"
   },

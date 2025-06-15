@@ -1,17 +1,52 @@
-import { CreateUnitRequest, CreateUnitResponse, CreateRepoRequest, CreateRepoResponse, StorageUnit, StorageRepo, 
-  CreateRepoKeyRequest, CreateRepoKeyResponse, ApiKey, GetUnitsResponse, GetReposResponse, GetRepoKeysResponse,
-  UpdateUnitRequest, UpdateUnitResponse, ActionResponse, UpdateRepoRequest, UpdateRepoResponse, 
-  UpdateRepoKeyRequest, UpdateRepoKeyResponse, ValidateUnitRequest, ValidateUnitResponse,
+import {
+  CreateUnitRequest,
+  CreateUnitResponse,
+  CreateRepoRequest,
+  CreateRepoResponse,
+  StorageUnit,
+  CreateRepoKeyRequest,
+  CreateRepoKeyResponse,
+  GetUnitsResponse,
+  GetReposResponse,
+  GetRepoKeysResponse,
+  UpdateUnitRequest,
+  UpdateUnitResponse,
+  ActionResponse,
+  UpdateRepoRequest,
+  UpdateRepoResponse,
+  UpdateRepoKeyRequest,
+  UpdateRepoKeyResponse,
+  ValidateUnitRequest,
+  ValidateUnitResponse,
   ValidateRepoUnitsRequest,
   ValidateRepoUnitsResponse,
   StorageUnitStatusResponse,
   GetUnitNodeStatsResponse,
-  GetUnitNodeStatsRequest
+  GetUnitNodeStatsRequest,
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
-import { ActivateResponse, DeactivateResponse, LoginBody, LoginResponse, LogoutResponse, OAuth2ResponseDTO, RefreshTokenErrorResponse, RefreshTokenResponse, RegisterBody, RegisterResponse } from './types/auth';
-import { ApiTypes } from '.';
-import { StatsQueryParams, StatsResponse, NodeStatsMinuteResponse, NodeStatsDailyResponse, NodeStatsQueryParams, NodeStatsMinuteData } from './types/stats';
+import {
+  ActivateResponse,
+  DeactivateResponse,
+  LoginBody,
+  LoginResponse,
+  LogoutResponse,
+  OAuth2ResponseDTO,
+  RefreshTokenErrorResponse,
+  RefreshTokenResponse,
+  RegisterBody,
+  RegisterResponse,
+} from './types/auth';
+import {
+  StatsQueryParams,
+  StatsResponse,
+  NodeStatsMinuteResponse,
+  NodeStatsDailyResponse,
+  NodeStatsQueryParams,
+  NodeStatsMinuteData,
+  UnitStatsResponse,
+  RepoStatsResponse,
+} from './types/stats';
 
 interface ErrorResponse {
   message?: string;
@@ -42,7 +77,7 @@ export class ApiClient implements IApiClient {
 
   public setDebug = (debug: boolean) => {
     this.debug = debug;
-  }
+  };
 
   public setAuthToken = (token: string | null) => {
     if (token) {
@@ -67,9 +102,12 @@ export class ApiClient implements IApiClient {
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
-  }
+  };
 
-  public exchangeCode = async (code: string, provider: ProviderType): Promise<OAuth2ResponseDTO> => {
+  public exchangeCode = async (
+    code: string,
+    provider: ProviderType
+  ): Promise<OAuth2ResponseDTO> => {
     switch (provider) {
       case ProviderType.GOOGLE:
         return this.exchangeGoogleCode(code);
@@ -80,15 +118,15 @@ export class ApiClient implements IApiClient {
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
-  }
+  };
 
   private exchangeGithubCode = async (code: string): Promise<OAuth2ResponseDTO> => {
     throw new Error('Not implemented');
-  }
+  };
 
   private exchangeWeb3StellarCode = async (code: string): Promise<OAuth2ResponseDTO> => {
     throw new Error('Not implemented');
-  }
+  };
 
   /**
    * Refresh the token for the given provider
@@ -96,7 +134,10 @@ export class ApiClient implements IApiClient {
    * @param provider - The provider to refresh the token for
    * @returns The refreshed token
    */
-  public refreshToken = async (refreshToken: string, provider: ProviderType): Promise<RefreshTokenResponse | RefreshTokenErrorResponse> => {
+  public refreshToken = async (
+    refreshToken: string,
+    provider: ProviderType
+  ): Promise<RefreshTokenResponse | RefreshTokenErrorResponse> => {
     switch (provider) {
       case ProviderType.GOOGLE:
         return this.refreshGoogleToken(refreshToken);
@@ -108,18 +149,18 @@ export class ApiClient implements IApiClient {
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
-  }
+  };
 
   private authenticateWeb3Stellar = async (token: string): Promise<any> => {
     throw new Error('Not implemented');
-  }
+  };
 
   private makeRequest = async <T>(path: string, method: string, data?: any): Promise<T> => {
     const options: RequestInit = {
-        method,
-        headers: this.headers,
-        body: data ? JSON.stringify(data) : null,
-    }
+      method,
+      headers: this.headers,
+      body: data ? JSON.stringify(data) : null,
+    };
     if (data) {
       options.headers = {
         ...options.headers,
@@ -135,41 +176,37 @@ export class ApiClient implements IApiClient {
     if (this.debug) {
       console.log(`DEBUG: ${response.status} ${response.statusText}`);
     }
-    
+
     // If response is not ok, handle it before trying to parse JSON
     if (!response.ok) {
-        let errorData = null;
-        
-        // Only try to parse JSON if we have content
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-            try {
-                const text = await response.text(); 
-                errorData = text ? JSON.parse(text) : null; // Parse if not empty
-            } catch (e) {
-                console.debug('Failed to parse error response:', e);
-            }
-        }
+      let errorData = null;
 
-        throw new HttpError(
-            response.status,
-            response.statusText,
-            errorData
-        );
+      // Only try to parse JSON if we have content
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        try {
+          const text = await response.text();
+          errorData = text ? JSON.parse(text) : null; // Parse if not empty
+        } catch (e) {
+          console.debug('Failed to parse error response:', e);
+        }
+      }
+
+      throw new HttpError(response.status, response.statusText, errorData);
     }
 
     // For successful responses, parse JSON if we have content
     try {
-        const text = await response.text();
-        return text ? JSON.parse(text) : null as T;
+      const text = await response.text();
+      return text ? JSON.parse(text) : (null as T);
     } catch (e) {
-        console.error('Failed to parse success response:', e);
-        throw new Error('Invalid JSON response from server');
+      console.error('Failed to parse success response:', e);
+      throw new Error('Invalid JSON response from server');
     }
-  }
+  };
 
   ////// Auth API
-  private authenticateGoogle = async (token: string): Promise<any>  => {
+  private authenticateGoogle = async (token: string): Promise<any> => {
     this.setAuthToken(token);
     return this.makeRequest<any>('auth/google', 'POST', { token });
   };
@@ -180,12 +217,14 @@ export class ApiClient implements IApiClient {
   };
 
   private refreshGoogleToken = async (refreshToken: string): Promise<RefreshTokenResponse> => {
-    return this.makeRequest<RefreshTokenResponse>('auth/google/refresh', 'POST', { refresh_token: refreshToken });
+    return this.makeRequest<RefreshTokenResponse>('auth/google/refresh', 'POST', {
+      refresh_token: refreshToken,
+    });
   };
-  
+
   private exchangeGoogleCode = async (code: string): Promise<OAuth2ResponseDTO> => {
     return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code });
-  }
+  };
 
   ////// Units API
   public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
@@ -196,29 +235,38 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetUnitsResponse>('unit', 'GET', null);
   };
 
-  public validateStorageUnit = async (unitId: string, data: ValidateUnitRequest): Promise<ValidateUnitResponse> => {
+  public validateStorageUnit = async (
+    unitId: string,
+    data: ValidateUnitRequest
+  ): Promise<ValidateUnitResponse> => {
     return this.makeRequest<ValidateUnitResponse>(`unit/${unitId}/validate`, 'POST', data);
-  }
+  };
 
-  public updateStorageUnit = async (unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse> => {
+  public updateStorageUnit = async (
+    unitId: string,
+    data: UpdateUnitRequest
+  ): Promise<UpdateUnitResponse> => {
     return this.makeRequest<UpdateUnitResponse>(`unit/${unitId}`, 'PUT', data);
-  }
+  };
 
   public deleteStorageUnit = async (unitId: string): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>(`unit/${unitId}`, 'DELETE', null);
-  }
+  };
 
   public getAvailableStorageUnits = async (): Promise<StorageUnit[]> => {
     return this.makeRequest<StorageUnit[]>('unit/available', 'GET', null);
-  }
+  };
 
   public getStorageUnitStatus = async (unitId: string): Promise<StorageUnitStatusResponse> => {
     return this.makeRequest<StorageUnitStatusResponse>(`unit/${unitId}/status`, 'GET', null);
-  }
+  };
 
-  public getUnitNodeStats = async (unitId: string, data: GetUnitNodeStatsRequest): Promise<GetUnitNodeStatsResponse> => {
+  public getUnitNodeStats = async (
+    unitId: string,
+    data: GetUnitNodeStatsRequest
+  ): Promise<GetUnitNodeStatsResponse> => {
     return this.makeRequest<GetUnitNodeStatsResponse>(`unit/${unitId}/stats`, 'POST', data);
-  }
+  };
 
   ////// Repos API
   public createStorageRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
@@ -229,7 +277,10 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetReposResponse>('repo', 'GET', null);
   };
 
-  public updateStorageRepo = async (repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse> => {
+  public updateStorageRepo = async (
+    repoId: string,
+    data: UpdateRepoRequest
+  ): Promise<UpdateRepoResponse> => {
     return this.makeRequest<UpdateRepoResponse>(`repo/${repoId}`, 'PUT', data);
   };
 
@@ -237,12 +288,20 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<ActionResponse>(`repo/${repoId}`, 'DELETE', null);
   };
 
-  public validateNewRepoUnits = async (data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse> => {
+  public validateNewRepoUnits = async (
+    data: ValidateRepoUnitsRequest
+  ): Promise<ValidateRepoUnitsResponse> => {
     return this.makeRequest<ValidateRepoUnitsResponse>('repo/validate', 'POST', data);
   };
 
-  public validateUpdateRepoUnits = async (data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse> => {
-    return this.makeRequest<ValidateRepoUnitsResponse>(`repo/${data.repoId}/validate`, 'POST', data);
+  public validateUpdateRepoUnits = async (
+    data: ValidateRepoUnitsRequest
+  ): Promise<ValidateRepoUnitsResponse> => {
+    return this.makeRequest<ValidateRepoUnitsResponse>(
+      `repo/${data.repoId}/validate`,
+      'POST',
+      data
+    );
   };
 
   ////// Keys API
@@ -254,7 +313,11 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetRepoKeysResponse>(`repo/${repoId}/apikey`, 'GET', null);
   };
 
-  public updateRepoKey = async (repoId: string, keyId: string, data: UpdateRepoKeyRequest): Promise<UpdateRepoKeyResponse> => {
+  public updateRepoKey = async (
+    repoId: string,
+    keyId: string,
+    data: UpdateRepoKeyRequest
+  ): Promise<UpdateRepoKeyResponse> => {
     return this.makeRequest<UpdateRepoKeyResponse>(`repo/${repoId}/apikey/${keyId}`, 'PUT', data);
   };
 
@@ -269,23 +332,29 @@ export class ApiClient implements IApiClient {
 
   public userLogin = async (data: LoginBody): Promise<LoginResponse> => {
     return this.makeRequest<LoginResponse>('user/login', 'POST', data);
-  }
+  };
 
-  public userRefresh = async (refreshToken: string): Promise<RefreshTokenResponse | RefreshTokenErrorResponse> => {
-    return this.makeRequest<RefreshTokenResponse | RefreshTokenErrorResponse>('user/refresh', 'POST', { refresh_token: refreshToken });
-  }
+  public userRefresh = async (
+    refreshToken: string
+  ): Promise<RefreshTokenResponse | RefreshTokenErrorResponse> => {
+    return this.makeRequest<RefreshTokenResponse | RefreshTokenErrorResponse>(
+      'user/refresh',
+      'POST',
+      { refresh_token: refreshToken }
+    );
+  };
 
   public userLogout = async (refreshToken: string): Promise<LogoutResponse> => {
     return this.makeRequest<LogoutResponse>('user/logout', 'POST', { refresh_token: refreshToken });
-  }
+  };
 
   public userActivate = async (): Promise<ActivateResponse> => {
     return this.makeRequest<ActivateResponse>('user/activate', 'POST', null);
-  }
+  };
 
   public userDeactivate = async (): Promise<DeactivateResponse> => {
     return this.makeRequest<DeactivateResponse>('user/deactivate', 'POST', null);
-  }
+  };
 
   ////// Stats API
   private validateDateRange(startDate?: Date, endDate?: Date): void {
@@ -298,75 +367,111 @@ export class ApiClient implements IApiClient {
 
   public getDailyStats = async (params: StatsQueryParams): Promise<StatsResponse> => {
     this.validateDateRange(params.startDate, params.endDate);
-    
+
     const queryParams = new URLSearchParams();
-    
+
     if (params.startDate) {
       queryParams.append('startDate', params.startDate.toISOString());
     }
-    
+
     if (params.endDate) {
       queryParams.append('endDate', params.endDate.toISOString());
     }
-    
-    if (params.repoId && params.repoId.length > 0) queryParams.append('repoId', params.repoId.join(','));
-    if (params.unitId && params.unitId.length > 0) queryParams.append('unitId', params.unitId.join(','));
-    
+
+    if (params.repoId && params.repoId.length > 0)
+      queryParams.append('repoId', params.repoId.join(','));
+    if (params.unitId && params.unitId.length > 0)
+      queryParams.append('unitId', params.unitId.join(','));
+
     return this.makeRequest<StatsResponse>(`stats/daily?${queryParams.toString()}`, 'GET', null);
-  }
+  };
 
   public getMinuteStats = async (params: StatsQueryParams): Promise<StatsResponse> => {
     this.validateDateRange(params.startDate, params.endDate);
-    
+
     const queryParams = new URLSearchParams();
-    
+
     if (params.startDate) {
       queryParams.append('startDate', params.startDate.toISOString());
     }
-    
+
     if (params.endDate) {
       queryParams.append('endDate', params.endDate.toISOString());
     }
-    
-    if (params.repoId && params.repoId.length > 0) queryParams.append('repoId', params.repoId.join(','));
-    if (params.unitId && params.unitId.length > 0) queryParams.append('unitId', params.unitId.join(','));
-    
-    return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
-  }
 
-  public getNodeStatsMinute = async (params?: NodeStatsQueryParams): Promise<NodeStatsMinuteResponse> => {
+    if (params.repoId && params.repoId.length > 0)
+      queryParams.append('repoId', params.repoId.join(','));
+    if (params.unitId && params.unitId.length > 0)
+      queryParams.append('unitId', params.unitId.join(','));
+
+    return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
+  };
+
+  public getNodeStatsMinute = async (
+    params?: NodeStatsQueryParams
+  ): Promise<NodeStatsMinuteResponse> => {
     const queryParams = new URLSearchParams();
     if (params && params.unitId && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
     }
-    
+
     type ServerResponse = Omit<NodeStatsMinuteResponse, 'data'> & {
       data: Array<Omit<NodeStatsMinuteData, 'lastUpdated'> & { lastUpdated: string }>;
     };
-    
+
     const response = await this.makeRequest<ServerResponse>(
-      `stats/nodes/minute${queryParams.toString() ? `?${queryParams.toString()}` : ''}`, 
-      'GET', 
+      `stats/nodes/minute?${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
       null
     );
 
     // Process the response to convert lastUpdated strings to Date objects
-    const processedData: NodeStatsMinuteData[] = response.data.map(item => ({
+    const processedData: NodeStatsMinuteData[] = response.data.map((item) => ({
       ...item,
-      lastUpdated: new Date(item.lastUpdated)
+      lastUpdated: new Date(item.lastUpdated),
     }));
 
     return {
       ...response,
-      data: processedData
+      data: processedData,
     };
-  }
+  };
 
-  public getNodeStatsDaily = async (params?: NodeStatsQueryParams): Promise<NodeStatsDailyResponse> => {
+  public getNodeStatsDaily = async (
+    params?: NodeStatsQueryParams
+  ): Promise<NodeStatsDailyResponse> => {
     const queryParams = new URLSearchParams();
     if (params && params.unitId && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
     }
-    return this.makeRequest<NodeStatsDailyResponse>(`stats/nodes/daily${queryParams.toString() ? `?${queryParams.toString()}` : ''}`, 'GET', null);
-  }
-} 
+    return this.makeRequest<NodeStatsDailyResponse>(
+      `stats/nodes/daily${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public getRepoStats = async (params?: { repoId?: string[] }): Promise<RepoStatsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params && params.repoId && params.repoId.length > 0) {
+      queryParams.append('repoId', params.repoId.join(','));
+    }
+    return this.makeRequest<RepoStatsResponse>(
+      `repo/stats${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public getUnitStats = async (params?: { unitId?: string[] }): Promise<UnitStatsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params && params.unitId && params.unitId.length > 0) {
+      queryParams.append('unitId', params.unitId.join(','));
+    }
+    return this.makeRequest<UnitStatsResponse>(
+      `unit/stats${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+}

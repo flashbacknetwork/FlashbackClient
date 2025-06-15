@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ClientContext } from './client.js';
 
 export function requiresSignature(

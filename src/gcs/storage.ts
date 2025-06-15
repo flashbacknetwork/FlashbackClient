@@ -8,8 +8,8 @@ const originalRequest = require('gaxios').instance.request;
 const originalFetch = fetch;
 
 export interface ServiceCredentials {
-    client_email: string;
-    private_key: string;
+  client_email: string;
+  private_key: string;
 }
 
 export interface FlashbackStorageOptions extends Omit<StorageOptions, 'authClient'> {
@@ -43,7 +43,7 @@ export class FlashbackGCSStorage extends Storage {
     // Ensure the endpoint doesn't have a trailing slash
     const cleanEndpoint = apiEndpoint.replace(/\/$/, '');
     const authClient = new FlashbackAuthClient(cleanEndpoint + '/token', tokenScopes, credentials);
-    
+
     super({
       ...rest,
       apiEndpoint: cleanEndpoint,
@@ -59,7 +59,7 @@ export class FlashbackGCSStorage extends Storage {
     this.apiEndpoint = cleanEndpoint;
 
     // Intercept Gaxios instance creation
-    require('gaxios').instance.request = async function(opts: any) {
+    require('gaxios').instance.request = async function (opts: any) {
       // Add auth headers to all requests
       const headers = await authClient.getRequestHeaders();
       opts.headers = {
@@ -99,7 +99,7 @@ export class FlashbackGCSStorage extends Storage {
   bucket(name: string) {
     const bucket = super.bucket(name);
     const originalUpload = bucket.upload.bind(bucket);
-    
+
     bucket.upload = async (filePath: string, options?: any) => {
       this.currentUploadContentType = options?.contentType;
       try {
@@ -108,7 +108,7 @@ export class FlashbackGCSStorage extends Storage {
         this.currentUploadContentType = undefined;
       }
     };
-    
+
     return bucket;
   }
 
@@ -127,17 +127,20 @@ export class FlashbackGCSStorage extends Storage {
     const { version, action, expires, contentType } = cfg;
     const accessibleAt = new Date();
     const millisecondsToSeconds = 1.0 / 1000.0;
-    const expiresPeriodInSeconds = Math.floor((expires - accessibleAt.valueOf()) * millisecondsToSeconds);
-    
+    const expiresPeriodInSeconds = Math.floor(
+      (expires - accessibleAt.valueOf()) * millisecondsToSeconds
+    );
+
     this.doLog('Signing Parameters:', {
       action,
       expires,
       expiresPeriodInSeconds,
       accessibleAt: accessibleAt.toISOString(),
-      contentType
+      contentType,
     });
 
-    if (expiresPeriodInSeconds > 604800) { // 7 days in seconds
+    if (expiresPeriodInSeconds > 604800) {
+      // 7 days in seconds
       throw new Error('Max allowed expiration is seven days (604800 seconds).');
     }
 
@@ -149,14 +152,14 @@ export class FlashbackGCSStorage extends Storage {
 
     // Sort headers once and use the same order for both signedHeaders and canonicalHeaders
     const sortedHeaderKeys = Object.keys(extensionHeaders)
-      .map(header => header.toLowerCase())
+      .map((header) => header.toLowerCase())
       .sort();
 
     const signedHeaders = sortedHeaderKeys.join(';');
 
-    const canonicalHeaders = sortedHeaderKeys
-      .map(key => `${key}:${extensionHeaders[key.toLowerCase()]}`)
-      .join('\n') + '\n';
+    const canonicalHeaders =
+      sortedHeaderKeys.map((key) => `${key}:${extensionHeaders[key.toLowerCase()]}`).join('\n') +
+      '\n';
 
     const datestamp = accessibleAt.toISOString().split('T')[0];
     const credentialScope = `${datestamp}/auto/storage/goog4_request`;
@@ -198,7 +201,10 @@ export class FlashbackGCSStorage extends Storage {
     ].join('\n');
 
     this.doLog('Canonical Request:', canonicalRequest);
-    this.doLog('Canonical Request Hash:', crypto.createHash('sha256').update(canonicalRequest).digest('hex'));
+    this.doLog(
+      'Canonical Request Hash:',
+      crypto.createHash('sha256').update(canonicalRequest).digest('hex')
+    );
 
     const stringToSign = [
       'GOOG4-RSA-SHA256',
@@ -216,7 +222,8 @@ export class FlashbackGCSStorage extends Storage {
 
     this.doLog('Generated Signature:', signature);
 
-    return [`${this.apiEndpoint}/${cfg.file.bucket.name}/${cfg.file.name}?${canonicalQueryString}&X-Goog-Signature=${signature}`];
+    return [
+      `${this.apiEndpoint}/${cfg.file.bucket.name}/${cfg.file.name}?${canonicalQueryString}&X-Goog-Signature=${signature}`,
+    ];
   }
 }
-

@@ -7,15 +7,19 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 export default [
   eslint.configs.recommended,
   {
-    globals: {
-      fetch: 'readonly',
-    },
     files: ['**/*.ts'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
+      },
+      globals: {
+        fetch: 'readonly',
+        URLSearchParams: 'readonly',
+        Buffer: 'readonly',
+        console: 'readonly',
+        global: 'readonly',
       },
     },
     plugins: {
@@ -26,6 +30,7 @@ export default [
       ...tseslint.configs.recommended.rules,
       ...eslintConfigPrettier.rules,
       'prettier/prettier': 'error',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ];

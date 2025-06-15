@@ -58,4 +58,25 @@ export interface NodeStatsDailyData {
 
 export interface NodeStatsQueryParams {
   unitId?: string[];
-} 
+}
+
+export interface RepoStatsResponse {
+  success: boolean;
+  stats: {
+    repoId: string;
+    totalUploadBytes: string;
+    totalDownloadBytes: string;
+    totalSizeChange: string;
+  }[];
+}
+
+export interface UnitStatsResponse {
+  success: boolean;
+  stats: {
+    unitId: string;
+    totalCount: string;
+    totalUploadBytes: string;
+    totalDownloadBytes: string;
+    totalSizeChange: string;
+  }[];
+}
