@@ -446,10 +446,10 @@ export class ApiClient implements IApiClient {
       queryParams.append('unitId', params.unitId.join(','));
     }
     if (params.startDate) {
-      queryParams.append('startDate', params.startDate.toISOString());
+      queryParams.append('startDate', params.startDate.toString());
     }
     if (params.endDate) {
-      queryParams.append('endDate', params.endDate.toISOString());
+      queryParams.append('endDate', params.endDate.toString());
     }
     return this.makeRequest<NodeStatsDailyResponse>(
       `stats/nodes/daily${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
