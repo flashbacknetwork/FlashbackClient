@@ -408,11 +408,17 @@ export class ApiClient implements IApiClient {
   };
 
   public getNodeStatsMinute = async (
-    params?: NodeStatsQueryParams
+    params: NodeStatsQueryParams
   ): Promise<NodeStatsMinuteResponse> => {
     const queryParams = new URLSearchParams();
-    if (params && params.unitId && params.unitId.length > 0) {
+    if (params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
+    }
+    if (params.startDate) {
+      queryParams.append('startDate', params.startDate.toISOString());
+    }
+    if (params.endDate) {
+      queryParams.append('endDate', params.endDate.toISOString());
     }
 
     type ServerResponse = Omit<NodeStatsMinuteResponse, 'data'> & {
@@ -438,11 +444,17 @@ export class ApiClient implements IApiClient {
   };
 
   public getNodeStatsDaily = async (
-    params?: NodeStatsQueryParams
+    params: NodeStatsQueryParams
   ): Promise<NodeStatsDailyResponse> => {
     const queryParams = new URLSearchParams();
-    if (params && params.unitId && params.unitId.length > 0) {
+    if (params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
+    }
+    if (params.startDate) {
+      queryParams.append('startDate', params.startDate.toISOString());
+    }
+    if (params.endDate) {
+      queryParams.append('endDate', params.endDate.toISOString());
     }
     return this.makeRequest<NodeStatsDailyResponse>(
       `stats/nodes/daily${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,

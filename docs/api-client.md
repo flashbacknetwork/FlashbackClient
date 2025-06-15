@@ -962,13 +962,15 @@ const stats = await client.getMinuteStats({
 Retrieves minute-level node statistics.
 
 ```typescript
-getNodeStatsMinute(params?: NodeStatsQueryParams): Promise<NodeStatsMinuteResponse>
+getNodeStatsMinute(params: NodeStatsQueryParams): Promise<NodeStatsMinuteResponse>
 ```
 
 **NodeStatsQueryParams Interface:**
 ```typescript
 interface NodeStatsQueryParams {
-  unitId?: string[];  // Array of unit IDs to filter node stats by (optional)
+  unitId: string[];     // Array of unit IDs to filter node stats by
+  startDate?: Date;     // Start date for the statistics query (optional)
+  endDate?: Date;       // End date for the statistics query (optional)
 }
 ```
 
@@ -994,7 +996,9 @@ interface NodeStatsMinuteData {
 **Example:**
 ```typescript
 const nodeStats = await client.getNodeStatsMinute({
-  unitId: ['unit-123', 'unit-456']
+  unitId: ['unit-123', 'unit-456'],
+  startDate: new Date('2024-01-01T00:00:00Z'),
+  endDate: new Date('2024-01-01T23:59:59Z')
 });
 nodeStats.data.forEach(stat => {
   console.log(`Node ${stat.nodeId}: ${stat.nodeStatus}, Latency: ${stat.latency_ms}ms`);
@@ -1006,11 +1010,14 @@ nodeStats.data.forEach(stat => {
 Retrieves daily node statistics.
 
 ```typescript
-getNodeStatsDaily(params?: NodeStatsQueryParams): Promise<NodeStatsDailyResponse>
+getNodeStatsDaily(params: NodeStatsQueryParams): Promise<NodeStatsDailyResponse>
 ```
 
 **Parameters:**
-- `params` (NodeStatsQueryParams, optional): Query parameters
+- `params` (NodeStatsQueryParams): Query parameters
+  - `unitId` (string[]): Array of unit IDs to filter node stats by
+  - `startDate` (Date, optional): Start date for the statistics query
+  - `endDate` (Date, optional): End date for the statistics query
 
 **Returns:** Promise resolving to NodeStatsDailyResponse
 
@@ -1033,7 +1040,11 @@ interface NodeStatsDailyData {
 
 **Example:**
 ```typescript
-const dailyNodeStats = await client.getNodeStatsDaily();
+const dailyNodeStats = await client.getNodeStatsDaily({
+  unitId: ['unit-123', 'unit-456'],
+  startDate: new Date('2024-01-01'),
+  endDate: new Date('2024-01-31')
+});
 console.log('Daily node statistics:', dailyNodeStats.data);
 ```
 

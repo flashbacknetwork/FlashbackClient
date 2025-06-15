@@ -57,7 +57,9 @@ export interface NodeStatsDailyData {
 }
 
 export interface NodeStatsQueryParams {
-  unitId?: string[];
+  unitId: string[];
+  startDate?: Date;
+  endDate?: Date;
 }
 
 export interface RepoStatsResponse {
