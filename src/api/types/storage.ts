@@ -116,6 +116,7 @@ export interface StorageRepo {
   units: RepoUnitInfo[];
   apiKeys?: ApiKey[];
   createdAt: string;
+  disabled?: boolean;
 }
 
 export interface ApiKey {

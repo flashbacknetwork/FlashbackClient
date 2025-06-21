@@ -38,6 +38,7 @@ export interface RegisterRequest extends NodeSignedMessage {
   status: string;
   region: string;
   version: string;
+  id_org?: string;
 }
 
 export interface RegisterResponse {
