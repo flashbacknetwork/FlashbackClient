@@ -442,9 +442,6 @@ export class ApiClient implements IApiClient {
     params: NodeStatsDailyQueryParams
   ): Promise<NodeStatsDailyResponse> => {
     const queryParams = new URLSearchParams();
-    if (params.unitId.length > 0) {
-      queryParams.append('unitId', params.unitId.join(','));
-    }
     if (params.startDate) {
       queryParams.append('startDate', params.startDate.toString());
     }
