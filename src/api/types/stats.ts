@@ -61,7 +61,7 @@ export interface NodeStatsQueryParams {
 }
 
 export interface NodeStatsDailyQueryParams {
-  unitId: string[];
+  unitId: string;
   startDate?: number; // ddmmyyyy format
   endDate?: number; // ddmmyyyy format
 }
