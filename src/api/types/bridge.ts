@@ -47,3 +47,13 @@ export interface RegisterResponse {
   errorCode?: string;
   errorMessage?: string;
 }
+
+export interface NodeInfo {
+  ip: string;
+  region: string;
+  version: string;
+  status: string;
+  latencyMs?: number;
+  lastUpdated: string;
+  url: string;
+}

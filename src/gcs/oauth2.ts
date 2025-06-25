@@ -12,29 +12,23 @@ export class MockupAuthClient extends OAuth2Client {
 }
 
 export class FlashbackAuthClient extends OAuth2Client {
-  private creds: ServiceCredentials;
-  private _credentials: Credentials | null = null;
+  private customTokenUri: string;
+  private serviceCredentials: { client_email: string; private_key: string };
   private scopes: string[];
+  private _credentials: Credentials | null = null;
 
   constructor(
-    private authUrl: string,
-    scopes: string[],
-    credentials: ServiceCredentials
+    customTokenUri: string,
+    serviceCredentials: { client_email: string; private_key: string },
+    scopes: string[]
   ) {
     super();
-    this.creds = credentials;
+    this.customTokenUri = customTokenUri;
+    this.serviceCredentials = serviceCredentials;
     this.scopes = scopes;
-    console.log('FlashbackAuthClient created with URL:', authUrl);
   }
 
-  async getCredentials() {
-    return {
-      client_email: this.creds.client_email,
-      private_key: this.creds.private_key,
-    };
-  }
-
-  async getAccessToken() {
+  async getAccessToken(): Promise<{ token: string | null; res: any }> {
     await this.ensureValidToken();
     return {
       token: this._credentials?.access_token || null,
@@ -47,53 +41,6 @@ export class FlashbackAuthClient extends OAuth2Client {
     return {
       Authorization: `Bearer ${this._credentials?.access_token}`,
     };
-  }
-
-  private async ensureValidToken() {
-    const now = Date.now();
-    if (
-      !this._credentials?.access_token ||
-      !this._credentials?.expiry_date ||
-      now >= this._credentials.expiry_date
-    ) {
-      await this.fetchToken();
-    }
-  }
-
-  private async fetchToken() {
-    const response = await axios.post(this.authUrl, {
-      client_email: this.creds.client_email,
-      private_key: this.creds.private_key,
-      scopes: this.scopes,
-    });
-
-    const { access_token, expires_in } = response.data;
-    this._credentials = {
-      access_token,
-      expiry_date: Date.now() + expires_in * 1000 - 10_000,
-    };
-  }
-
-  async request<T = any>(opts: any): Promise<GaxiosResponse<T>> {
-    await this.ensureValidToken();
-
-    const headers = {
-      ...(opts.headers || {}),
-      Authorization: `Bearer ${this._credentials?.access_token}`,
-    };
-
-    const response = await axios.request<T>({
-      ...opts,
-      headers,
-    });
-
-    return {
-      config: opts,
-      data: response.data,
-      headers: response.headers,
-      status: response.status,
-      statusText: response.statusText,
-    } as GaxiosResponse<T>;
   }
 
   async getRequestMetadata(url?: string): Promise<Record<string, string>> {
@@ -111,6 +58,62 @@ export class FlashbackAuthClient extends OAuth2Client {
         ...(reqOpts.headers || {}),
         Authorization: `Bearer ${this._credentials?.access_token}`,
       },
+    };
+  }
+
+  private async ensureValidToken() {
+    const now = Date.now();
+    if (
+      !this._credentials?.access_token ||
+      !this._credentials?.expiry_date ||
+      now >= this._credentials.expiry_date
+    ) {
+      await this.fetchToken();
+    }
+  }
+
+  private async fetchToken() {
+    // Create JWT assertion like the Python SDK
+    const now = Math.floor(Date.now() / 1000);
+    const header = {
+      alg: 'RS256',
+      typ: 'JWT',
+    };
+
+    const payload = {
+      iss: this.serviceCredentials.client_email,
+      sub: this.serviceCredentials.client_email,
+      aud: 'https://oauth2.googleapis.com/token',
+      exp: now + 3600,
+      iat: now,
+      scope: this.scopes.join(' '),
+    };
+
+    const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
+    const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url');
+    const signatureInput = `${encodedHeader}.${encodedPayload}`;
+    
+    const crypto = require('crypto');
+    const sign = crypto.createSign('RSA-SHA256');
+    sign.update(signatureInput);
+    const signature = sign.sign(this.serviceCredentials.private_key, 'base64url');
+    const assertion = `${signatureInput}.${signature}`;
+
+    // Request token from custom endpoint
+    const formData = new URLSearchParams();
+    formData.append('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
+    formData.append('assertion', assertion);
+    
+    const response = await axios.post(this.customTokenUri, formData, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    this._credentials = {
+      access_token: response.data.access_token,
+      expiry_date: (now + response.data.expires_in) * 1000, // Convert to milliseconds
+      token_type: response.data.token_type || 'Bearer',
     };
   }
 }

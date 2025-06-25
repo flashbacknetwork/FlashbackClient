@@ -6,15 +6,18 @@ import {
   Credentials,
   AuthClient,
   OAuth2ClientOptions,
+  JWT,
 } from 'google-auth-library';
 import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
 import * as path from 'path';
 import fetch from 'node-fetch';
 import http from 'http';
+import axios from 'axios';
 
 import dotenv from 'dotenv';
 import { FlashbackGCSStorage, SignedUrlOptions } from '../src/gcs/storage';
+import { FlashbackAuthClient } from '../src/gcs/oauth2';
 
 dotenv.config(); // loads the .env file
 
@@ -25,7 +28,9 @@ describe('StorageClient', () => {
     {
       name: 'GCS to S3 Configuration (AWS endpoint)',
       config: {
+        //apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
         apiEndpoint: process.env.TEST_GCS_LOCAL_PROVIDER_URL,
+        //tokenUri: process.env.TEST_GCS_AWS_PROVIDER_URL + '/token',
         tokenUri: process.env.TEST_GCS_LOCAL_PROVIDER_URL + '/token',
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
@@ -49,8 +54,8 @@ describe('StorageClient', () => {
     {
       name: 'GCS to delegated S3 (AWS endpoint)',
       config: {
-        //apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
-        apiEndpoint: process.env.TEST_GCS_LOCAL_PROVIDER_URL,
+        apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
+        //apiEndpoint: process.env.TEST_GCS_LOCAL_PROVIDER_URL,
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
           private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -138,18 +143,22 @@ describe('StorageClient', () => {
   test.each(testConfigurations)(
     'Should perform complete GCS operations workflow for $name',
     async ({ config, bucketName }) => {
-      const clientOptions: OAuth2ClientOptions = {
-        clientId: config.credentials.client_email,
-        clientSecret: config.credentials.private_key,
-        endpoints: {
-          oauth2TokenUrl: config.tokenUri,
-        },
-      };
-      const authClient = new OAuth2Client(clientOptions);
+      // Create custom auth client with custom token endpoint
+      const tokenUri = config.tokenUri || `${config.apiEndpoint}/token`;
+      const authClient = new FlashbackAuthClient(
+        tokenUri,
+        config.credentials,
+        [
+          'https://www.googleapis.com/auth/devstorage.full_control',
+          'https://www.googleapis.com/auth/devstorage.read_only',
+          'https://www.googleapis.com/auth/devstorage.read_write'
+        ]
+      );
 
       const storage = new Storage({
-        ...config,
+        apiEndpoint: config.apiEndpoint,
         authClient,
+        useAuthWithCustomEndpoint: true,
       });
       const fileStats = fs.statSync(testFilePath);
       const bucket = storage.bucket(bucketName);
@@ -348,3 +357,4 @@ describe('StorageClient', () => {
     }
   );
 });
+

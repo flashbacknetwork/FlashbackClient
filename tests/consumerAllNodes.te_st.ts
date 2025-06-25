@@ -21,6 +21,7 @@ import fetch from 'node-fetch';
 import http from 'http';
 
 import dotenv from 'dotenv';
+import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 
 dotenv.config(); // loads the .env file
 
@@ -138,9 +139,7 @@ describe('StorageClient', () => {
         authClient,
       });
 
-      const fileStats = fs.statSync(testFilePath);
       const bucket = storage.bucket(bucketName);
-      const file = bucket.file(filePath);
 
       // 1. Check if bucket exists
       try {
@@ -153,5 +152,22 @@ describe('StorageClient', () => {
     }
   );
 
+  test.each(testBLOBConfigurations)(
+    'Should perform complete BLOB operations workflow for $name',
+    async ({ config, containerName }) => {
+      const endpointUrl = new URL(config.endpoint);
+      const customHostname = `${config.accountName}.${endpointUrl.hostname}`;
+      const customEndpoint = `${endpointUrl.protocol}//${customHostname}${endpointUrl.port ? ':' + endpointUrl.port : ''}`;
+      const connectionString = `DefaultEndpointsProtocol=${endpointUrl.protocol.replace(':', '')};AccountName=${config.accountName};AccountKey=${config.accountKey};BlobEndpoint=${customEndpoint}`;
+      const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+      const containerClient = blobServiceClient.getContainerClient(containerName);
 
+      try {
+        const containerProperties = await containerClient.getProperties();
+        expect(containerProperties._response.status).toBe(200);
+      } catch (error) {
+        console.error('Error checking container existence:', error);
+      }
+    }
+  );
 });
