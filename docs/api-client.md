@@ -1088,6 +1088,40 @@ const unitStats = await client.getUnitStats({
 console.log('Storage unit statistics:', unitStats);
 ```
 
+### getNodeInfo
+
+Retrieves information about all nodes in the network.
+
+```typescript
+getNodeInfo(): Promise<NodeInfo[]>
+```
+
+**Returns:** Promise resolving to array of NodeInfo objects
+
+**NodeInfo Interface:**
+```typescript
+interface NodeInfo {
+  ip: string;           // IP address of the node
+  region: string;       // Geographic region of the node
+  version: string;      // Software version running on the node
+  status: string;       // Current status of the node (ONLINE, OFFLINE, DISCONNECTED)
+  latencyMs?: number;   // Current latency to the node in milliseconds (optional)
+  lastUpdated: string;  // ISO timestamp of when the node was last updated
+  url: string;          // URL endpoint of the node
+}
+```
+
+**Example:**
+```typescript
+const nodeInfo = await client.getNodeInfo();
+nodeInfo.forEach(node => {
+  console.log(`Node ${node.ip}: ${node.status} (${node.region})`);
+  console.log(`  Version: ${node.version}`);
+  console.log(`  Latency: ${node.latencyMs || 'N/A'}ms`);
+  console.log(`  URL: ${node.url}`);
+});
+```
+
 ## Error Handling
 
 The API client throws `HttpError` instances for HTTP-related errors:

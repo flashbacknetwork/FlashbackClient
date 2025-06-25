@@ -48,6 +48,7 @@ import {
   RepoStatsResponse,
   NodeStatsDailyQueryParams,
 } from './types/stats';
+import { NodeInfo } from './types/bridge';
 
 interface ErrorResponse {
   message?: string;
@@ -480,5 +481,9 @@ export class ApiClient implements IApiClient {
       'GET',
       null
     );
+  };
+
+  public getNodeInfo = async (): Promise<NodeInfo[]> => {
+    return this.makeRequest<NodeInfo[]>('node', 'GET', null);
   };
 }
