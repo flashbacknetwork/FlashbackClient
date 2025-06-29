@@ -49,6 +49,7 @@ import {
   NodeStatsDailyQueryParams,
 } from './types/stats';
 import { NodeInfo } from './types/bridge';
+import { FeedbackEmailBody } from './types/email';
 
 interface ErrorResponse {
   message?: string;
@@ -485,5 +486,9 @@ export class ApiClient implements IApiClient {
 
   public getNodeInfo = async (): Promise<NodeInfo[]> => {
     return this.makeRequest<NodeInfo[]>('node', 'GET', null);
+  };
+
+  public sendFeedbackEmail = async (data: FeedbackEmailBody): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>('email/feedback', 'POST', data);
   };
 }

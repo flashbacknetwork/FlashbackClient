@@ -42,7 +42,7 @@ export class FlashbackGCSStorage extends Storage {
 
     // Ensure the endpoint doesn't have a trailing slash
     const cleanEndpoint = apiEndpoint.replace(/\/$/, '');
-    const authClient = new FlashbackAuthClient(cleanEndpoint + '/token', tokenScopes, credentials);
+    const authClient = new FlashbackAuthClient(cleanEndpoint + '/token', credentials, tokenScopes);
 
     super({
       ...rest,
