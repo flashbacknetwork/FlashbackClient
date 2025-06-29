@@ -39,7 +39,7 @@ describe('StorageClient', () => {
     {
       name: 'Azure to GCS Configuration',
       config: {
-        endpoint: process.env.TEST_AZURE_ENDPOINT3!,
+        endpoint: process.env.TEST_AZURE_ENDPOINT_EU!,
         //endpoint: process.env.TEST_AZURE_LOCAL_ENDPOINT!,
         accountName: process.env.TEST_AZURE_STORAGE_ACCOUNT_NAME!,
         accountKey: process.env.TEST_AZURE_STORAGE_ACCOUNT_KEY!,

@@ -62,7 +62,7 @@ describe('StorageClient', () => {
     {
       name: 'S3 to Azure Configuration',
       config: {
-        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL3!,
+        endpoint: process.env.TEST_S3_AWS_PROVIDER_URL_EU!,
         //endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL!,
         credentials: {
           accessKeyId: process.env.TEST_AWS_ACCESS_KEY_ID!,

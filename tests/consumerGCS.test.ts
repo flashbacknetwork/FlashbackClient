@@ -28,10 +28,10 @@ describe('StorageClient', () => {
     {
       name: 'GCS to S3 Configuration (AWS endpoint)',
       config: {
-        //apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
-        apiEndpoint: process.env.TEST_GCS_LOCAL_PROVIDER_URL,
-        //tokenUri: process.env.TEST_GCS_AWS_PROVIDER_URL + '/token',
-        tokenUri: process.env.TEST_GCS_LOCAL_PROVIDER_URL + '/token',
+        apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
+        //apiEndpoint: process.env.TEST_GCS_LOCAL_PROVIDER_URL,
+        tokenUri: process.env.TEST_GCS_AWS_PROVIDER_URL + '/token',
+        //tokenUri: process.env.TEST_GCS_LOCAL_PROVIDER_URL + '/token',
         credentials: {
           client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
           private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -39,6 +39,7 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET4!,
     },
+    /*
     {
       name: 'GCS to GCS Configuration (AWS endpoint)',
       config: {
@@ -87,7 +88,7 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AZURE_CONTAINER_NAME!,
     },
-    /*
+    
     {
       name: 'GCS to S3 Configuration (GCP endpoint)',
       config: {
