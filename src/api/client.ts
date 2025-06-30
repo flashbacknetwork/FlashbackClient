@@ -50,6 +50,7 @@ import {
 } from './types/stats';
 import { NodeInfo } from './types/bridge';
 import { FeedbackEmailBody } from './types/email';
+import { QuotaResponse } from './types/quota';
 
 interface ErrorResponse {
   message?: string;
@@ -357,6 +358,10 @@ export class ApiClient implements IApiClient {
 
   public userDeactivate = async (): Promise<DeactivateResponse> => {
     return this.makeRequest<DeactivateResponse>('user/deactivate', 'POST', null);
+  };
+
+  public getUserQuota = async (): Promise<QuotaResponse> => {
+    return this.makeRequest<QuotaResponse>('user/quota', 'GET', null);
   };
 
   ////// Stats API
