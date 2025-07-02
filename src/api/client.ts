@@ -334,6 +334,10 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<RegisterResponse>('user/register', 'POST', data);
   };
 
+  public validateRegistration = async (token: string): Promise<RegisterResponse> => {
+    return this.makeRequest<RegisterResponse>('/user/verify-email', 'POST', { token });
+  };
+
   public userLogin = async (data: LoginBody): Promise<LoginResponse> => {
     return this.makeRequest<LoginResponse>('user/login', 'POST', data);
   };
