@@ -45,8 +45,8 @@ export interface RegisterBody {
   email: string;
   password: string;
   companyName: string;
-  companyDomain: string;
-  companyWebsite: string;
+  companyWebsite?: string;
+  isBusiness: boolean;
 }
 
 export interface LoginBody {
