@@ -63,6 +63,7 @@ export interface RegisterResponse {
   accessToken?: string;
   refreshToken?: string;
   tokenId?: string;
+  expiresAt?: number;
   user?: {
     id: string;
     email: string;
