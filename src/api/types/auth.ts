@@ -44,8 +44,18 @@ export interface JwtPayload {
 export interface RegisterBody {
   email: string;
   password: string;
+  firstName: string;
+  lastName: string;
   companyName: string;
   companyWebsite?: string;
+  phone?: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  state?: string;
+  zipcode?: string;
+  country?: string;
+  website?: string;
   isBusiness: boolean;
 }
 
