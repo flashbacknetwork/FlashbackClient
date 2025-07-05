@@ -36,6 +36,7 @@ import {
   RefreshTokenResponse,
   RegisterBody,
   RegisterResponse,
+  ResetPasswordBody,
 } from './types/auth';
 import {
   StatsQueryParams,
@@ -366,6 +367,14 @@ export class ApiClient implements IApiClient {
 
   public getUserQuota = async (): Promise<QuotaResponse> => {
     return this.makeRequest<QuotaResponse>('user/quota', 'GET', null);
+  };
+
+  public requestPasswordReset = async (email: string): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>('user/request-reset-password', 'POST', { email });
+  };
+
+  public resetPassword = async (data: ResetPasswordBody): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>('user/reset-password', 'POST', data);
   };
 
   ////// Stats API

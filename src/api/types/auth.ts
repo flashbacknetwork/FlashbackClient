@@ -103,3 +103,8 @@ export interface DeactivateResponse {
   error_code?: string;
   message?: string;
 }
+
+export interface ResetPasswordBody {
+  token: string;
+  newPassword: string;
+}
