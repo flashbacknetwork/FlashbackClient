@@ -51,6 +51,12 @@ import {
 import { NodeInfo } from './types/bridge';
 import { FeedbackEmailBody } from './types/email';
 import { QuotaResponse } from './types/quota';
+import {
+  BuySubscriptionRequest,
+  BuySubscriptionResponse,
+  GetSubscriptionsResponse,
+  MySubscriptionResponse,
+} from './types/subscriptions';
 
 interface ErrorResponse {
   message?: string;
@@ -432,7 +438,7 @@ export class ApiClient implements IApiClient {
     };
 
     const response = await this.makeRequest<ServerResponse>(
-      `stats/nodes/minute?${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      `stats/nodes/minute${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
       'GET',
       null
     );
@@ -499,5 +505,18 @@ export class ApiClient implements IApiClient {
 
   public sendFeedbackEmail = async (data: FeedbackEmailBody): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>('email/feedback', 'POST', data);
+  };
+
+  ////// Subscriptions API
+  public getSubscriptions = async (): Promise<GetSubscriptionsResponse> => {
+    return this.makeRequest<GetSubscriptionsResponse>('subscriptions', 'GET', null);
+  };
+
+  public getMySubscription = async (): Promise<MySubscriptionResponse> => {
+    return this.makeRequest<MySubscriptionResponse>('subscriptions/my', 'GET', null);
+  };
+
+  public buySubscription = async (data: BuySubscriptionRequest): Promise<BuySubscriptionResponse> => {
+    return this.makeRequest<BuySubscriptionResponse>('subscriptions/buy', 'POST', data);
   };
 }

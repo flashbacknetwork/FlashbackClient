@@ -1122,6 +1122,143 @@ nodeInfo.forEach(node => {
 });
 ```
 
+## Subscription Management Methods
+
+### getSubscriptions
+
+Retrieves all available subscription plans.
+
+```typescript
+getSubscriptions(): Promise<GetSubscriptionsResponse>
+```
+
+**Returns:** Promise resolving to GetSubscriptionsResponse containing available subscription plans
+
+**GetSubscriptionsResponse Interface:**
+```typescript
+interface GetSubscriptionsResponse {
+  success: boolean;            // Whether the request was successful
+  data: SubscriptionResponse[]; // Array of available subscriptions
+}
+
+interface SubscriptionResponse {
+  id: string;                           // Subscription ID
+  name: string;                         // Subscription name
+  description: string;                  // Subscription description
+  periods: SubscriptionPeriodResponse[]; // Available billing periods
+}
+
+interface SubscriptionPeriodResponse {
+  id: string;           // Period ID
+  subscriptionId: string; // Parent subscription ID
+  periodType: string;   // Period type (e.g., 'MONTHLY', 'YEARLY')
+  price: number;        // Price for this period
+}
+```
+
+**Example:**
+```typescript
+const subscriptions = await client.getSubscriptions();
+subscriptions.data.forEach(sub => {
+  console.log(`${sub.name}: ${sub.description}`);
+  sub.periods.forEach(period => {
+    console.log(`  ${period.periodType}: $${period.price}`);
+  });
+});
+```
+
+### getMySubscription
+
+Retrieves the current user's active subscription.
+
+```typescript
+getMySubscription(): Promise<MySubscriptionResponse>
+```
+
+**Returns:** Promise resolving to MySubscriptionResponse with current subscription details
+
+**MySubscriptionResponse Interface:**
+```typescript
+interface MySubscriptionResponse {
+  success: boolean;                    // Whether the request was successful
+  data: OrgSubscriptionResponse | null; // Current subscription or null if none
+  message?: string;                    // Optional message
+}
+
+interface OrgSubscriptionResponse {
+  id: string;         // Subscription ID
+  name: string;       // Subscription name
+  description: string; // Subscription description
+  periodId: string;   // Current period ID
+  periodType: string; // Current period type
+  price: number;      // Current price
+  dateFrom: string;   // Start date (ISO string)
+  dateTo: string | null; // End date (ISO string) or null if ongoing
+  status: string;     // Subscription status
+  autoRenew: boolean; // Whether auto-renewal is enabled
+}
+```
+
+**Example:**
+```typescript
+const mySubscription = await client.getMySubscription();
+if (mySubscription.data) {
+  console.log(`Current plan: ${mySubscription.data.name}`);
+  console.log(`Status: ${mySubscription.data.status}`);
+  console.log(`Price: $${mySubscription.data.price} (${mySubscription.data.periodType})`);
+  console.log(`Auto-renew: ${mySubscription.data.autoRenew ? 'Yes' : 'No'}`);
+} else {
+  console.log('No active subscription');
+}
+```
+
+### buySubscription
+
+Purchases a subscription plan for the current user.
+
+```typescript
+buySubscription(data: BuySubscriptionRequest): Promise<BuySubscriptionResponse>
+```
+
+**BuySubscriptionRequest Interface:**
+```typescript
+interface BuySubscriptionRequest {
+  subscriptionPeriodId: string; // ID of the subscription period to purchase
+}
+```
+
+**Returns:** Promise resolving to BuySubscriptionResponse with payment information
+
+**BuySubscriptionResponse Interface:**
+```typescript
+interface BuySubscriptionResponse {
+  success: boolean;      // Whether the request was successful
+  clientSecret?: string; // Stripe client secret for payment processing
+  sessionId?: string;    // Stripe session ID for checkout
+  message?: string;      // Optional message
+  error_code?: string;   // Error code if purchase failed
+}
+```
+
+**Example:**
+```typescript
+const purchase = await client.buySubscription({
+  subscriptionPeriodId: 'period-123'
+});
+
+if (purchase.success) {
+  if (purchase.clientSecret) {
+    // Handle Stripe payment with client secret
+    console.log('Payment required - client secret:', purchase.clientSecret);
+  } else if (purchase.sessionId) {
+    // Redirect to Stripe checkout
+    console.log('Redirect to checkout - session ID:', purchase.sessionId);
+  }
+} else {
+  console.error('Purchase failed:', purchase.message);
+}
+```
+
 ## Error Handling
 
 The API client throws `HttpError` instances for HTTP-related errors:

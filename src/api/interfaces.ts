@@ -41,6 +41,12 @@ import {
   NodeStatsDailyResponse,
   NodeStatsQueryParams,
 } from './types/stats';
+import {
+  BuySubscriptionRequest,
+  BuySubscriptionResponse,
+  GetSubscriptionsResponse,
+  MySubscriptionResponse,
+} from './types/subscriptions';
 
 export enum ProviderType {
   GOOGLE = 'GOOGLE',
@@ -85,4 +91,7 @@ export interface IApiClient {
   getMinuteStats(params: StatsQueryParams): Promise<StatsResponse>;
   getNodeStatsMinute(params?: NodeStatsQueryParams): Promise<NodeStatsMinuteResponse>;
   getNodeStatsDaily(params?: NodeStatsQueryParams): Promise<NodeStatsDailyResponse>;
+  getSubscriptions(): Promise<GetSubscriptionsResponse>;
+  getMySubscription(): Promise<MySubscriptionResponse>;
+  buySubscription(data: BuySubscriptionRequest): Promise<BuySubscriptionResponse>;
 }
