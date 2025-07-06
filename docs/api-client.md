@@ -1259,6 +1259,106 @@ if (purchase.success) {
 }
 ```
 
+### getPayments
+
+Retrieves payment history for the current user's organization.
+
+```typescript
+getPayments(params?: PaymentsQueryParams): Promise<PaymentsListResponse>
+```
+
+**PaymentsQueryParams Interface:**
+```typescript
+interface PaymentsQueryParams {
+  startDate?: string; // Start date for filtering payments (ISO string format)
+  endDate?: string;   // End date for filtering payments (ISO string format)
+}
+```
+
+**Returns:** Promise resolving to PaymentsListResponse with payment history
+
+**PaymentsListResponse Interface:**
+```typescript
+interface PaymentsListResponse {
+  success: boolean;           // Whether the request was successful
+  data?: PaymentResponse[];   // Array of payment records (optional)
+  message?: string;           // Optional message or error description
+  error_code?: string;        // Error code if request failed
+}
+
+interface PaymentResponse {
+  id: string;        // Unique payment identifier
+  amount: number;    // Payment amount
+  currency: string;  // Payment currency (e.g., 'usd')
+  status: string;    // Payment status (e.g., 'COMPLETED', 'PENDING', 'FAILED')
+  timestamp: string; // Payment timestamp (ISO string)
+}
+```
+
+**Example:**
+```typescript
+// Get all payments
+const allPayments = await client.getPayments();
+if (allPayments.success && allPayments.data) {
+  allPayments.data.forEach(payment => {
+    console.log(`Payment ${payment.id}: $${payment.amount} ${payment.currency}`);
+    console.log(`  Status: ${payment.status}`);
+    console.log(`  Date: ${payment.timestamp}`);
+  });
+}
+
+// Get payments for a specific date range
+const recentPayments = await client.getPayments({
+  startDate: '2024-01-01T00:00:00Z',
+  endDate: '2024-01-31T23:59:59Z'
+});
+console.log('January payments:', recentPayments.data);
+```
+
+### cancelSubscription
+
+Cancels the current user's active subscription.
+
+```typescript
+cancelSubscription(): Promise<CancelSubscriptionResponse>
+```
+
+**Returns:** Promise resolving to CancelSubscriptionResponse
+
+**CancelSubscriptionResponse Interface:**
+```typescript
+interface CancelSubscriptionResponse {
+  success: boolean;    // Whether the cancellation was successful
+  message?: string;    // Optional message or confirmation
+  error_code?: string; // Error code if cancellation failed
+}
+```
+
+**Example:**
+```typescript
+try {
+  const result = await client.cancelSubscription();
+  
+  if (result.success) {
+    console.log('Subscription cancelled successfully');
+    console.log('Message:', result.message);
+  } else {
+    console.error('Cancellation failed:', result.message);
+    console.error('Error code:', result.error_code);
+  }
+} catch (error) {
+  if (error instanceof HttpError) {
+    if (error.status === 404) {
+      console.log('No active subscription found to cancel');
+    } else if (error.status === 400) {
+      console.log('Subscription cannot be cancelled (may already be cancelled)');
+    } else {
+      console.error('Cancellation error:', error.message);
+    }
+  }
+}
+```
+
 ## Error Handling
 
 The API client throws `HttpError` instances for HTTP-related errors:
@@ -1348,6 +1448,25 @@ async function example() {
       endDate: new Date(),
       repoId: [repo.repoId]
     });
+    
+    // Check current subscription
+    const mySubscription = await client.getMySubscription();
+    if (mySubscription.data) {
+      console.log('Current subscription:', mySubscription.data.name);
+      
+      // Get payment history
+      const payments = await client.getPayments({
+        startDate: '2024-01-01T00:00:00Z',
+        endDate: new Date().toISOString()
+      });
+      
+      if (payments.success && payments.data) {
+        console.log(`Payment history: ${payments.data.length} payments found`);
+        payments.data.forEach(payment => {
+          console.log(`  ${payment.timestamp}: $${payment.amount} ${payment.currency} (${payment.status})`);
+        });
+      }
+    }
     
     console.log('Setup complete!');
     console.log('Unit ID:', unit.unitId);

@@ -56,6 +56,9 @@ import {
   BuySubscriptionResponse,
   GetSubscriptionsResponse,
   MySubscriptionResponse,
+  PaymentsListResponse,
+  PaymentsQueryParams,
+  CancelSubscriptionResponse,
 } from './types/subscriptions';
 
 interface ErrorResponse {
@@ -518,5 +521,24 @@ export class ApiClient implements IApiClient {
 
   public buySubscription = async (data: BuySubscriptionRequest): Promise<BuySubscriptionResponse> => {
     return this.makeRequest<BuySubscriptionResponse>('subscriptions/buy', 'POST', data);
+  };
+
+  public getPayments = async (params?: PaymentsQueryParams): Promise<PaymentsListResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params?.startDate) {
+      queryParams.append('startDate', params.startDate);
+    }
+    if (params?.endDate) {
+      queryParams.append('endDate', params.endDate);
+    }
+    return this.makeRequest<PaymentsListResponse>(
+      `subscriptions/payments${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public cancelSubscription = async (): Promise<CancelSubscriptionResponse> => {
+    return this.makeRequest<CancelSubscriptionResponse>('subscriptions/cancel', 'POST', null);
   };
 }

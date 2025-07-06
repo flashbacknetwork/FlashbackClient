@@ -46,4 +46,30 @@ export interface MySubscriptionResponse {
 export interface GetSubscriptionsResponse {
   success: boolean;
   data: SubscriptionResponse[];
+}
+
+export interface PaymentResponse {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  timestamp: string;
+}
+
+export interface PaymentsListResponse {
+  success: boolean;
+  data?: PaymentResponse[];
+  message?: string;
+  error_code?: string;
+}
+
+export interface PaymentsQueryParams {
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface CancelSubscriptionResponse {
+  success: boolean;
+  message?: string;
+  error_code?: string;
 } 

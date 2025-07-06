@@ -46,6 +46,9 @@ import {
   BuySubscriptionResponse,
   GetSubscriptionsResponse,
   MySubscriptionResponse,
+  PaymentsListResponse,
+  PaymentsQueryParams,
+  CancelSubscriptionResponse,
 } from './types/subscriptions';
 
 export enum ProviderType {
@@ -94,4 +97,6 @@ export interface IApiClient {
   getSubscriptions(): Promise<GetSubscriptionsResponse>;
   getMySubscription(): Promise<MySubscriptionResponse>;
   buySubscription(data: BuySubscriptionRequest): Promise<BuySubscriptionResponse>;
+  getPayments(params?: PaymentsQueryParams): Promise<PaymentsListResponse>;
+  cancelSubscription(): Promise<CancelSubscriptionResponse>;
 }
