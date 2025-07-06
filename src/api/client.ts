@@ -147,8 +147,7 @@ export class ApiClient implements IApiClient {
       case ProviderType.GOOGLE:
         return this.refreshGoogleToken(refreshToken);
       case ProviderType.GITHUB:
-        // TODO: Implement refresh token for Github
-        throw new Error('Not implemented');
+        return this.refreshGithubToken(refreshToken);
       case ProviderType.LOCAL:
         return this.userRefresh(refreshToken);
       default:
@@ -223,6 +222,12 @@ export class ApiClient implements IApiClient {
 
   private refreshGoogleToken = async (refreshToken: string): Promise<RefreshTokenResponse> => {
     return this.makeRequest<RefreshTokenResponse>('auth/google/refresh', 'POST', {
+      refresh_token: refreshToken,
+    });
+  };
+
+  private refreshGithubToken = async (refreshToken: string): Promise<RefreshTokenResponse> => {
+    return this.makeRequest<RefreshTokenResponse>('auth/github/refresh', 'POST', {
       refresh_token: refreshToken,
     });
   };
