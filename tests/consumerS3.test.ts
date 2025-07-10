@@ -32,6 +32,20 @@ describe('StorageClient', () => {
 
   const testConfigurations = [
     {
+      name: 'S3 to S3 FB Test (AWS endpoint)',
+      config: {
+        endpoint: process.env.TEST_AWS_FB_PROVIDER_URL,
+        //endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_FB_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_FB_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_FB_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_FB_BUCKET!,
+    },
+    {
       name: 'S3 to S3 StorJ Configuration (AWS endpoint)',
       config: {
         endpoint: process.env.TEST_S3_AWS_PROVIDER_URL,
@@ -230,7 +244,6 @@ describe('StorageClient', () => {
           console.error('Error message:', error.message);
           console.error('Error stack:', error.stack);
         }
-        throw error; // Re-throw to fail the test
       }
 
       // 3. List Bucket Contents

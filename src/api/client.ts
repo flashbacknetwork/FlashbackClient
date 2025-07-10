@@ -160,12 +160,15 @@ export class ApiClient implements IApiClient {
   };
 
   private makeRequest = async <T>(path: string, method: string, data?: any): Promise<T> => {
+    const isFormData = data instanceof FormData;
+    
     const options: RequestInit = {
       method,
       headers: this.headers,
-      body: data ? JSON.stringify(data) : null,
+      body: data ? (isFormData ? data : JSON.stringify(data)) : null,
     };
-    if (data) {
+    
+    if (data && !isFormData) {
       options.headers = {
         ...options.headers,
         'Content-Type': 'application/json',
@@ -511,7 +514,7 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<NodeInfo[]>('node', 'GET', null);
   };
 
-  public sendFeedbackEmail = async (data: FeedbackEmailBody): Promise<ActionResponse> => {
+  public sendFeedbackEmail = async (data: FormData): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>('email/feedback', 'POST', data);
   };
 }
