@@ -86,3 +86,67 @@ export interface UnitStatsResponse {
     totalSizeChange: string;
   }[];
 }
+
+export interface BucketStatsResponse {
+  success: boolean;
+  stats: {
+    bucketId: string;
+    totalCount: string;
+    totalUploadBytes: string;
+    totalDownloadBytes: string;
+    totalSizeChange: string;
+  }[];
+}
+
+// ===== BUCKET-BASED INTERFACES (NEW NAMING) =====
+// These provide the new bucket terminology while maintaining backwards compatibility
+
+// New interfaces where properties need renaming
+export interface StatsQueryWithBucketParams {
+  startDate?: Date;
+  endDate?: Date;
+  repoId?: string[];
+  bucketId?: string[];
+}
+
+export interface StatsDataWithBucket {
+  timestamp: number;
+  repoId: string;
+  bucketId: string;
+  upl_bytes: bigint;
+  dwl_bytes: bigint;
+  size_change: bigint;
+  latency_ms: number;
+}
+
+export interface NodeStatsMinuteDataWithBucket {
+  nodeId: string;
+  bucketId: string;
+  nodeStatus: string;
+  lastUpdated: Date;
+  latency_ms: number;
+}
+
+export interface NodeStatsDailyDataWithBucket {
+  nodeId: string;
+  bucketId: string;
+  day: number;
+  online: number;
+  latency_ms: number;
+  endpoint: string;
+  region: string;
+  storageType: string;
+  provider: string;
+  status: string;
+  version: string;
+}
+
+export interface NodeStatsQueryWithBucketParams {
+  bucketId: string[];
+}
+
+export interface NodeStatsDailyQueryWithBucketParams {
+  bucketId: string[];
+  startDate?: number; // ddmmyyyy format
+  endDate?: number; // ddmmyyyy format
+}

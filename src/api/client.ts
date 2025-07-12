@@ -65,6 +65,11 @@ import {
   UnitStatsResponse,
   RepoStatsResponse,
   NodeStatsDailyQueryParams,
+  BucketStatsResponse,
+  // Bucket-based stats interfaces
+  StatsQueryWithBucketParams,
+  NodeStatsQueryWithBucketParams,
+  NodeStatsDailyQueryWithBucketParams,
 } from './types/stats';
 import { NodeInfo } from './types/bridge';
 import { FeedbackEmailBody } from './types/email';
@@ -465,7 +470,10 @@ export class ApiClient implements IApiClient {
     }
   }
 
-  public getDailyStats = async (params: StatsQueryParams): Promise<StatsResponse> => {
+  // Function overloads for getDailyStats
+  public getDailyStats(params: StatsQueryParams): Promise<StatsResponse>;
+  public getDailyStats(params: StatsQueryWithBucketParams): Promise<StatsResponse>;
+  public async getDailyStats(params: StatsQueryParams | StatsQueryWithBucketParams): Promise<StatsResponse> {
     this.validateDateRange(params.startDate, params.endDate);
 
     const queryParams = new URLSearchParams();
@@ -480,13 +488,21 @@ export class ApiClient implements IApiClient {
 
     if (params.repoId && params.repoId.length > 0)
       queryParams.append('repoId', params.repoId.join(','));
-    if (params.unitId && params.unitId.length > 0)
+    
+    // Handle both unitId and bucketId
+    if ('unitId' in params && params.unitId && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
+    } else if ('bucketId' in params && params.bucketId && params.bucketId.length > 0) {
+      queryParams.append('bucketId', params.bucketId.join(','));
+    }
 
     return this.makeRequest<StatsResponse>(`stats/daily?${queryParams.toString()}`, 'GET', null);
-  };
+  }
 
-  public getMinuteStats = async (params: StatsQueryParams): Promise<StatsResponse> => {
+  // Function overloads for getMinuteStats
+  public getMinuteStats(params: StatsQueryParams): Promise<StatsResponse>;
+  public getMinuteStats(params: StatsQueryWithBucketParams): Promise<StatsResponse>;
+  public async getMinuteStats(params: StatsQueryParams | StatsQueryWithBucketParams): Promise<StatsResponse> {
     this.validateDateRange(params.startDate, params.endDate);
 
     const queryParams = new URLSearchParams();
@@ -501,18 +517,30 @@ export class ApiClient implements IApiClient {
 
     if (params.repoId && params.repoId.length > 0)
       queryParams.append('repoId', params.repoId.join(','));
-    if (params.unitId && params.unitId.length > 0)
+    
+    // Handle both unitId and bucketId
+    if ('unitId' in params && params.unitId && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
+    } else if ('bucketId' in params && params.bucketId && params.bucketId.length > 0) {
+      queryParams.append('bucketId', params.bucketId.join(','));
+    }
 
     return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
-  };
+  }
 
-  public getNodeStatsMinute = async (
-    params: NodeStatsQueryParams
-  ): Promise<NodeStatsMinuteResponse> => {
+  // Function overloads for getNodeStatsMinute
+  public getNodeStatsMinute(params: NodeStatsQueryParams): Promise<NodeStatsMinuteResponse>;
+  public getNodeStatsMinute(params: NodeStatsQueryWithBucketParams): Promise<NodeStatsMinuteResponse>;
+  public async getNodeStatsMinute(
+    params: NodeStatsQueryParams | NodeStatsQueryWithBucketParams
+  ): Promise<NodeStatsMinuteResponse> {
     const queryParams = new URLSearchParams();
-    if (params.unitId.length > 0) {
+    
+    // Handle both unitId and bucketId
+    if ('unitId' in params && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
+    } else if ('bucketId' in params && params.bucketId.length > 0) {
+      queryParams.append('bucketId', params.bucketId.join(','));
     }
 
     type ServerResponse = Omit<NodeStatsMinuteResponse, 'data'> & {
@@ -535,15 +563,23 @@ export class ApiClient implements IApiClient {
       ...response,
       data: processedData,
     };
-  };
+  }
 
-  public getNodeStatsDaily = async (
-    params: NodeStatsDailyQueryParams
-  ): Promise<NodeStatsDailyResponse> => {
+  // Function overloads for getNodeStatsDaily
+  public getNodeStatsDaily(params: NodeStatsDailyQueryParams): Promise<NodeStatsDailyResponse>;
+  public getNodeStatsDaily(params: NodeStatsDailyQueryWithBucketParams): Promise<NodeStatsDailyResponse>;
+  public async getNodeStatsDaily(
+    params: NodeStatsDailyQueryParams | NodeStatsDailyQueryWithBucketParams
+  ): Promise<NodeStatsDailyResponse> {
     const queryParams = new URLSearchParams();
-    if (params.unitId.length > 0) {
+    
+    // Handle both unitId and bucketId
+    if ('unitId' in params && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
+    } else if ('bucketId' in params && params.bucketId.length > 0) {
+      queryParams.append('bucketId', params.bucketId.join(','));
     }
+    
     if (params.startDate) {
       queryParams.append('startDate', params.startDate.toString());
     }
@@ -555,7 +591,7 @@ export class ApiClient implements IApiClient {
       'GET',
       null
     );
-  };
+  }
 
   public getRepoStats = async (params?: { repoId?: string[] }): Promise<RepoStatsResponse> => {
     const queryParams = new URLSearchParams();
@@ -576,6 +612,18 @@ export class ApiClient implements IApiClient {
     }
     return this.makeRequest<UnitStatsResponse>(
       `unit/stats${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public getBucketStats = async (params?: { bucketId?: string[] }): Promise<BucketStatsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params && params.bucketId && params.bucketId.length > 0) {
+      queryParams.append('bucketId', params.bucketId.join(','));
+    }
+    return this.makeRequest<BucketStatsResponse>(
+      `bucket/stats${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
       'GET',
       null
     );
