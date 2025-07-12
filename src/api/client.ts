@@ -23,6 +23,18 @@ import {
   StorageUnitStatusResponse,
   GetUnitNodeStatsResponse,
   GetUnitNodeStatsRequest,
+  // Bucket-based interfaces
+  CreateBucketRequest,
+  CreateBucketResponse,
+  UpdateBucketRequest,
+  UpdateBucketResponse,
+  ValidateBucketRequest,
+  ValidateBucketResponse,
+  StorageBucket,
+  GetBucketsResponse,
+  StorageBucketStatusResponse,
+  GetBucketNodeStatsRequest,
+  GetBucketNodeStatsResponse,
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -279,6 +291,48 @@ export class ApiClient implements IApiClient {
     data: GetUnitNodeStatsRequest
   ): Promise<GetUnitNodeStatsResponse> => {
     return this.makeRequest<GetUnitNodeStatsResponse>(`unit/${unitId}/stats`, 'POST', data);
+  };
+
+  ////// Buckets API (new bucket-based endpoints)
+  public createStorageBucket = async (data: CreateBucketRequest): Promise<CreateBucketResponse> => {
+    return this.makeRequest<CreateBucketResponse>('bucket', 'POST', data);
+  };
+
+  public getStorageBuckets = async (): Promise<GetBucketsResponse> => {
+    return this.makeRequest<GetBucketsResponse>('bucket', 'GET', null);
+  };
+
+  public validateStorageBucket = async (
+    bucketId: string,
+    data: ValidateBucketRequest
+  ): Promise<ValidateBucketResponse> => {
+    return this.makeRequest<ValidateBucketResponse>(`bucket/${bucketId}/validate`, 'POST', data);
+  };
+
+  public updateStorageBucket = async (
+    bucketId: string,
+    data: UpdateBucketRequest
+  ): Promise<UpdateBucketResponse> => {
+    return this.makeRequest<UpdateBucketResponse>(`bucket/${bucketId}`, 'PUT', data);
+  };
+
+  public deleteStorageBucket = async (bucketId: string): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>(`bucket/${bucketId}`, 'DELETE', null);
+  };
+
+  public getAvailableStorageBuckets = async (): Promise<StorageBucket[]> => {
+    return this.makeRequest<StorageBucket[]>('bucket/available', 'GET', null);
+  };
+
+  public getStorageBucketStatus = async (bucketId: string): Promise<StorageBucketStatusResponse> => {
+    return this.makeRequest<StorageBucketStatusResponse>(`bucket/${bucketId}/status`, 'GET', null);
+  };
+
+  public getBucketNodeStats = async (
+    bucketId: string,
+    data: GetBucketNodeStatsRequest
+  ): Promise<GetBucketNodeStatsResponse> => {
+    return this.makeRequest<GetBucketNodeStatsResponse>(`bucket/${bucketId}/stats`, 'POST', data);
   };
 
   ////// Repos API

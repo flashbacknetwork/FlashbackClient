@@ -207,3 +207,89 @@ export enum RepoErrorCodes {
   NORMAL_UNIT_CANNOT_EDIT_FOLDER = 'NORMAL_UNIT_CANNOT_EDIT_FOLDER',
   QUOTA_EXCEEDED = 'QUOTA_EXCEEDED',
 }
+
+// ===== BUCKET-BASED INTERFACES (NEW NAMING) =====
+// These provide the new bucket terminology while maintaining backwards compatibility
+
+// Simple aliases where no property renaming is needed
+export interface CreateBucketRequest extends CreateUnitRequest {}
+export interface UpdateBucketRequest extends UpdateUnitRequest {}
+export interface ValidateBucketRequest extends ValidateUnitRequest {}
+export interface ValidateBucketResponse extends ValidateUnitResponse {}
+export interface StorageBucket extends StorageUnit {}
+export interface GetBucketsResponse extends GetUnitsResponse {}
+
+// New interfaces where properties need renaming
+export interface CreateBucketResponse {
+  success: boolean;
+  bucketId: string;
+}
+
+export interface UpdateBucketResponse extends CreateBucketResponse {
+  status?: string;
+  latency_ms?: number;
+}
+
+export interface RepoBucketInfo {
+  folder: string;
+  master: boolean;
+  bucketId?: string;
+  bucket?: StorageBucket;
+}
+
+export interface CreateRepoWithBucketsRequest {
+  name: string;
+  storageType: StorageType;
+  mode: ModeType;
+  repoBuckets: RepoBucketInfo[];
+}
+
+export interface UpdateRepoWithBucketsRequest extends CreateRepoWithBucketsRequest {}
+
+export interface StorageRepoWithBuckets {
+  id: string;
+  name: string;
+  storageType: StorageType;
+  mode: ModeType;
+  buckets: RepoBucketInfo[];
+  apiKeys?: ApiKey[];
+  createdAt: string;
+  disabled?: boolean;
+}
+
+export interface ValidateRepoBucketsRequest {
+  repoId: string;
+  mode: ModeType;
+  repoBuckets: RepoBucketInfo[];
+}
+
+export interface ValidateRepoBucketsResponse {
+  success: boolean;
+  error_code?: RepoErrorCodes;
+  error_message?: string;
+}
+
+export interface StorageBucketStatusResponse {
+  bucketId: string;
+  nodeStatus: NodeStatusInfo[];
+}
+
+export interface GetBucketNodeStatsRequest {
+  day: Date;
+}
+
+export interface GetBucketNodeStatsResponse {
+  success: boolean;
+  nodeStats: BucketNodeStatsDailyInfo[];
+}
+
+export interface BucketNodeStatsDailyInfo {
+  ip: string;
+  host: string;
+  perc_uptime: number;
+  avg_latency_ms: number;
+  version: string;
+  node_status: NodeStatusType;
+  last_updated: string;
+  last_latency_ms: number;
+}
