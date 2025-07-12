@@ -217,7 +217,11 @@ export interface UpdateBucketRequest extends UpdateUnitRequest {}
 export interface ValidateBucketRequest extends ValidateUnitRequest {}
 export interface ValidateBucketResponse extends ValidateUnitResponse {}
 export interface StorageBucket extends StorageUnit {}
-export interface GetBucketsResponse extends GetUnitsResponse {}
+
+export interface GetBucketsResponse {
+  success: boolean;
+  buckets: StorageBucket[];
+}
 
 // New interfaces where properties need renaming
 export interface CreateBucketResponse {

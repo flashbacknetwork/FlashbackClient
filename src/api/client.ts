@@ -35,6 +35,11 @@ import {
   StorageBucketStatusResponse,
   GetBucketNodeStatsRequest,
   GetBucketNodeStatsResponse,
+  // Bucket-based repo interfaces
+  CreateRepoWithBucketsRequest,
+  UpdateRepoWithBucketsRequest,
+  ValidateRepoBucketsRequest,
+  ValidateRepoBucketsResponse,
 } from './types/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -336,40 +341,52 @@ export class ApiClient implements IApiClient {
   };
 
   ////// Repos API
-  public createStorageRepo = async (data: CreateRepoRequest): Promise<CreateRepoResponse> => {
+  // Function overloads for createStorageRepo
+  public createStorageRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
+  public createStorageRepo(data: CreateRepoWithBucketsRequest): Promise<CreateRepoResponse>;
+  public async createStorageRepo(data: CreateRepoRequest | CreateRepoWithBucketsRequest): Promise<CreateRepoResponse> {
     return this.makeRequest<CreateRepoResponse>('repo', 'POST', data);
-  };
+  }
 
   public getStorageRepos = async (): Promise<GetReposResponse> => {
     return this.makeRequest<GetReposResponse>('repo', 'GET', null);
   };
 
-  public updateStorageRepo = async (
+  // Function overloads for updateStorageRepo
+  public updateStorageRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;
+  public updateStorageRepo(repoId: string, data: UpdateRepoWithBucketsRequest): Promise<UpdateRepoResponse>;
+  public async updateStorageRepo(
     repoId: string,
-    data: UpdateRepoRequest
-  ): Promise<UpdateRepoResponse> => {
+    data: UpdateRepoRequest | UpdateRepoWithBucketsRequest
+  ): Promise<UpdateRepoResponse> {
     return this.makeRequest<UpdateRepoResponse>(`repo/${repoId}`, 'PUT', data);
-  };
+  }
 
   public deleteStorageRepo = async (repoId: string): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>(`repo/${repoId}`, 'DELETE', null);
   };
 
-  public validateNewRepoUnits = async (
-    data: ValidateRepoUnitsRequest
-  ): Promise<ValidateRepoUnitsResponse> => {
-    return this.makeRequest<ValidateRepoUnitsResponse>('repo/validate', 'POST', data);
-  };
+  // Function overloads for validateNewRepoUnits
+  public validateNewRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
+  public validateNewRepoUnits(data: ValidateRepoBucketsRequest): Promise<ValidateRepoBucketsResponse>;
+  public async validateNewRepoUnits(
+    data: ValidateRepoUnitsRequest | ValidateRepoBucketsRequest
+  ): Promise<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse> {
+    return this.makeRequest<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse>('repo/validate', 'POST', data);
+  }
 
-  public validateUpdateRepoUnits = async (
-    data: ValidateRepoUnitsRequest
-  ): Promise<ValidateRepoUnitsResponse> => {
-    return this.makeRequest<ValidateRepoUnitsResponse>(
+  // Function overloads for validateUpdateRepoUnits
+  public validateUpdateRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
+  public validateUpdateRepoUnits(data: ValidateRepoBucketsRequest): Promise<ValidateRepoBucketsResponse>;
+  public async validateUpdateRepoUnits(
+    data: ValidateRepoUnitsRequest | ValidateRepoBucketsRequest
+  ): Promise<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse> {
+    return this.makeRequest<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse>(
       `repo/${data.repoId}/validate`,
       'POST',
       data
     );
-  };
+  }
 
   ////// Keys API
   public createRepoKey = async (data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse> => {
