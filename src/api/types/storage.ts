@@ -156,7 +156,7 @@ export interface GetUnitsResponse {
 
 export interface GetReposResponse {
   success: boolean;
-  repos: StorageRepo[];
+  repos: StorageRepoWithBuckets[];
 }
 
 export interface GetRepoKeysResponse {
