@@ -74,6 +74,15 @@ import {
 import { NodeInfo } from './types/bridge';
 import { FeedbackEmailBody } from './types/email';
 import { QuotaResponse } from './types/quota';
+import {
+  BuySubscriptionRequest,
+  BuySubscriptionResponse,
+  GetSubscriptionsResponse,
+  MySubscriptionResponse,
+  PaymentsListResponse,
+  PaymentsQueryParams,
+  CancelSubscriptionResponse,
+} from './types/subscriptions';
 
 interface ErrorResponse {
   message?: string;
@@ -548,7 +557,7 @@ export class ApiClient implements IApiClient {
     };
 
     const response = await this.makeRequest<ServerResponse>(
-      `stats/nodes/minute?${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      `stats/nodes/minute${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
       'GET',
       null
     );
@@ -635,5 +644,37 @@ export class ApiClient implements IApiClient {
 
   public sendFeedbackEmail = async (data: FormData): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>('email/feedback', 'POST', data);
+  };
+
+  ////// Subscriptions API
+  public getSubscriptions = async (): Promise<GetSubscriptionsResponse> => {
+    return this.makeRequest<GetSubscriptionsResponse>('subscriptions', 'GET', null);
+  };
+
+  public getMySubscription = async (): Promise<MySubscriptionResponse> => {
+    return this.makeRequest<MySubscriptionResponse>('subscriptions/my', 'GET', null);
+  };
+
+  public buySubscription = async (data: BuySubscriptionRequest): Promise<BuySubscriptionResponse> => {
+    return this.makeRequest<BuySubscriptionResponse>('subscriptions/buy', 'POST', data);
+  };
+
+  public getPayments = async (params?: PaymentsQueryParams): Promise<PaymentsListResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params?.startDate) {
+      queryParams.append('startDate', params.startDate);
+    }
+    if (params?.endDate) {
+      queryParams.append('endDate', params.endDate);
+    }
+    return this.makeRequest<PaymentsListResponse>(
+      `subscriptions/payments${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public cancelSubscription = async (): Promise<CancelSubscriptionResponse> => {
+    return this.makeRequest<CancelSubscriptionResponse>('subscriptions/cancel', 'POST', null);
   };
 }

@@ -1122,6 +1122,243 @@ nodeInfo.forEach(node => {
 });
 ```
 
+## Subscription Management Methods
+
+### getSubscriptions
+
+Retrieves all available subscription plans.
+
+```typescript
+getSubscriptions(): Promise<GetSubscriptionsResponse>
+```
+
+**Returns:** Promise resolving to GetSubscriptionsResponse containing available subscription plans
+
+**GetSubscriptionsResponse Interface:**
+```typescript
+interface GetSubscriptionsResponse {
+  success: boolean;            // Whether the request was successful
+  data: SubscriptionResponse[]; // Array of available subscriptions
+}
+
+interface SubscriptionResponse {
+  id: string;                           // Subscription ID
+  name: string;                         // Subscription name
+  description: string;                  // Subscription description
+  periods: SubscriptionPeriodResponse[]; // Available billing periods
+}
+
+interface SubscriptionPeriodResponse {
+  id: string;           // Period ID
+  subscriptionId: string; // Parent subscription ID
+  periodType: string;   // Period type (e.g., 'MONTHLY', 'YEARLY')
+  price: number;        // Price for this period
+}
+```
+
+**Example:**
+```typescript
+const subscriptions = await client.getSubscriptions();
+subscriptions.data.forEach(sub => {
+  console.log(`${sub.name}: ${sub.description}`);
+  sub.periods.forEach(period => {
+    console.log(`  ${period.periodType}: $${period.price}`);
+  });
+});
+```
+
+### getMySubscription
+
+Retrieves the current user's active subscription.
+
+```typescript
+getMySubscription(): Promise<MySubscriptionResponse>
+```
+
+**Returns:** Promise resolving to MySubscriptionResponse with current subscription details
+
+**MySubscriptionResponse Interface:**
+```typescript
+interface MySubscriptionResponse {
+  success: boolean;                    // Whether the request was successful
+  data: OrgSubscriptionResponse | null; // Current subscription or null if none
+  message?: string;                    // Optional message
+}
+
+interface OrgSubscriptionResponse {
+  id: string;         // Subscription ID
+  name: string;       // Subscription name
+  description: string; // Subscription description
+  periodId: string;   // Current period ID
+  periodType: string; // Current period type
+  price: number;      // Current price
+  dateFrom: string;   // Start date (ISO string)
+  dateTo: string | null; // End date (ISO string) or null if ongoing
+  status: string;     // Subscription status
+  autoRenew: boolean; // Whether auto-renewal is enabled
+}
+```
+
+**Example:**
+```typescript
+const mySubscription = await client.getMySubscription();
+if (mySubscription.data) {
+  console.log(`Current plan: ${mySubscription.data.name}`);
+  console.log(`Status: ${mySubscription.data.status}`);
+  console.log(`Price: $${mySubscription.data.price} (${mySubscription.data.periodType})`);
+  console.log(`Auto-renew: ${mySubscription.data.autoRenew ? 'Yes' : 'No'}`);
+} else {
+  console.log('No active subscription');
+}
+```
+
+### buySubscription
+
+Purchases a subscription plan for the current user.
+
+```typescript
+buySubscription(data: BuySubscriptionRequest): Promise<BuySubscriptionResponse>
+```
+
+**BuySubscriptionRequest Interface:**
+```typescript
+interface BuySubscriptionRequest {
+  subscriptionPeriodId: string; // ID of the subscription period to purchase
+}
+```
+
+**Returns:** Promise resolving to BuySubscriptionResponse with payment information
+
+**BuySubscriptionResponse Interface:**
+```typescript
+interface BuySubscriptionResponse {
+  success: boolean;      // Whether the request was successful
+  clientSecret?: string; // Stripe client secret for payment processing
+  sessionId?: string;    // Stripe session ID for checkout
+  message?: string;      // Optional message
+  error_code?: string;   // Error code if purchase failed
+}
+```
+
+**Example:**
+```typescript
+const purchase = await client.buySubscription({
+  subscriptionPeriodId: 'period-123'
+});
+
+if (purchase.success) {
+  if (purchase.clientSecret) {
+    // Handle Stripe payment with client secret
+    console.log('Payment required - client secret:', purchase.clientSecret);
+  } else if (purchase.sessionId) {
+    // Redirect to Stripe checkout
+    console.log('Redirect to checkout - session ID:', purchase.sessionId);
+  }
+} else {
+  console.error('Purchase failed:', purchase.message);
+}
+```
+
+### getPayments
+
+Retrieves payment history for the current user's organization.
+
+```typescript
+getPayments(params?: PaymentsQueryParams): Promise<PaymentsListResponse>
+```
+
+**PaymentsQueryParams Interface:**
+```typescript
+interface PaymentsQueryParams {
+  startDate?: string; // Start date for filtering payments (ISO string format)
+  endDate?: string;   // End date for filtering payments (ISO string format)
+}
+```
+
+**Returns:** Promise resolving to PaymentsListResponse with payment history
+
+**PaymentsListResponse Interface:**
+```typescript
+interface PaymentsListResponse {
+  success: boolean;           // Whether the request was successful
+  data?: PaymentResponse[];   // Array of payment records (optional)
+  message?: string;           // Optional message or error description
+  error_code?: string;        // Error code if request failed
+}
+
+interface PaymentResponse {
+  id: string;        // Unique payment identifier
+  amount: number;    // Payment amount
+  currency: string;  // Payment currency (e.g., 'usd')
+  status: string;    // Payment status (e.g., 'COMPLETED', 'PENDING', 'FAILED')
+  timestamp: string; // Payment timestamp (ISO string)
+}
+```
+
+**Example:**
+```typescript
+// Get all payments
+const allPayments = await client.getPayments();
+if (allPayments.success && allPayments.data) {
+  allPayments.data.forEach(payment => {
+    console.log(`Payment ${payment.id}: $${payment.amount} ${payment.currency}`);
+    console.log(`  Status: ${payment.status}`);
+    console.log(`  Date: ${payment.timestamp}`);
+  });
+}
+
+// Get payments for a specific date range
+const recentPayments = await client.getPayments({
+  startDate: '2024-01-01T00:00:00Z',
+  endDate: '2024-01-31T23:59:59Z'
+});
+console.log('January payments:', recentPayments.data);
+```
+
+### cancelSubscription
+
+Cancels the current user's active subscription.
+
+```typescript
+cancelSubscription(): Promise<CancelSubscriptionResponse>
+```
+
+**Returns:** Promise resolving to CancelSubscriptionResponse
+
+**CancelSubscriptionResponse Interface:**
+```typescript
+interface CancelSubscriptionResponse {
+  success: boolean;    // Whether the cancellation was successful
+  message?: string;    // Optional message or confirmation
+  error_code?: string; // Error code if cancellation failed
+}
+```
+
+**Example:**
+```typescript
+try {
+  const result = await client.cancelSubscription();
+  
+  if (result.success) {
+    console.log('Subscription cancelled successfully');
+    console.log('Message:', result.message);
+  } else {
+    console.error('Cancellation failed:', result.message);
+    console.error('Error code:', result.error_code);
+  }
+} catch (error) {
+  if (error instanceof HttpError) {
+    if (error.status === 404) {
+      console.log('No active subscription found to cancel');
+    } else if (error.status === 400) {
+      console.log('Subscription cannot be cancelled (may already be cancelled)');
+    } else {
+      console.error('Cancellation error:', error.message);
+    }
+  }
+}
+```
+
 ## Error Handling
 
 The API client throws `HttpError` instances for HTTP-related errors:
@@ -1211,6 +1448,25 @@ async function example() {
       endDate: new Date(),
       repoId: [repo.repoId]
     });
+    
+    // Check current subscription
+    const mySubscription = await client.getMySubscription();
+    if (mySubscription.data) {
+      console.log('Current subscription:', mySubscription.data.name);
+      
+      // Get payment history
+      const payments = await client.getPayments({
+        startDate: '2024-01-01T00:00:00Z',
+        endDate: new Date().toISOString()
+      });
+      
+      if (payments.success && payments.data) {
+        console.log(`Payment history: ${payments.data.length} payments found`);
+        payments.data.forEach(payment => {
+          console.log(`  ${payment.timestamp}: $${payment.amount} ${payment.currency} (${payment.status})`);
+        });
+      }
+    }
     
     console.log('Setup complete!');
     console.log('Unit ID:', unit.unitId);
