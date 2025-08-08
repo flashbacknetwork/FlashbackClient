@@ -32,6 +32,20 @@ describe('StorageClient', () => {
 
   const testConfigurations = [
     {
+      name: 'S3 to S3 Brieuc Test (AWS endpoint)',
+      config: {
+        endpoint: process.env.TEST_AWS_BRIEUC_PROVIDER_URL,
+        //endpoint: process.env.TEST_AWS_LOCAL_PROVIDER_URL,
+        credentials: {
+          accessKeyId: process.env.TEST_AWS_BRIEUC_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_AWS_BRIEUC_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.TEST_AWS_BRIEUC_REGION,
+        forcePathStyle: false,
+      },
+      bucketName: process.env.TEST_AWS_BRIEUC_BUCKET!,
+    },
+    {
       name: 'S3 to S3 FB Test (AWS endpoint)',
       config: {
         endpoint: process.env.TEST_AWS_FB_PROVIDER_URL,
