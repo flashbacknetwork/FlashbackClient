@@ -41,6 +41,13 @@ export interface JwtPayload {
   exp?: number;
 }
 
+export interface Web3RegisterBody {
+  address: string;
+  network: string;
+  signature: string;
+  nonce: string;
+}
+
 export interface RegisterBody {
   email: string;
   password: string;
