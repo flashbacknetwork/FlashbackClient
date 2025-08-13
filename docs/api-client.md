@@ -901,6 +901,7 @@ interface StatsQueryParams {
   endDate?: Date;     // End date for the statistics query (optional)
   repoId?: string[];  // Array of repository IDs to filter by (optional)
   unitId?: string[];  // Array of unit IDs to filter by (optional)
+  hosts?: string[];   // Array of host names to filter and group statistics by (optional)
 }
 ```
 
@@ -922,6 +923,7 @@ interface StatsData {
   dwl_bytes: bigint;   // Bytes downloaded
   size_change: bigint; // Change in storage size
   latency_ms: number;  // Latency in milliseconds
+  host: string;        // Host name associated with this data point
 }
 ```
 
@@ -930,7 +932,8 @@ interface StatsData {
 const stats = await client.getDailyStats({
   startDate: new Date('2024-01-01'),
   endDate: new Date('2024-01-31'),
-  repoId: ['repo-123']
+  repoId: ['repo-123'],
+  hosts: ['host1.example.com', 'host2.example.com'] // Optional: filter by specific hosts
 });
 console.log('Daily stats:', stats.data);
 ```
@@ -953,7 +956,8 @@ getMinuteStats(params: StatsQueryParams): Promise<StatsResponse>
 const stats = await client.getMinuteStats({
   startDate: new Date(Date.now() - 24 * 60 * 60 * 1000), // Last 24 hours
   endDate: new Date(),
-  unitId: ['unit-123']
+  unitId: ['unit-123'],
+  hosts: ['host1.example.com'] // Optional: filter by specific hosts
 });
 ```
 
