@@ -6,3 +6,4 @@ coverage
 clood-app-*.json
 flashback-network-*.json
 samplelong*.*
+contracts/*

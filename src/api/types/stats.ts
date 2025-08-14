@@ -3,6 +3,7 @@ export interface StatsQueryParams {
   endDate?: Date;
   repoId?: string[];
   unitId?: string[];
+  hosts?: string[];
 }
 
 export interface StatsResponse {
@@ -19,6 +20,7 @@ export interface StatsData {
   dwl_bytes: bigint;
   size_change: bigint;
   latency_ms: number;
+  host: string;
 }
 
 // Node stats interfaces
@@ -107,6 +109,7 @@ export interface StatsQueryWithBucketParams {
   endDate?: Date;
   repoId?: string[];
   bucketId?: string[];
+  hosts?: string[];
 }
 
 export interface StatsDataWithBucket {
@@ -117,6 +120,7 @@ export interface StatsDataWithBucket {
   dwl_bytes: bigint;
   size_change: bigint;
   latency_ms: number;
+  host: string;
 }
 
 export interface NodeStatsMinuteDataWithBucket {

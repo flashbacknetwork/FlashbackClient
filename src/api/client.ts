@@ -54,6 +54,7 @@ import {
   RegisterBody,
   RegisterResponse,
   ResetPasswordBody,
+  Web3RegisterBody,
 } from './types/auth';
 import {
   StatsQueryParams,
@@ -132,7 +133,7 @@ export class ApiClient implements IApiClient {
       case ProviderType.GITHUB:
         return this.authenticateGithub(token);
       case ProviderType.WEB3_STELLAR:
-        return this.authenticateWeb3Stellar(token);
+        throw new Error('Call web3Authenticate for web3 authentication');
       case ProviderType.LOCAL:
         throw new Error('Call userLogin for local authentication');
       default:
@@ -180,14 +181,11 @@ export class ApiClient implements IApiClient {
       case ProviderType.GITHUB:
         return this.refreshGithubToken(refreshToken);
       case ProviderType.LOCAL:
+      case ProviderType.WEB3_STELLAR:
         return this.userRefresh(refreshToken);
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
-  };
-
-  private authenticateWeb3Stellar = async (token: string): Promise<any> => {
-    throw new Error('Not implemented');
   };
 
   private makeRequest = async <T>(path: string, method: string, data?: any): Promise<T> => {
@@ -252,6 +250,15 @@ export class ApiClient implements IApiClient {
   private authenticateGithub = async (code: string): Promise<any> => {
     this.setAuthToken(code);
     return this.makeRequest<any>('auth/github', 'POST', { code });
+  };
+
+  /**
+   * Authenticate with a web3 provider
+   * @param data - The data to authenticate with
+   * @returns The authentication response
+   */
+  public web3Authenticate = async (data: Web3RegisterBody): Promise<any> => {
+    return this.makeRequest<any>('auth/web3', 'POST', data);
   };
 
   private refreshGoogleToken = async (refreshToken: string): Promise<RefreshTokenResponse> => {
@@ -505,6 +512,10 @@ export class ApiClient implements IApiClient {
       queryParams.append('bucketId', params.bucketId.join(','));
     }
 
+    if (params.hosts && params.hosts.length > 0) {
+      queryParams.append('hosts', params.hosts.join(','));
+    }
+
     return this.makeRequest<StatsResponse>(`stats/daily?${queryParams.toString()}`, 'GET', null);
   }
 
@@ -532,6 +543,10 @@ export class ApiClient implements IApiClient {
       queryParams.append('unitId', params.unitId.join(','));
     } else if ('bucketId' in params && params.bucketId && params.bucketId.length > 0) {
       queryParams.append('bucketId', params.bucketId.join(','));
+    }
+
+    if (params.hosts && params.hosts.length > 0) {
+      queryParams.append('hosts', params.hosts.join(','));
     }
 
     return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
