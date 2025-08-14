@@ -57,6 +57,7 @@ const getServer = (network: StellarNetwork): rpc.Server => {
       break;
   }
 
+  console.log(`@@@Creating Stellar RPC server for network: ${network.network}, URL: ${serverUrl}`);
   const server = new rpc.Server(serverUrl);
   return server;
 };
