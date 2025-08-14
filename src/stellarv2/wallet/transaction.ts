@@ -68,7 +68,6 @@ const getServer = (network: StellarNetwork): rpc.Server => {
   console.log(`!!!Creating Soroban RPC server for network: ${network.network}, URL: ${serverUrl}`);
   
   // For Stellar SDK v13+, we need to handle the allowHttp issue
-  // Try different approaches to create the server
   let server;
   
   // Approach 1: Try with allowHttp option
