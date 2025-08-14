@@ -512,6 +512,10 @@ export class ApiClient implements IApiClient {
       queryParams.append('bucketId', params.bucketId.join(','));
     }
 
+    if (params.hosts && params.hosts.length > 0) {
+      queryParams.append('hosts', params.hosts.join(','));
+    }
+
     return this.makeRequest<StatsResponse>(`stats/daily?${queryParams.toString()}`, 'GET', null);
   }
 
@@ -539,6 +543,10 @@ export class ApiClient implements IApiClient {
       queryParams.append('unitId', params.unitId.join(','));
     } else if ('bucketId' in params && params.bucketId && params.bucketId.length > 0) {
       queryParams.append('bucketId', params.bucketId.join(','));
+    }
+
+    if (params.hosts && params.hosts.length > 0) {
+      queryParams.append('hosts', params.hosts.join(','));
     }
 
     return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
