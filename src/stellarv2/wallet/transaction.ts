@@ -51,14 +51,18 @@ const getServer = (network: StellarNetwork): rpc.Server => {
   let serverUrl = "";
   switch (network.network) {
     case "TESTNET":
-      serverUrl = "https://soroban-testnet.stellar.org:443";
+      serverUrl = "https://soroban-testnet.stellar.org";
       break;
     case "PUBLIC":
-      serverUrl = "https://rpc.stellar.org:443";
+      serverUrl = "https://rpc.stellar.org";
       break;
   }
 
-  const server = new rpc.Server(serverUrl);
+  // For newer versions of Stellar SDK, we need to allow HTTP connections
+  // even for HTTPS URLs due to how the SDK handles server connections
+  const server = new rpc.Server(serverUrl, { 
+    allowHttp: true
+  });
   return server;
 };
 
@@ -97,9 +101,13 @@ interface ContractMethodResponse {
 
 export const getHorizonServer = (network: string) => {
   if (network === "TESTNET") {
-    return new Horizon.Server("https://horizon-testnet.stellar.org");
+    return new Horizon.Server("https://horizon-testnet.stellar.org", { 
+      allowHttp: true
+    });
   } else {
-    return new Horizon.Server("https://horizon.stellar.org");
+    return new Horizon.Server("https://horizon.stellar.org", { 
+      allowHttp: true
+    });
   }
 };
 
