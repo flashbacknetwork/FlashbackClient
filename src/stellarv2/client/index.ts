@@ -1,4 +1,4 @@
-import { StellarNetwork } from './transaction';
+import { StellarNetwork } from '../wallet/transaction';
 import { ConsumerOps } from './consumer';
 import { ProviderOps } from './provider';
 import { BucketOps } from './bucket';

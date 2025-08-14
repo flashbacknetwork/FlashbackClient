@@ -1,6 +1,7 @@
-import { ClientContext } from './client';
-import { Provider } from './models';
-import { callContractMethod } from './transaction';
+import { ClientContext } from '.';
+import { Provider } from '../models';
+import { executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
+import { withSignature } from '../utils/decorator';
 
 /**
  * Provider operations client for FlashOnStellar V2
@@ -19,15 +20,14 @@ export class ProviderOps {
    * @param description - Description of the provider
    * @returns Promise resolving to the registration result
    */
-  async registerProvider(provider_id: string, description: string): Promise<boolean> {
-    return callContractMethod(this.context, provider_id, {
-      method: 'register_provider',
-      args: [
+  registerProvider = withSignature(
+    async (provider_id: string, description: string): Promise<void> => {
+      await executeWalletTransaction(this.context, provider_id, "register_provider", [
         { value: provider_id, type: 'address' },
         { value: description, type: 'string' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Updates an existing provider's information
@@ -35,29 +35,27 @@ export class ProviderOps {
    * @param description - New description for the provider
    * @returns Promise resolving to the update result
    */
-  async updateProvider(provider_id: string, description: string): Promise<boolean> {
-    return callContractMethod(this.context, provider_id, {
-      method: 'update_provider',
-      args: [
+  updateProvider = withSignature(
+    async (provider_id: string, description: string): Promise<void> => {
+      await executeWalletTransaction(this.context, provider_id, "update_provider", [
         { value: provider_id, type: 'address' },
         { value: description, type: 'string' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Deletes a provider from the system
    * @param provider_id - Address of the provider to delete
    * @returns Promise resolving to the deletion result
    */
-  async deleteProvider(provider_id: string): Promise<boolean> {
-    return callContractMethod(this.context, provider_id, {
-      method: 'delete_provider',
-      args: [
+  deleteProvider = withSignature(
+    async (provider_id: string): Promise<void> => {
+      await executeWalletTransaction(this.context, provider_id, "delete_provider", [
         { value: provider_id, type: 'address' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Retrieves provider information
@@ -65,13 +63,18 @@ export class ProviderOps {
    * @returns Promise resolving to Provider object or null if not found
    */
   async getProvider(provider_id: string): Promise<Provider | null> {
-    const result = await callContractMethod(this.context, provider_id, {
+    const response = await prepareTransaction(this.context, provider_id, {
       method: 'get_provider',
       args: [
         { value: provider_id, type: 'address' }
       ]
     });
 
+    if (!response.isSuccess) {
+      return null;
+    }
+
+    const result = response.result;
     if (result && typeof result === 'object') {
       return result as Provider;
     }
@@ -83,11 +86,16 @@ export class ProviderOps {
    * @returns Promise resolving to the total number of providers
    */
   async getProviderCount(): Promise<number> {
-    const result = await callContractMethod(this.context, '', {
+    const response = await prepareTransaction(this.context, '', {
       method: 'get_provider_count',
       args: []
     });
 
+    if (!response.isSuccess) {
+      return 0;
+    }
+
+    const result = response.result;
     if (typeof result === 'number') {
       return result;
     }
@@ -101,7 +109,7 @@ export class ProviderOps {
    * @returns Promise resolving to a map of provider addresses to Provider objects
    */
   async getProviders(skip: number = 0, take: number = 10): Promise<Map<string, Provider>> {
-    const result = await callContractMethod(this.context, '', {
+    const response = await prepareTransaction(this.context, '', {
       method: 'get_providers',
       args: [
         { value: skip, type: 'u32' },
@@ -109,6 +117,11 @@ export class ProviderOps {
       ]
     });
 
+    if (!response.isSuccess) {
+      return new Map();
+    }
+
+    const result = response.result;
     if (result && typeof result === 'object') {
       // Convert the result to a Map<string, Provider>
       const providerMap = new Map<string, Provider>();

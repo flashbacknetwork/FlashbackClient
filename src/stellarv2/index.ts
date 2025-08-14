@@ -1,12 +1,12 @@
-import { StellarNetwork } from './transaction';
+import { StellarNetwork } from './wallet/transaction';
 import { FlashOnStellarClientV2, FlashOnStellarClientConfigV2 } from './client';
 
 // Export operation classes
-export { ConsumerOps } from './consumer';
-export { ProviderOps } from './provider';
-export { BucketOps } from './bucket';
-export { DealOps } from './deal';
-export { FundingOps } from './funding';
+export { ConsumerOps } from './client/consumer';
+export { ProviderOps } from './client/provider';
+export { BucketOps } from './client/bucket';
+export { DealOps } from './client/deal';
+export { FundingOps } from './client/funding';
 
 // Export models and types
 export * from './models';

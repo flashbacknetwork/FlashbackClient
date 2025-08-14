@@ -1,5 +1,6 @@
-import { ClientContext } from './client';
-import { callContractMethod } from './transaction';
+import { ClientContext } from '.';
+import { executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
+import { withSignature } from '../utils/decorator';
 
 /**
  * Funding operations client for FlashOnStellar V2
@@ -18,15 +19,14 @@ export class FundingOps {
    * @param amount - Amount to send in the stable asset's smallest unit
    * @returns Promise resolving to the transfer result
    */
-  async sendFundsOwner(receiver: string, amount: bigint): Promise<boolean> {
-    return callContractMethod(this.context, '', {
-      method: 'send_funds_owner',
-      args: [
+  sendFundsOwner = withSignature(
+    async (receiver: string, amount: bigint): Promise<void> => {
+      await executeWalletTransaction(this.context, '', "send_funds_owner", [
         { value: receiver, type: 'address' },
         { value: amount, type: 'i128' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Test faucet function for minting tokens to a receiver (owner only)
@@ -34,29 +34,27 @@ export class FundingOps {
    * @param amount - Amount to mint in the stable asset's smallest unit
    * @returns Promise resolving to the minting result
    */
-  async testFaucetOwner(receiver: string, amount: bigint): Promise<boolean> {
-    return callContractMethod(this.context, '', {
-      method: 'test_faucet_owner',
-      args: [
+  testFaucetOwner = withSignature(
+    async (receiver: string, amount: bigint): Promise<void> => {
+      await executeWalletTransaction(this.context, '', "test_faucet_owner", [
         { value: receiver, type: 'address' },
         { value: amount, type: 'i128' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Changes the admin of the stable asset contract (owner only)
    * @param new_admin - Address of the new admin
    * @returns Promise resolving to the admin change result
    */
-  async changeAssetAdmin(new_admin: string): Promise<boolean> {
-    return callContractMethod(this.context, '', {
-      method: 'change_asset_admin',
-      args: [
+  changeAssetAdmin = withSignature(
+    async (new_admin: string): Promise<void> => {
+      await executeWalletTransaction(this.context, '', "change_asset_admin", [
         { value: new_admin, type: 'address' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Gets the stable asset address from the contract
@@ -86,7 +84,7 @@ export class FundingOps {
    */
   async getAssetBalance(address: string): Promise<bigint> {
     // This would typically be a getter method on the stable asset contract
-    // Implementation depends on the specific stable asset contract interface
+    // Implementation depends on the specific stable asset contract interaction
     throw new Error('getAssetBalance not implemented - requires stable asset contract interaction');
   }
 } 

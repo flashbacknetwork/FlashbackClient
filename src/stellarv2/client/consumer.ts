@@ -1,6 +1,7 @@
-import { ClientContext } from './client';
-import { Consumer } from './models';
-import { callContractMethod } from './transaction';
+import { ClientContext } from '.';
+import { Consumer } from '../models';
+import { executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
+import { withSignature } from '../utils/decorator';
 
 /**
  * Consumer operations client for FlashOnStellar V2
@@ -19,15 +20,14 @@ export class ConsumerOps {
    * @param description - Description of the consumer
    * @returns Promise resolving to the registration result
    */
-  async registerConsumer(consumer_id: string, description: string): Promise<boolean> {
-    return callContractMethod(this.context, consumer_id, {
-      method: 'register_consumer',
-      args: [
+  registerConsumer = withSignature(
+    async (consumer_id: string, description: string): Promise<void> => {
+      await executeWalletTransaction(this.context, consumer_id, "register_consumer", [
         { value: consumer_id, type: 'address' },
         { value: description, type: 'string' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Updates an existing consumer's information
@@ -35,29 +35,27 @@ export class ConsumerOps {
    * @param description - New description for the consumer
    * @returns Promise resolving to the update result
    */
-  async updateConsumer(consumer_id: string, description: string): Promise<boolean> {
-    return callContractMethod(this.context, consumer_id, {
-      method: 'update_consumer',
-      args: [
+  updateConsumer = withSignature(
+    async (consumer_id: string, description: string): Promise<void> => {
+      await executeWalletTransaction(this.context, consumer_id, "update_consumer", [
         { value: consumer_id, type: 'address' },
         { value: description, type: 'string' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Deletes a consumer from the system
    * @param consumer_id - Address of the consumer to delete
    * @returns Promise resolving to the deletion result
    */
-  async deleteConsumer(consumer_id: string): Promise<boolean> {
-    return callContractMethod(this.context, consumer_id, {
-      method: 'delete_consumer',
-      args: [
+  deleteConsumer = withSignature(
+    async (consumer_id: string): Promise<void> => {
+      await executeWalletTransaction(this.context, consumer_id, "delete_consumer", [
         { value: consumer_id, type: 'address' }
-      ]
-    });
-  }
+      ]);
+    }
+  );
 
   /**
    * Retrieves consumer information
@@ -65,13 +63,18 @@ export class ConsumerOps {
    * @returns Promise resolving to Consumer object or null if not found
    */
   async getConsumer(consumer_id: string): Promise<Consumer | null> {
-    const result = await callContractMethod(this.context, consumer_id, {
+    const response = await prepareTransaction(this.context, consumer_id, {
       method: 'get_consumer',
       args: [
         { value: consumer_id, type: 'address' }
       ]
     });
 
+    if (!response.isSuccess) {
+      return null;
+    }
+
+    const result = response.result;
     if (result && typeof result === 'object') {
       return result as Consumer;
     }
@@ -83,11 +86,16 @@ export class ConsumerOps {
    * @returns Promise resolving to the total number of consumers
    */
   async getConsumerCount(): Promise<number> {
-    const result = await callContractMethod(this.context, '', {
+    const response = await prepareTransaction(this.context, '', {
       method: 'get_consumer_count',
       args: []
     });
 
+    if (!response.isSuccess) {
+      return 0;
+    }
+
+    const result = response.result;
     if (typeof result === 'number') {
       return result;
     }
@@ -101,7 +109,7 @@ export class ConsumerOps {
    * @returns Promise resolving to a map of consumer addresses to Consumer objects
    */
   async getConsumers(skip: number = 0, take: number = 10): Promise<Map<string, Consumer>> {
-    const result = await callContractMethod(this.context, '', {
+    const response = await prepareTransaction(this.context, '', {
       method: 'get_consumers',
       args: [
         { value: skip, type: 'u32' },
@@ -109,6 +117,11 @@ export class ConsumerOps {
       ]
     });
 
+    if (!response.isSuccess) {
+      return new Map();
+    }
+
+    const result = response.result;
     if (result && typeof result === 'object') {
       // Convert the result to a Map<string, Consumer>
       const consumerMap = new Map<string, Consumer>();
