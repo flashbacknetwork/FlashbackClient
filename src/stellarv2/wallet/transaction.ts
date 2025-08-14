@@ -24,6 +24,13 @@ import {
 import { rpc } from "@stellar/stellar-sdk";
 import { ClientContext } from "../client";
 
+// Set global configuration for Stellar SDK to allow HTTP connections
+// This is sometimes needed for newer versions of the SDK
+if (typeof window !== 'undefined') {
+  // Browser environment
+  (window as any).__STELLAR_SDK_ALLOW_HTTP__ = true;
+}
+
 export interface StellarNetwork {
   network: string;
   networkPassphrase: string;
@@ -58,12 +65,77 @@ const getServer = (network: StellarNetwork): rpc.Server => {
       break;
   }
 
-  // For newer versions of Stellar SDK, we need to allow HTTP connections
-  // even for HTTPS URLs due to how the SDK handles server connections
-  const server = new rpc.Server(serverUrl, { 
-    allowHttp: true
-  });
-  return server;
+  console.log(`Creating Soroban RPC server for network: ${network.network}, URL: ${serverUrl}`);
+  
+  // For Stellar SDK v13+, we need to handle the allowHttp issue
+  // Try different approaches to create the server
+  let server;
+  
+  // Approach 1: Try with allowHttp option
+  try {
+    console.log(`Attempting to create server with allowHttp: true`);
+    server = new rpc.Server(serverUrl, { allowHttp: true });
+    console.log(`Soroban RPC server created successfully with allowHttp: true`);
+    return server;
+  } catch (error) {
+    console.log(`Failed with allowHttp: true:`, error instanceof Error ? error.message : String(error));
+  }
+  
+  // Approach 1.5: Try with allowHttp as a boolean string
+  try {
+    console.log(`Attempting to create server with allowHttp: "true"`);
+    server = new rpc.Server(serverUrl, { allowHttp: "true" as any });
+    console.log(`Soroban RPC server created successfully with allowHttp: "true"`);
+    return server;
+  } catch (error) {
+    console.log(`Failed with allowHttp: "true":`, error instanceof Error ? error.message : String(error));
+  }
+  
+  // Approach 1.6: Try with allowHttp as a number
+  try {
+    console.log(`Attempting to create server with allowHttp: 1`);
+    server = new rpc.Server(serverUrl, { allowHttp: 1 as any });
+    console.log(`Soroban RPC server created successfully with allowHttp: 1`);
+    return server;
+  } catch (error) {
+    console.log(`Failed with allowHttp: 1:`, error instanceof Error ? error.message : String(error));
+  }
+  
+
+  
+  // Approach 3: Try without any options
+  try {
+    console.log(`Attempting to create server without options`);
+    server = new rpc.Server(serverUrl);
+    console.log(`Soroban RPC server created successfully without options`);
+    return server;
+  } catch (error) {
+    console.log(`Failed without options:`, error instanceof Error ? error.message : String(error));
+  }
+  
+  // Approach 4: Try with empty options
+  try {
+    console.log(`Attempting to create server with empty options`);
+    server = new rpc.Server(serverUrl, {});
+    console.log(`Soroban RPC server created successfully with empty options`);
+    return server;
+  } catch (error) {
+    console.log(`Failed with empty options:`, error instanceof Error ? error.message : String(error));
+  }
+  
+  // Approach 5: Try with a different URL format (without protocol)
+  try {
+    console.log(`Attempting to create server with URL without protocol`);
+    const urlWithoutProtocol = serverUrl.replace('https://', '');
+    server = new rpc.Server(urlWithoutProtocol, { allowHttp: true });
+    console.log(`Soroban RPC server created successfully with URL without protocol`);
+    return server;
+  } catch (error) {
+    console.log(`Failed with URL without protocol:`, error instanceof Error ? error.message : String(error));
+  }
+  
+  // If all approaches fail, throw a comprehensive error
+  throw new Error(`Failed to create Soroban RPC server for ${network.network} at ${serverUrl}. All configuration attempts failed.`);
 };
 
 const TIMEOUT_TRANSACTION = 60;
@@ -278,7 +350,17 @@ const prepareTransaction = async (
     .setTimeout(TIMEOUT_TRANSACTION)
     .build();
 
-  const sim = await server.simulateTransaction(builtTransaction);
+  console.log(`About to simulate transaction for method: ${calls[0]?.method || 'unknown'}`);
+  console.log(`Network: ${context.network.network}, Passphrase: ${context.network.networkPassphrase}`);
+  
+  let sim;
+  try {
+    sim = await server.simulateTransaction(builtTransaction);
+    console.log(`Transaction simulation successful`);
+  } catch (error) {
+    console.error(`Transaction simulation failed:`, error);
+    throw error;
+  }
 
   if (rpc.Api.isSimulationSuccess(sim)) {
     response.isSuccess = true;
