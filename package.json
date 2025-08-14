@@ -1,6 +1,6 @@
 {
   "name": "@flashbacktech/flashbackclient",
-  "version": "0.1.32",
+  "version": "0.1.33",
   "type": "commonjs",
   "publishConfig": {
     "access": "public"
@@ -38,6 +38,11 @@
       "types": "./dist/stellar/index.d.ts",
       "require": "./dist/stellar/index.js",
       "default": "./dist/stellar/index.js"
+    },
+    "./stellarv2": {
+      "types": "./dist/stellarv2/index.d.ts",
+      "require": "./dist/stellarv2/index.js",
+      "default": "./dist/stellarv2/index.js"
     },
     "./api": {
       "types": "./dist/api/index.d.ts",
