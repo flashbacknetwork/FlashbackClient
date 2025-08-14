@@ -181,6 +181,7 @@ export class ApiClient implements IApiClient {
       case ProviderType.GITHUB:
         return this.refreshGithubToken(refreshToken);
       case ProviderType.LOCAL:
+      case ProviderType.WEB3_STELLAR:
         return this.userRefresh(refreshToken);
       default:
         throw new Error(`Unsupported provider: ${provider}`);
