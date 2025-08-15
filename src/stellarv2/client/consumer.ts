@@ -23,7 +23,6 @@ export class ConsumerOps {
   registerConsumer = withSignature(
     async (consumer_id: string, description: string): Promise<void> => {
       await executeWalletTransaction(this.context, consumer_id, "register_consumer", [
-        { value: consumer_id, type: 'address' },
         { value: description, type: 'string' }
       ]);
     }
@@ -38,7 +37,6 @@ export class ConsumerOps {
   updateConsumer = withSignature(
     async (consumer_id: string, description: string): Promise<void> => {
       await executeWalletTransaction(this.context, consumer_id, "update_consumer", [
-        { value: consumer_id, type: 'address' },
         { value: description, type: 'string' }
       ]);
     }
@@ -52,7 +50,6 @@ export class ConsumerOps {
   deleteConsumer = withSignature(
     async (consumer_id: string): Promise<void> => {
       await executeWalletTransaction(this.context, consumer_id, "delete_consumer", [
-        { value: consumer_id, type: 'address' }
       ]);
     }
   );

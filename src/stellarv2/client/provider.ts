@@ -23,7 +23,6 @@ export class ProviderOps {
   registerProvider = withSignature(
     async (provider_id: string, description: string): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "register_provider", [
-        { value: provider_id, type: 'address' },
         { value: description, type: 'string' }
       ]);
     }
@@ -38,7 +37,6 @@ export class ProviderOps {
   updateProvider = withSignature(
     async (provider_id: string, description: string): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "update_provider", [
-        { value: provider_id, type: 'address' },
         { value: description, type: 'string' }
       ]);
     }
@@ -52,7 +50,6 @@ export class ProviderOps {
   deleteProvider = withSignature(
     async (provider_id: string): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "delete_provider", [
-        { value: provider_id, type: 'address' }
       ]);
     }
   );
