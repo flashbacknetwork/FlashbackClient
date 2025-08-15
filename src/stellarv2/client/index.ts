@@ -225,29 +225,23 @@ export class FlashOnStellarClientV2 {
     }
   }
 
-  async registerAsConsumerProvider(address: string, description: string): Promise<void> {
-    const provider_id = address;
-    const consumer_id = address;
-    withSignature(
+  registerAsConsumerProvider = withSignature(
       async (address: string, description: string): Promise<void> => {
         await executeMultiWalletTransactions(this.getContext(), address, [
           {
             method: "register_consumer",
             additionalArgs: [       
-              { value: consumer_id, type: 'address' },
               { value: description, type: 'string' }]
           },
           {
             method: "register_provider",
             additionalArgs: [
-              { value: provider_id, type: 'address' },
               { value: description, type: 'string' }
             ]
           }
         ]);
       }
-    );
-  }
+  );
 
   /**
    * Gets comprehensive information about a consumer including their deals

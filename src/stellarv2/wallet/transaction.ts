@@ -7,6 +7,7 @@ import { sleep } from "../utils/timing";
 };
 
 import {
+  xdr,
   Contract,
   TransactionBuilder,
   nativeToScVal,
@@ -197,6 +198,7 @@ export const executeMultiWalletTransactions = async (
         | "vec";
     }>;
   }>,
+  extraOperations: xdr.Operation[] = [],
 ): Promise<ContractMethodResponse> => {
   const contractCalls: ContractMethodCall[] = methods.map(
     ({ method, additionalArgs = [] }) => ({
@@ -212,6 +214,7 @@ export const executeMultiWalletTransactions = async (
     context,
     wallet_address,
     contractCalls,
+    extraOperations,
   );
 
   if (response.isSuccess) {
@@ -235,6 +238,7 @@ const prepareTransaction = async (
   context: ClientContext,
   address: string,
   contractCalls: ContractMethodCall | ContractMethodCall[],
+  extraOperations: xdr.Operation[] = [],
 ): Promise<ContractMethodResponse> => {
   const contractAddress = context.contractAddress;
   const contract = new Contract(contractAddress);
@@ -288,6 +292,10 @@ const prepareTransaction = async (
   // Add all operations to the transaction
   convertedCalls.forEach((call) => {
     transactionBuilder.addOperation(contract.call(call.method, ...call.args));
+  });
+
+  extraOperations.forEach((operation) => {
+    transactionBuilder.addOperation(operation);
   });
 
   const builtTransaction = transactionBuilder

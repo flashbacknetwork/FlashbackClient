@@ -32,7 +32,6 @@ export class DealOps {
       const response = await prepareTransaction(this.context, consumer_id, {
         method: 'create_deal',
         args: [
-          { value: consumer_id, type: 'address' },
           { value: provider_id, type: 'address' },
           { value: bucket_id, type: 'u32' },
           { value: params.duration_secs, type: 'u64' },
@@ -64,13 +63,12 @@ export class DealOps {
    */
   setDealAccepted = withSignature(
     async (
-      consumer_id: string,
       provider_id: string,
+      consumer_id: string,
       deal_id: number
     ): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "set_deal_accepted", [
         { value: consumer_id, type: 'address' },
-        { value: provider_id, type: 'address' },
         { value: deal_id, type: 'u32' }
       ]);
     }
@@ -93,7 +91,6 @@ export class DealOps {
     ): Promise<void> => {
       await executeWalletTransaction(this.context, consumer_id, "set_deal_funded", [
         { value: provider_id, type: 'address' },
-        { value: consumer_id, type: 'address' },
         { value: deal_id, type: 'u32' },
         { value: amount_usd, type: 'u128' }
       ]);

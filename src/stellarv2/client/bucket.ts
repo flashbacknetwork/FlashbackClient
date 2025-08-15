@@ -25,7 +25,6 @@ export class BucketOps {
       const response = await prepareTransaction(this.context, provider_id, {
         method: 'create_bucket',
         args: [
-          { value: provider_id, type: 'address' },
           { value: params.name, type: 'string' },
           { value: params.region, type: 'string' },
           { value: params.country, type: 'string' },
@@ -91,7 +90,6 @@ export class BucketOps {
       params: BucketUpdateBasicParams
     ): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "update_bucket_basic", [
-        { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' },
         { value: params.name || null, type: 'string' },
         { value: params.region || null, type: 'string' },
@@ -114,7 +112,6 @@ export class BucketOps {
       params: BucketUpdatePricingParams
     ): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "update_bucket_pricing", [
-        { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' },
         { value: params.price_per_gb_storage || null, type: 'u128' },
         { value: params.price_per_gb_egress || null, type: 'u128' },
@@ -138,7 +135,6 @@ export class BucketOps {
       params: BucketUpdateSLAParams
     ): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "update_bucket_sla", [
-        { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' },
         { value: params.sla_avg_latency_ms || null, type: 'u32' },
         { value: params.sla_avg_uptime_pct || null, type: 'u32' }
@@ -155,7 +151,6 @@ export class BucketOps {
   lockBucket = withSignature(
     async (provider_id: string, bucket_id: number): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "lock_bucket", [
-        { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' }
       ]);
     }
@@ -170,7 +165,6 @@ export class BucketOps {
   unlockBucket = withSignature(
     async (provider_id: string, bucket_id: number): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "unlock_bucket", [
-        { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' }
       ]);
     }
@@ -185,7 +179,6 @@ export class BucketOps {
   deleteBucket = withSignature(
     async (provider_id: string, bucket_id: number): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "delete_bucket", [
-        { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' }
       ]);
     }
@@ -201,7 +194,6 @@ export class BucketOps {
     const response = await prepareTransaction(this.context, provider_id, {
       method: 'get_bucket',
       args: [
-        { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' }
       ]
     });

@@ -13,6 +13,28 @@ export class FundingOps {
     this.context = context;
   }
 
+  async getStableAssetName(): Promise<string> {
+    const response = await prepareTransaction(this.context, '', {
+      method: 'get_stable_asset_name',
+      args: []
+    });
+    if (response.isSuccess) {
+      return response.result as string;
+    }
+    return '';  
+  }
+
+  async getStableAssetAddress(): Promise<string> {
+    const response = await prepareTransaction(this.context, '', {
+      method: 'get_stable_asset_address',
+      args: []
+    });
+    if (response.isSuccess) {
+      return response.result as string;
+    }
+    return '';  
+  }
+
   /**
    * Sends funds from the contract to a receiver (owner only)
    * @param receiver - Address of the receiver
@@ -55,16 +77,6 @@ export class FundingOps {
       ]);
     }
   );
-
-  /**
-   * Gets the stable asset address from the contract
-   * @returns Promise resolving to the stable asset contract address
-   */
-  async getStableAssetAddress(): Promise<string> {
-    // This would typically be a getter method, but since it's not in the FundingOps trait,
-    // we'll need to implement it separately or access it through the main contract
-    throw new Error('getStableAssetAddress not implemented in FundingOps - use main contract methods');
-  }
 
   /**
    * Checks if an address is authorized for the stable asset
