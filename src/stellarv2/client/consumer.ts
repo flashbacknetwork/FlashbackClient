@@ -28,6 +28,14 @@ export class ConsumerOps {
     }
   );
 
+  registerFullUser = withSignature(
+    async (user_id: string, description: string): Promise<void> => {
+      await executeWalletTransaction(this.context, user_id, "register_full_user", [
+        { value: description, type: 'string' }
+      ]);
+    }
+  );
+
   /**
    * Updates an existing consumer's information
    * @param consumer_id - Address of the consumer to update
