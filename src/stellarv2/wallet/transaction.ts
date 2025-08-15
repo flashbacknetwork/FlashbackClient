@@ -64,8 +64,6 @@ const getServer = (network: StellarNetwork): rpc.Server => {
       serverUrl = "https://rpc.stellar.org";
       break;
   }
-
-  console.log(`!!!Creating Soroban RPC server for network: ${network.network}, URL: ${serverUrl}`);
   
   // For Stellar SDK v13+, we need to handle the allowHttp issue
   let server;
@@ -78,59 +76,6 @@ const getServer = (network: StellarNetwork): rpc.Server => {
     return server;
   } catch (error) {
     console.log(`Failed with allowHttp: true:`, error instanceof Error ? error.message : String(error));
-  }
-  
-  // Approach 1.5: Try with allowHttp as a boolean string
-  try {
-    console.log(`Attempting to create server with allowHttp: "true"`);
-    server = new rpc.Server(serverUrl, { allowHttp: "true" as any });
-    console.log(`Soroban RPC server created successfully with allowHttp: "true"`);
-    return server;
-  } catch (error) {
-    console.log(`Failed with allowHttp: "true":`, error instanceof Error ? error.message : String(error));
-  }
-  
-  // Approach 1.6: Try with allowHttp as a number
-  try {
-    console.log(`Attempting to create server with allowHttp: 1`);
-    server = new rpc.Server(serverUrl, { allowHttp: 1 as any });
-    console.log(`Soroban RPC server created successfully with allowHttp: 1`);
-    return server;
-  } catch (error) {
-    console.log(`Failed with allowHttp: 1:`, error instanceof Error ? error.message : String(error));
-  }
-  
-
-  
-  // Approach 3: Try without any options
-  try {
-    console.log(`Attempting to create server without options`);
-    server = new rpc.Server(serverUrl);
-    console.log(`Soroban RPC server created successfully without options`);
-    return server;
-  } catch (error) {
-    console.log(`Failed without options:`, error instanceof Error ? error.message : String(error));
-  }
-  
-  // Approach 4: Try with empty options
-  try {
-    console.log(`Attempting to create server with empty options`);
-    server = new rpc.Server(serverUrl, {});
-    console.log(`Soroban RPC server created successfully with empty options`);
-    return server;
-  } catch (error) {
-    console.log(`Failed with empty options:`, error instanceof Error ? error.message : String(error));
-  }
-  
-  // Approach 5: Try with a different URL format (without protocol)
-  try {
-    console.log(`Attempting to create server with URL without protocol`);
-    const urlWithoutProtocol = serverUrl.replace('https://', '');
-    server = new rpc.Server(urlWithoutProtocol, { allowHttp: true });
-    console.log(`Soroban RPC server created successfully with URL without protocol`);
-    return server;
-  } catch (error) {
-    console.log(`Failed with URL without protocol:`, error instanceof Error ? error.message : String(error));
   }
   
   // If all approaches fail, throw a comprehensive error

@@ -1,9 +1,10 @@
-import { StellarNetwork } from '../wallet/transaction';
+import { executeMultiWalletTransactions, StellarNetwork } from '../wallet/transaction';
 import { ConsumerOps } from './consumer';
 import { ProviderOps } from './provider';
 import { BucketOps } from './bucket';
 import { DealOps } from './deal';
 import { FundingOps } from './funding';
+import { withSignature } from '../utils/decorator';
 
 /**
  * Configuration interface for the FlashOnStellar V2 client
@@ -145,17 +146,6 @@ export class FlashOnStellarClientV2 {
   }
 
   /**
-   * Upgrades the contract (owner only)
-   * @param new_wasm_hash - Hash of the new WASM bytecode
-   * @returns Promise resolving to the upgrade result
-   */
-  async upgrade(new_wasm_hash: string): Promise<boolean> {
-    // This would call the upgrade() method on the contract
-    // Implementation depends on the transaction layer
-    throw new Error('upgrade not implemented - requires transaction layer implementation');
-  }
-
-  /**
    * Gets system statistics
    * @returns Promise resolving to system statistics
    */
@@ -233,6 +223,30 @@ export class FlashOnStellarClientV2 {
       console.error('Error getting provider info:', error);
       return null;
     }
+  }
+
+  async registerAsConsumerProvider(address: string, description: string): Promise<void> {
+    const provider_id = address;
+    const consumer_id = address;
+    withSignature(
+      async (address: string, description: string): Promise<void> => {
+        await executeMultiWalletTransactions(this.getContext(), address, [
+          {
+            method: "register_consumer",
+            additionalArgs: [       
+              { value: consumer_id, type: 'address' },
+              { value: description, type: 'string' }]
+          },
+          {
+            method: "register_provider",
+            additionalArgs: [
+              { value: provider_id, type: 'address' },
+              { value: description, type: 'string' }
+            ]
+          }
+        ]);
+      }
+    );
   }
 
   /**
