@@ -229,8 +229,12 @@ export class BucketOps {
    * @param take - Number of items to take per page
    * @returns Promise resolving to an array of Bucket objects
    */
-  async getBuckets(skip: number = 0, take: number = 10): Promise<BucketMarketplace[]> {
-    const response = await prepareTransaction(this.context, '', {
+  async getBuckets(
+    wallet_address: string,
+    skip: number = 0,
+    take: number = 10
+  ): Promise<BucketMarketplace[]> {
+    const response = await prepareTransaction(this.context, wallet_address, {
       method: 'get_buckets',
       args: [
         { value: skip, type: 'u32' },
