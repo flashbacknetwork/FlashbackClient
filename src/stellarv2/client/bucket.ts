@@ -21,7 +21,7 @@ export class BucketOps {
    * @returns Promise resolving to the created bucket ID
    */
   createBucket = withSignature(
-    async (provider_id: string, params: BucketCreateParams): Promise<number> => {
+    async (provider_id: string, params: BucketCreateParams): Promise<any> => {
       console.log('Creating bucket with params:', JSON.stringify(params, null, 2));
       const response: ContractMethodResponse = await executeWalletTransaction(this.context, provider_id, "create_bucket", [
           { value: params.name, type: 'string' },
@@ -56,7 +56,7 @@ export class BucketOps {
       }
       
       console.error('Result is not a number, throwing error. Result:', result);
-      throw new Error('Failed to create bucket');
+      return result;
     }
   );
 
