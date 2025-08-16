@@ -1,6 +1,6 @@
 import { ClientContext } from '.';
 import { Deal, DealCreateParams, DealConsumptionUpdateParams, DealSLAUpdateParams } from '../models';
-import { executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
+import { ContractMethodResponse, executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
 /**
@@ -29,17 +29,14 @@ export class DealOps {
       bucket_id: number,
       params: DealCreateParams
     ): Promise<number> => {
-      const response = await prepareTransaction(this.context, consumer_id, {
-        method: 'create_deal',
-        args: [
-          { value: provider_id, type: 'address' },
-          { value: bucket_id, type: 'u32' },
-          { value: params.duration_secs, type: 'u64' },
-          { value: params.agreed_storage_gb, type: 'u32' },
-          { value: params.agreed_egress_gb, type: 'u32' },
-          { value: params.api_compatibility, type: 'string' }
-        ]
-      });
+      const response: ContractMethodResponse = await executeWalletTransaction(this.context, consumer_id, "create_deal", [
+        { value: provider_id, type: 'address' },
+        { value: bucket_id, type: 'u32' },
+        { value: params.duration_secs, type: 'u64' },
+        { value: params.agreed_storage_gb, type: 'u32' },
+        { value: params.agreed_egress_gb, type: 'u32' },
+        { value: params.api_compatibility, type: 'string' }
+      ]);
 
       if (!response.isSuccess) {
         throw new Error('Failed to create deal');
