@@ -125,6 +125,8 @@ export class BucketOps {
     ): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "update_bucket_conditions", [
         { value: bucket_id, type: 'u32' },
+        { value: params.name || null, type: 'string' },
+        { value: params.region || null, type: 'string' },
         { value: params.price_per_gb_storage || null, type: 'u128' },
         { value: params.price_per_gb_egress || null, type: 'u128' },
         { value: params.sla_avg_latency_ms || null, type: 'u32' },

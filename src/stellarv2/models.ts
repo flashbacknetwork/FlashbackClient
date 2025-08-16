@@ -144,6 +144,8 @@ export interface BucketUpdateBasicParams {
 }
 
 export interface BucketUpdateConditionsParams {
+  name?: string;
+  region?: string;
   price_per_gb_storage?: bigint;
   price_per_gb_egress?: bigint;
   sla_avg_latency_ms?: number;
