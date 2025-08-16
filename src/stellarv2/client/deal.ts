@@ -1,5 +1,5 @@
 import { ClientContext } from '.';
-import { Deal, DealCreateParams, DealConsumptionUpdateParams, DealSLAUpdateParams } from '../models';
+import { Deal, DealCreateParams, DealConsumptionUpdateParams, DealSLAUpdateParams, DealInfo } from '../models';
 import { ContractMethodResponse, executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
@@ -28,7 +28,7 @@ export class DealOps {
       provider_id: string,
       bucket_id: number,
       params: DealCreateParams
-    ): Promise<number> => {
+    ): Promise<any> => {
       const response: ContractMethodResponse = await executeWalletTransaction(this.context, consumer_id, "create_deal", [
         { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' },
@@ -39,14 +39,18 @@ export class DealOps {
       ]);
 
       if (!response.isSuccess) {
+        console.error('Contract call failed - isSuccess is false');
         throw new Error('Failed to create deal');
       }
 
       const result = response.result;
+      
       if (typeof result === 'number') {
         return result;
       }
-      throw new Error('Failed to create deal');
+      
+      console.error('Result is not a number, throwing error. Result:', result);
+      return result;
     }
   );
 
@@ -284,7 +288,7 @@ export class DealOps {
    * @param consumer_id - Address of the consumer
    * @returns Promise resolving to an array of Deal objects
    */
-  async getDealsByConsumer(consumer_id: string): Promise<Deal[]> {
+  async getDealsByConsumer(consumer_id: string): Promise<DealInfo[]> {
     const response = await prepareTransaction(this.context, consumer_id, {
       method: 'get_deals_by_consumer',
       args: [
@@ -298,7 +302,7 @@ export class DealOps {
 
     const result = response.result;
     if (Array.isArray(result)) {
-      return result as Deal[];
+      return result as DealInfo[];
     }
     return [];
   }
@@ -308,7 +312,7 @@ export class DealOps {
    * @param provider_id - Address of the provider
    * @returns Promise resolving to an array of Deal objects
    */
-  async getDealsByProvider(provider_id: string): Promise<Deal[]> {
+  async getDealsByProvider(provider_id: string): Promise<DealInfo[]> {
     const response = await prepareTransaction(this.context, provider_id, {
       method: 'get_deals_by_provider',
       args: [
@@ -322,7 +326,7 @@ export class DealOps {
 
     const result = response.result;
     if (Array.isArray(result)) {
-      return result as Deal[];
+      return result as DealInfo[];
     }
     return [];
   }

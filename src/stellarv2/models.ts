@@ -103,6 +103,14 @@ export interface Deal {
   slash_amount_usd: bigint;
 }
 
+export interface DealInfo  {
+  deal: Deal;
+  provider_name: string;
+  provider_reputation: string;
+  consumer_name: string;
+  consumer_reputation: string;
+}
+
 export enum DealStatus {
   Pending = 'Pending',
   Accepted = 'Accepted',

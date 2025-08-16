@@ -34,24 +34,14 @@ export class BucketOps {
           { value: params.sla_avg_uptime_pct, type: 'u32' }
         ]);
 
-      console.log('Contract response:', JSON.stringify(response, null, 2));
-      console.log('Response isSuccess:', response.isSuccess);
-      console.log('Response result:', response.result);
-      console.log('Response result type:', typeof response.result);
-      console.log('Response result constructor:', response.result?.constructor?.name);
-
       if (!response.isSuccess) {
         console.error('Contract call failed - isSuccess is false');
         throw new Error('Failed to create bucket');
       }
 
       const result = response.result;
-      console.log('Processing result:', result);
-      console.log('Result type:', typeof result);
-      console.log('Result constructor:', result?.constructor?.name);
       
       if (typeof result === 'number') {
-        console.log('Result is a number, returning:', result);
         return result;
       }
       
