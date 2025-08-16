@@ -153,26 +153,46 @@ export const executeWalletTransaction = async (
       | "vec";
   }> = [],
 ): Promise<ContractMethodResponse> => {
-  const response = await prepareTransaction(context, wallet_address, {
-    method,
-    args: [{ value: wallet_address, type: "address" }, ...additionalArgs],
-  });
+  try {
+    console.log('executeWalletTransaction: Starting execution', { method, wallet_address, additionalArgs });
+    
+    console.log('executeWalletTransaction: Calling prepareTransaction...');
+    const response = await prepareTransaction(context, wallet_address, {
+      method,
+      args: [{ value: wallet_address, type: "address" }, ...additionalArgs],
+    });
+    console.log('executeWalletTransaction: prepareTransaction response:', { isSuccess: response.isSuccess, isReadOnly: response.isReadOnly });
 
-  if (response.isSuccess) {
-    if (response.isReadOnly) {
-      return response;
+    if (response.isSuccess) {
+      if (response.isReadOnly) {
+        console.log('executeWalletTransaction: Transaction is read-only, returning response');
+        return response;
+      }
+      
+      console.log('executeWalletTransaction: Transaction is not read-only, signing...');
+      const signedTxXDR = await context.signTransaction!(
+        response.result as string,
+      );
+      console.log('executeWalletTransaction: Transaction signed successfully');
+      
+      console.log('executeWalletTransaction: Sending transaction...');
+      const sendResponse = await sendTransaction(context, signedTxXDR);
+      console.log('executeWalletTransaction: Transaction sent successfully:', sendResponse);
+      
+      return {
+        isSuccess: true,
+        isReadOnly: false,
+        result: sendResponse,
+      };
     }
-    const signedTxXDR = await context.signTransaction!(
-      response.result as string,
-    );
-    const sendResponse = await sendTransaction(context, signedTxXDR);
-    return {
-      isSuccess: true,
-      isReadOnly: false,
-      result: sendResponse,
-    };
+    
+    console.log('executeWalletTransaction: prepareTransaction failed, returning response');
+    return response;
+  } catch (error) {
+    console.error('executeWalletTransaction: Error occurred:', error);
+    console.error('executeWalletTransaction: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
   }
-  return response;
 };
 
 export const executeMultiWalletTransactions = async (
@@ -198,38 +218,59 @@ export const executeMultiWalletTransactions = async (
   }>,
   extraOperations: xdr.Operation[] = [],
 ): Promise<ContractMethodResponse> => {
-  const contractCalls: ContractMethodCall[] = methods.map(
-    ({ method, additionalArgs = [] }) => ({
-      method,
-      args: [
-        { value: wallet_address, type: "address" as const },
-        ...additionalArgs,
-      ],
-    }),
-  );
-
-  const response = await prepareTransaction(
-    context,
-    wallet_address,
-    contractCalls,
-    extraOperations,
-  );
-
-  if (response.isSuccess) {
-    if (response.isReadOnly) {
-      return response;
-    }
-    const signedTxXDR = await context.signTransaction!(
-      response.result as string,
+  try {
+    console.log('executeMultiWalletTransactions: Starting execution', { wallet_address, methodsCount: methods.length, extraOperationsCount: extraOperations.length });
+    
+    const contractCalls: ContractMethodCall[] = methods.map(
+      ({ method, additionalArgs = [] }) => ({
+        method,
+        args: [
+          { value: wallet_address, type: "address" as const },
+          ...additionalArgs,
+        ],
+      }),
     );
-    const sendResponse = await sendTransaction(context, signedTxXDR);
-    return {
-      isSuccess: true,
-      isReadOnly: false,
-      result: sendResponse,
-    };
+    console.log('executeMultiWalletTransactions: Contract calls prepared:', contractCalls);
+
+    console.log('executeMultiWalletTransactions: Calling prepareTransaction...');
+    const response = await prepareTransaction(
+      context,
+      wallet_address,
+      contractCalls,
+      extraOperations,
+    );
+    console.log('executeMultiWalletTransactions: prepareTransaction response:', { isSuccess: response.isSuccess, isReadOnly: response.isReadOnly });
+
+    if (response.isSuccess) {
+      if (response.isReadOnly) {
+        console.log('executeMultiWalletTransactions: Transaction is read-only, returning response');
+        return response;
+      }
+      
+      console.log('executeMultiWalletTransactions: Transaction is not read-only, signing...');
+      const signedTxXDR = await context.signTransaction!(
+        response.result as string,
+      );
+      console.log('executeMultiWalletTransactions: Transaction signed successfully');
+      
+      console.log('executeMultiWalletTransactions: Sending transaction...');
+      const sendResponse = await sendTransaction(context, signedTxXDR);
+      console.log('executeMultiWalletTransactions: Transaction sent successfully:', sendResponse);
+      
+      return {
+        isSuccess: true,
+        isReadOnly: false,
+        result: sendResponse,
+      };
+    }
+    
+    console.log('executeMultiWalletTransactions: prepareTransaction failed, returning response');
+    return response;
+  } catch (error) {
+    console.error('executeMultiWalletTransactions: Error occurred:', error);
+    console.error('executeMultiWalletTransactions: Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
   }
-  return response;
 };
 
 const prepareTransaction = async (
