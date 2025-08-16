@@ -37,7 +37,6 @@ export class DealOps {
           { value: params.duration_secs, type: 'u64' },
           { value: params.agreed_storage_gb, type: 'u32' },
           { value: params.agreed_egress_gb, type: 'u32' },
-          { value: params.fb_repo_id, type: 'string' },
           { value: params.api_compatibility, type: 'string' }
         ]
       });
@@ -87,12 +86,14 @@ export class DealOps {
       consumer_id: string,
       provider_id: string,
       deal_id: number,
-      amount_usd: bigint
+      amount_usd: bigint,
+      fb_repo_id: string
     ): Promise<void> => {
       await executeWalletTransaction(this.context, consumer_id, "set_deal_funded", [
         { value: provider_id, type: 'address' },
         { value: deal_id, type: 'u32' },
-        { value: amount_usd, type: 'u128' }
+        { value: amount_usd, type: 'u128' },
+        { value: fb_repo_id, type: 'string' },
       ]);
     }
   );
