@@ -1,5 +1,5 @@
 import { ClientContext } from '.';
-import { Bucket, BucketCreateParams, BucketUpdateBasicParams, BucketUpdatePricingParams, BucketUpdateSLAParams } from '../models';
+import { Bucket, BucketCreateParams, BucketUpdateBasicParams, BucketUpdateConditionsParams } from '../models';
 import { executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
@@ -105,37 +105,16 @@ export class BucketOps {
    * @param params - Pricing update parameters
    * @returns Promise resolving to the update result
    */
-  updateBucketPricing = withSignature(
+  updateBucketConditions = withSignature(
     async (
       provider_id: string,
       bucket_id: number,
-      params: BucketUpdatePricingParams
+      params: BucketUpdateConditionsParams
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "update_bucket_pricing", [
+      await executeWalletTransaction(this.context, provider_id, "update_bucket_conditions", [
         { value: bucket_id, type: 'u32' },
         { value: params.price_per_gb_storage || null, type: 'u128' },
         { value: params.price_per_gb_egress || null, type: 'u128' },
-        { value: params.max_storage_gb || null, type: 'u32' },
-        { value: params.max_egress_gb || null, type: 'u32' }
-      ]);
-    }
-  );
-
-  /**
-   * Updates bucket SLA information
-   * @param provider_id - Address of the provider owning the bucket
-   * @param bucket_id - ID of the bucket to update
-   * @param params - SLA update parameters
-   * @returns Promise resolving to the update result
-   */
-  updateBucketSLA = withSignature(
-    async (
-      provider_id: string,
-      bucket_id: number,
-      params: BucketUpdateSLAParams
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "update_bucket_sla", [
-        { value: bucket_id, type: 'u32' },
         { value: params.sla_avg_latency_ms || null, type: 'u32' },
         { value: params.sla_avg_uptime_pct || null, type: 'u32' }
       ]);

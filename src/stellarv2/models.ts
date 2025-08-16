@@ -143,14 +143,9 @@ export interface BucketUpdateBasicParams {
   country?: string;
 }
 
-export interface BucketUpdatePricingParams {
+export interface BucketUpdateConditionsParams {
   price_per_gb_storage?: bigint;
   price_per_gb_egress?: bigint;
-  max_storage_gb?: number;
-  max_egress_gb?: number;
-}
-
-export interface BucketUpdateSLAParams {
   sla_avg_latency_ms?: number;
   sla_avg_uptime_pct?: number;
 }
