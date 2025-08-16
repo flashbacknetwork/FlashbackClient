@@ -121,12 +121,12 @@ export enum ErrorCode {
 export interface BucketCreateParams {
   name: string;
   region: string;
-  country: string;
-  versioning_enabled: boolean;
   fb_bucket_id: string;
   api_compatibility: string;
   price_per_gb_storage: bigint;
   price_per_gb_egress: bigint;
+  sla_avg_latency_ms: number;
+  sla_avg_uptime_pct: number;
 }
 
 export interface DealCreateParams {

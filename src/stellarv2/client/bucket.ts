@@ -27,12 +27,12 @@ export class BucketOps {
         args: [
           { value: params.name, type: 'string' },
           { value: params.region, type: 'string' },
-          { value: params.country, type: 'string' },
-          { value: params.versioning_enabled, type: 'bool' },
           { value: params.fb_bucket_id, type: 'string' },
           { value: params.api_compatibility, type: 'string' },
           { value: params.price_per_gb_storage, type: 'u128' },
-          { value: params.price_per_gb_egress, type: 'u128' }
+          { value: params.price_per_gb_egress, type: 'u128' },
+          { value: params.sla_avg_latency_ms, type: 'u32' },
+          { value: params.sla_avg_uptime_pct, type: 'u32' }
         ]
       });
 
