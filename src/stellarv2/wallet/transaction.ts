@@ -447,9 +447,15 @@ const sendTransaction = async (
         console.log('sendTransaction: getResponse.resultMetaXdr exists:', !!getResponse.resultMetaXdr);
         console.log('sendTransaction: getResponse.resultMetaXdr type:', typeof getResponse.resultMetaXdr);
         
-        // Make sure the transaction's resultMetaXDR is not empty
+        // In SDK v14, returnValue might be directly available
+        if ('returnValue' in getResponse && getResponse.returnValue) {
+          console.log('sendTransaction: Found returnValue directly in response:', getResponse.returnValue);
+          return getResponse.returnValue;
+        }
+        
+        // Make sure the transaction's resultMetaXdr is not empty
         if (!getResponse.resultMetaXdr) {
-          console.error('sendTransaction: Empty resultMetaXDR in getTransaction response');
+          console.error('sendTransaction: Empty resultMetaXdr in getTransaction response');
           console.error('sendTransaction: This might indicate a network response format change');
           console.error('sendTransaction: Available fields:', Object.keys(getResponse));
           
@@ -459,32 +465,63 @@ const sendTransaction = async (
             return getResponse.result;
           }
           
-          if ('returnValue' in getResponse && getResponse.returnValue) {
-            console.log('sendTransaction: Found returnValue field:', getResponse.returnValue);
-            return getResponse.returnValue;
-          }
-          
           // If we still can't find the return value, return the full response instead of throwing
           console.log('sendTransaction: No return value found, returning full response');
           return getResponse;
         }
         
-        // Find the return value from the contract and return it
-        const transactionMeta = getResponse.resultMetaXdr;
-        console.log('sendTransaction: transactionMeta type:', typeof transactionMeta);
-        console.log('sendTransaction: transactionMeta keys:', Object.keys(transactionMeta));
-        
-        const returnValue = transactionMeta.v3().sorobanMeta()?.returnValue();
-        console.log('sendTransaction: returnValue extracted:', returnValue);
-        
-        if (returnValue) {
-          console.log('sendTransaction: Returning contract return value');
-          return scValToNative(returnValue);
+        // Try to parse the resultMetaXdr if it exists
+        try {
+          const transactionMeta = getResponse.resultMetaXdr;
+          console.log('sendTransaction: transactionMeta type:', typeof transactionMeta);
+          console.log('sendTransaction: transactionMeta keys:', Object.keys(transactionMeta));
+          
+          // Try different approaches to extract the return value
+          let returnValue = null;
+          
+          // Try the old v3 approach
+          if (transactionMeta.v3 && typeof transactionMeta.v3 === 'function') {
+            try {
+              const sorobanMeta = transactionMeta.v3().sorobanMeta();
+              if (sorobanMeta) {
+                returnValue = sorobanMeta.returnValue();
+              }
+            } catch (v3Error) {
+              console.log('sendTransaction: v3 approach failed, trying alternatives...');
+            }
+          }
+          
+          // Try direct property access
+          if (!returnValue && 'returnValue' in transactionMeta && transactionMeta.returnValue) {
+            returnValue = transactionMeta.returnValue;
+          }
+          
+          // Try nested access
+          if (!returnValue && '_value' in transactionMeta && transactionMeta._value && 
+              typeof transactionMeta._value === 'object' && 'returnValue' in transactionMeta._value) {
+            returnValue = (transactionMeta._value as any).returnValue;
+          }
+          
+          if (returnValue) {
+            console.log('sendTransaction: returnValue extracted:', returnValue);
+            return scValToNative(returnValue);
+          }
+          
+          console.log('sendTransaction: No return value found in metadata, returning full response');
+          return getResponse;
+          
+        } catch (metaError) {
+          console.error('sendTransaction: Error parsing resultMetaXdr:', metaError);
+          console.log('sendTransaction: Returning full response due to metadata parsing error');
+          return getResponse;
         }
-        console.log('sendTransaction: Returning full transaction response');
-        return getResponse; // Return the full transaction response
+      } else if (String(getResponse.status).includes("NOT_FOUND")) {
+        console.log('sendTransaction: Transaction not found yet, continuing to poll...');
+        // Wait one second before the next poll
+        await sleep(1000);
       } else {
-        console.error('sendTransaction: Transaction failed:', getResponse.resultXdr);
+        console.error('sendTransaction: Transaction failed with unexpected status:', getResponse.status);
+        console.error('sendTransaction: Error result:', getResponse.resultXdr);
         throw new Error(`Transaction failed: ${getResponse.resultXdr}`);
       }
     } else {
