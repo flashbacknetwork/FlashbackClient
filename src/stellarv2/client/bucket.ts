@@ -22,6 +22,7 @@ export class BucketOps {
    */
   createBucket = withSignature(
     async (provider_id: string, params: BucketCreateParams): Promise<number> => {
+      console.log('Creating bucket with params:', JSON.stringify(params, null, 2));
       const response: ContractMethodResponse = await executeWalletTransaction(this.context, provider_id, "create_bucket", [
           { value: params.name, type: 'string' },
           { value: params.region, type: 'string' },
