@@ -105,6 +105,7 @@ export interface Deal {
 
 export interface DealInfo  {
   deal: Deal;
+  bucket: Bucket;
   provider_name: string;
   provider_reputation: string;
   consumer_name: string;
