@@ -1,6 +1,6 @@
 import { ClientContext } from '.';
 import { Bucket, BucketCreateParams, BucketUpdateBasicParams, BucketUpdateConditionsParams } from '../models';
-import { executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
+import { ContractMethodResponse, executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
 /**
@@ -22,9 +22,7 @@ export class BucketOps {
    */
   createBucket = withSignature(
     async (provider_id: string, params: BucketCreateParams): Promise<number> => {
-      const response = await prepareTransaction(this.context, provider_id, {
-        method: 'create_bucket',
-        args: [
+      const response: ContractMethodResponse = await executeWalletTransaction(this.context, provider_id, "create_bucket", [
           { value: params.name, type: 'string' },
           { value: params.region, type: 'string' },
           { value: params.fb_bucket_id, type: 'string' },
@@ -33,8 +31,7 @@ export class BucketOps {
           { value: params.price_per_gb_egress, type: 'u128' },
           { value: params.sla_avg_latency_ms, type: 'u32' },
           { value: params.sla_avg_uptime_pct, type: 'u32' }
-        ]
-      });
+        ]);
 
       if (!response.isSuccess) {
         throw new Error('Failed to create bucket');

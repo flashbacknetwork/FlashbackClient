@@ -71,9 +71,7 @@ const getServer = (network: StellarNetwork): rpc.Server => {
   
   // Approach 1: Try with allowHttp option
   try {
-    console.log(`Attempting to create server with allowHttp: true`);
     server = new rpc.Server(serverUrl, { allowHttp: true });
-    console.log(`Soroban RPC server created successfully with allowHttp: true`);
     return server;
   } catch (error) {
     console.log(`Failed with allowHttp: true:`, error instanceof Error ? error.message : String(error));
@@ -110,7 +108,7 @@ interface ContractMethodCall {
   }>;
 }
 
-interface ContractMethodResponse {
+export interface ContractMethodResponse {
   isSuccess: boolean;
   isReadOnly: boolean;
   result: string | unknown;
@@ -303,7 +301,6 @@ const prepareTransaction = async (
     .build();
 
   console.log(`About to simulate transaction for method: ${calls[0]?.method || 'unknown'}`);
-  console.log(`Network: ${context.network.network}, Passphrase: ${context.network.networkPassphrase}`);
   
   let sim;
   try {
