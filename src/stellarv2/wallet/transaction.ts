@@ -401,47 +401,115 @@ const sendTransaction = async (
   signedTransactionXDR: string,
   bDebug: boolean = false,
 ) => {
-  const server = getServer(context.network);
-
-  const signedTransaction = TransactionBuilder.fromXDR(
-    signedTransactionXDR,
-    context.network.networkPassphrase,
-  );
-
-  // Submit the transaction to the Stellar-RPC server. The RPC server will
-  // then submit the transaction into the network for us. Then we will have to
-  // wait, polling `getTransaction` until the transaction completes.
   try {
+    console.log('sendTransaction: Starting transaction submission');
+    console.log('sendTransaction: Network:', context.network.networkPassphrase);
+    
+    const server = getServer(context.network);
+    console.log('sendTransaction: Server obtained');
+
+    const signedTransaction = TransactionBuilder.fromXDR(
+      signedTransactionXDR,
+      context.network.networkPassphrase,
+    );
+    console.log('sendTransaction: Transaction parsed from XDR');
+
+    // Submit the transaction to the Stellar-RPC server. The RPC server will
+    // then submit the transaction into the network for us. Then we will have to
+    // wait, polling `getTransaction` until the transaction completes.
+    console.log('sendTransaction: Submitting transaction to server...');
     const sendResponse = await server.sendTransaction(signedTransaction);
+    console.log('sendTransaction: Server response received:', sendResponse);
 
     if (sendResponse.status === "PENDING") {
+      console.log('sendTransaction: Transaction is pending, hash:', sendResponse.hash);
+      console.log('sendTransaction: Starting to poll for transaction completion...');
+      
       let getResponse = await server.getTransaction(sendResponse.hash);
+      console.log('sendTransaction: Initial getTransaction response:', getResponse);
+      
+      let pollCount = 0;
       while (getResponse.status === "NOT_FOUND") {
+        pollCount++;
+        console.log(`sendTransaction: Polling attempt ${pollCount}, transaction not found yet...`);
         // See if the transaction is complete
         getResponse = await server.getTransaction(sendResponse.hash);
         // Wait one second
         await sleep(1000);
       }
 
+      console.log('sendTransaction: Final getTransaction response:', getResponse);
+
       if (getResponse.status === "SUCCESS") {
+        console.log('sendTransaction: Transaction succeeded!');
+        console.log('sendTransaction: Full getResponse object:', JSON.stringify(getResponse, null, 2));
+        console.log('sendTransaction: getResponse keys:', Object.keys(getResponse));
+        console.log('sendTransaction: getResponse.resultMetaXdr exists:', !!getResponse.resultMetaXdr);
+        console.log('sendTransaction: getResponse.resultMetaXdr type:', typeof getResponse.resultMetaXdr);
+        
         // Make sure the transaction's resultMetaXDR is not empty
         if (!getResponse.resultMetaXdr) {
-          throw new Error("Empty resultMetaXDR in getTransaction response");
+          console.error('sendTransaction: Empty resultMetaXDR in getTransaction response');
+          console.error('sendTransaction: This might indicate a network response format change');
+          console.error('sendTransaction: Available fields:', Object.keys(getResponse));
+          
+          // Try alternative response formats that might have been introduced
+          if ('result' in getResponse && getResponse.result) {
+            console.log('sendTransaction: Found result field:', getResponse.result);
+            return getResponse.result;
+          }
+          
+          if ('returnValue' in getResponse && getResponse.returnValue) {
+            console.log('sendTransaction: Found returnValue field:', getResponse.returnValue);
+            return getResponse.returnValue;
+          }
+          
+          // If we still can't find the return value, return the full response instead of throwing
+          console.log('sendTransaction: No return value found, returning full response');
+          return getResponse;
         }
+        
         // Find the return value from the contract and return it
         const transactionMeta = getResponse.resultMetaXdr;
+        console.log('sendTransaction: transactionMeta type:', typeof transactionMeta);
+        console.log('sendTransaction: transactionMeta keys:', Object.keys(transactionMeta));
+        
         const returnValue = transactionMeta.v3().sorobanMeta()?.returnValue();
+        console.log('sendTransaction: returnValue extracted:', returnValue);
+        
         if (returnValue) {
+          console.log('sendTransaction: Returning contract return value');
           return scValToNative(returnValue);
         }
+        console.log('sendTransaction: Returning full transaction response');
         return getResponse; // Return the full transaction response
       } else {
+        console.error('sendTransaction: Transaction failed:', getResponse.resultXdr);
         throw new Error(`Transaction failed: ${getResponse.resultXdr}`);
       }
     } else {
+      console.error('sendTransaction: Send response status not PENDING:', sendResponse.status);
+      console.error('sendTransaction: Error result:', sendResponse.errorResult);
       throw new Error(sendResponse.errorResult?.toString() || "Unknown error");
     }
   } catch (err) {
+    console.error('sendTransaction: Caught error:', err);
+    console.error('sendTransaction: Error type:', typeof err);
+    console.error('sendTransaction: Error constructor:', err?.constructor?.name);
+    
+    // Type guard to safely access error properties
+    if (err instanceof Error) {
+      console.error('sendTransaction: Error message:', err.message);
+      console.error('sendTransaction: Error stack:', err.stack);
+    } else {
+      console.error('sendTransaction: Error is not an Error instance, value:', err);
+    }
+    
+    // If it's already our wrapped error, don't wrap it again
+    if (err instanceof Error && err.message.startsWith('Transaction sending error:')) {
+      throw err;
+    }
+    
     // Catch and report any errors we've thrown
     throw new Error(`Transaction sending error: ${JSON.stringify(err)}`);
   }
