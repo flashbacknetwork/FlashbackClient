@@ -50,6 +50,28 @@ export interface Bucket {
   locked: boolean; // true when bucket is locked into an ongoing deal
 }
 
+export interface BucketMarketplace {
+  bucket_id: number; // per-provider unique ID
+  name: string;
+  region: string;
+  provider_id: string;
+  provider_name: string;
+  provider_reputation: string;
+  fb_bucket_id: string;
+  price_per_gb_storage: bigint; // in usd * 10^7
+  price_per_gb_egress: bigint; // in usd * 10^7
+  versioning_enabled: boolean;
+  encryption_at_rest: boolean;
+  encryption_in_transit: boolean;
+  object_locking: boolean;
+  api_compatibility: string; // e.g. ["S3", "GCS"]
+  sla_avg_latency_ms: number;
+  sla_avg_uptime_pct: number; // e.g. 99900000 = 99.90% (6 decimals)
+  created_ts: bigint;
+  status: BucketStatus;
+  locked: boolean; // true when bucket is locked into an ongoing deal
+}
+
 export enum BucketStatus {
   Active = 'Active',
   Inactive = 'Inactive',

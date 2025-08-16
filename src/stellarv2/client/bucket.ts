@@ -1,5 +1,5 @@
 import { ClientContext } from '.';
-import { Bucket, BucketCreateParams, BucketUpdateBasicParams, BucketUpdateConditionsParams } from '../models';
+import { Bucket, BucketCreateParams, BucketMarketplace, BucketUpdateBasicParams, BucketUpdateConditionsParams } from '../models';
 import { ContractMethodResponse, executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
@@ -229,7 +229,7 @@ export class BucketOps {
    * @param take - Number of items to take per page
    * @returns Promise resolving to an array of Bucket objects
    */
-  async getBuckets(skip: number = 0, take: number = 10): Promise<Bucket[]> {
+  async getBuckets(skip: number = 0, take: number = 10): Promise<BucketMarketplace[]> {
     const response = await prepareTransaction(this.context, '', {
       method: 'get_buckets',
       args: [
@@ -244,7 +244,7 @@ export class BucketOps {
 
     const result = response.result;
     if (Array.isArray(result)) {
-      return result as Bucket[];
+      return result as BucketMarketplace[];
     }
     return [];
   }
