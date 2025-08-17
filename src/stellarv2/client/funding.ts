@@ -56,14 +56,13 @@ export class FundingOps {
    * @param amount - Amount to mint in the stable asset's smallest unit
    * @returns Promise resolving to the minting result
    */
-  testFaucetOwner = withSignature(
+  testFaucet = withSignature(
     async (receiver: string, amount: bigint): Promise<void> => {
-      await executeWalletTransaction(this.context, '', "test_faucet_owner", [
-        { value: receiver, type: 'address' },
-        { value: amount, type: 'i128' }
-      ]);
-    }
-  );
+        await executeWalletTransaction(this.context, receiver, "test_faucet", [
+          { value: amount, type: 'i128' }
+        ]);
+      }
+    );
 
   /**
    * Changes the admin of the stable asset contract (owner only)
