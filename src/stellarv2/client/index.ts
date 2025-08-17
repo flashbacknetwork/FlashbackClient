@@ -1,10 +1,11 @@
-import { executeMultiWalletTransactions, sendTransaction, StellarNetwork } from '../wallet/transaction';
+import { executeMultiWalletTransactions, sendTransaction, signTransaction, StellarNetwork } from '../wallet/transaction';
 import { ConsumerOps } from './consumer';
 import { ProviderOps } from './provider';
 import { BucketOps } from './bucket';
 import { DealOps } from './deal';
 import { FundingOps } from './funding';
 import { withSignature } from '../utils/decorator';
+import { changeTrustXDR } from '../wallet';
 
 /**
  * Configuration interface for the FlashOnStellar V2 client
@@ -93,7 +94,7 @@ export class FlashOnStellarClientV2 {
     throw new Error('getVersion not implemented - requires transaction layer implementation');
   }
 
-    /**
+  /**
    * Sends a transaction to the Stellar network
    * @param xdrToSend - The XDR-encoded transaction to send
    * @returns Promise resolving to the sent transaction
@@ -153,6 +154,12 @@ export class FlashOnStellarClientV2 {
     // Implementation depends on the transaction layer
     throw new Error('setStableAssetAddress not implemented - requires transaction layer implementation');
   }
+
+  changeTrust = async (source: string, issuerPublikKey: string, asset_ticker: string, bRemove: boolean): Promise<void> => {
+      const xdr = await changeTrustXDR(this.network, source, issuerPublikKey, asset_ticker, bRemove);
+      const signedXDR = await this.signTransaction!(xdr);
+      return this.sendTransaction(signedXDR);
+  };
 
   /**
    * Gets system statistics
