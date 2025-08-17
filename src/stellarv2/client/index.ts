@@ -1,4 +1,4 @@
-import { executeMultiWalletTransactions, StellarNetwork } from '../wallet/transaction';
+import { executeMultiWalletTransactions, sendTransaction, StellarNetwork } from '../wallet/transaction';
 import { ConsumerOps } from './consumer';
 import { ProviderOps } from './provider';
 import { BucketOps } from './bucket';
@@ -92,6 +92,15 @@ export class FlashOnStellarClientV2 {
     // Implementation depends on the transaction layer
     throw new Error('getVersion not implemented - requires transaction layer implementation');
   }
+
+    /**
+   * Sends a transaction to the Stellar network
+   * @param xdrToSend - The XDR-encoded transaction to send
+   * @returns Promise resolving to the sent transaction
+   */
+  sendTransaction = async (xdrToSend: string, bDebug: boolean = false) => {
+      return sendTransaction(this.getContext(), xdrToSend, bDebug);
+  };
 
   /**
    * Gets the owner address of the contract
