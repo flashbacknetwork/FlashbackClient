@@ -114,7 +114,6 @@ export class DealOps {
     ): Promise<void> => {
       await executeWalletTransaction(this.context, consumer_id, "set_deal_completed", [
         { value: provider_id, type: 'address' },
-        { value: consumer_id, type: 'address' },
         { value: deal_id, type: 'u32' }
       ]);
     }
@@ -135,7 +134,6 @@ export class DealOps {
     ): Promise<void> => {
       await executeWalletTransaction(this.context, provider_id, "set_deal_cancelled", [
         { value: consumer_id, type: 'address' },
-        { value: provider_id, type: 'address' },
         { value: deal_id, type: 'u32' }
       ]);
     }
