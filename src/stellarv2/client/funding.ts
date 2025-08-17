@@ -13,8 +13,8 @@ export class FundingOps {
     this.context = context;
   }
 
-  async getStableAssetName(): Promise<string> {
-    const response = await prepareTransaction(this.context, '', {
+  async getStableAssetName(wallet_address: string): Promise<string> {
+    const response = await prepareTransaction(this.context, wallet_address, {
       method: 'get_stable_asset_name',
       args: []
     });
@@ -24,8 +24,8 @@ export class FundingOps {
     return '';  
   }
 
-  async getStableAssetAddress(): Promise<string> {
-    const response = await prepareTransaction(this.context, '', {
+  async getStableAssetAddress(wallet_address: string): Promise<string> {
+    const response = await prepareTransaction(this.context, wallet_address, {
       method: 'get_stable_asset_address',
       args: []
     });
