@@ -140,48 +140,6 @@ export class DealOps {
   );
 
   /**
-   * Marks a deal as breached by the consumer
-   * @param consumer_id - Address of the consumer
-   * @param provider_id - Address of the provider
-   * @param deal_id - ID of the deal
-   * @returns Promise resolving to the breach marking result
-   */
-  setDealBreachedConsumer = withSignature(
-    async (
-      consumer_id: string,
-      provider_id: string,
-      deal_id: number
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "set_deal_breached_consumer", [
-        { value: consumer_id, type: 'address' },
-        { value: provider_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
-      ]);
-    }
-  );
-
-  /**
-   * Marks a deal as breached by the provider
-   * @param consumer_id - Address of the consumer
-   * @param provider_id - Address of the provider
-   * @param deal_id - ID of the deal
-   * @returns Promise resolving to the breach marking result
-   */
-  setDealBreachedProvider = withSignature(
-    async (
-      consumer_id: string,
-      provider_id: string,
-      deal_id: number
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, consumer_id, "set_deal_breached_provider", [
-        { value: provider_id, type: 'address' },
-        { value: consumer_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
-      ]);
-    }
-  );
-
-  /**
    * Deletes a deal from the system (owner only)
    * @param consumer_id - Address of the consumer
    * @param provider_id - Address of the provider
@@ -198,6 +156,29 @@ export class DealOps {
         { value: consumer_id, type: 'address' },
         { value: provider_id, type: 'address' },
         { value: deal_id, type: 'u32' }
+      ]);
+    }
+  );
+
+  /**
+   * Deposits funds to a deal
+   * @param consumer_id - Address of the consumer
+   * @param provider_id - Address of the provider
+   * @param deal_id - ID of the deal to deposit to
+   * @param amount_usd - Amount to deposit in USD (scaled by 10^7)
+   * @returns Promise resolving to the deposit result
+   */
+  depositToDeal = withSignature(
+    async (
+      consumer_id: string,
+      provider_id: string,
+      deal_id: number,
+      amount_usd: bigint
+    ): Promise<void> => {
+      await executeWalletTransaction(this.context, consumer_id, "deposit_to_deal", [
+        { value: provider_id, type: 'address' },
+        { value: deal_id, type: 'u32' },
+        { value: amount_usd, type: 'u128' }
       ]);
     }
   );
