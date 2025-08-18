@@ -74,6 +74,19 @@ export class DealOps {
     }
   );
 
+  setDealRejected = withSignature(
+    async (
+      provider_id: string,
+      consumer_id: string,
+      deal_id: number
+    ): Promise<void> => {
+      await executeWalletTransaction(this.context, provider_id, "set_deal_rejected", [
+        { value: consumer_id, type: 'address' },
+        { value: deal_id, type: 'u32' }
+      ]);
+    }
+  );
+
   /**
    * Sets a deal as funded by the consumer
    * @param consumer_id - Address of the consumer funding the deal
