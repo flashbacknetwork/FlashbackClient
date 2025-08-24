@@ -7,5 +7,6 @@ import * as BridgeTypes from './types/bridge';
 import * as EmailTypes from './types/email';
 import * as QuotaTypes from './types/quota';
 import * as SubscriptionTypes from './types/subscriptions';
+import * as DeviceTypes from './types/device';
 
-export { ApiClient, ApiTypes, AuthTypes, StatsTypes, ApiInterfaces, HttpError, BridgeTypes, EmailTypes, QuotaTypes, SubscriptionTypes };
+export { ApiClient, ApiTypes, AuthTypes, StatsTypes, ApiInterfaces, HttpError, BridgeTypes, EmailTypes, QuotaTypes, SubscriptionTypes, DeviceTypes };

@@ -76,6 +76,18 @@ import { NodeInfo } from './types/bridge';
 import { FeedbackEmailBody } from './types/email';
 import { QuotaResponse } from './types/quota';
 import {
+  DeviceListResponse,
+  DeviceDetailsResponse,
+  SessionListResponse,
+  TrustDeviceRequest,
+  TrustDeviceResponse,
+  UntrustDeviceResponse,
+  RemoveDeviceResponse,
+  RevokeSessionResponse,
+  RevokeAllSessionsResponse,
+  SessionHeartbeatResponse,
+} from './types/device';
+import {
   BuySubscriptionRequest,
   BuySubscriptionResponse,
   GetSubscriptionsResponse,
@@ -691,5 +703,43 @@ export class ApiClient implements IApiClient {
 
   public cancelSubscription = async (): Promise<CancelSubscriptionResponse> => {
     return this.makeRequest<CancelSubscriptionResponse>('subscriptions/cancel', 'POST', null);
+  };
+
+  ////// Device Management API
+  public getDevices = async (): Promise<DeviceListResponse> => {
+    return this.makeRequest<DeviceListResponse>('devices', 'GET', null);
+  };
+
+  public getDeviceDetails = async (deviceId: string): Promise<DeviceDetailsResponse> => {
+    return this.makeRequest<DeviceDetailsResponse>(`devices/${deviceId}`, 'GET', null);
+  };
+
+  public trustDevice = async (data: TrustDeviceRequest): Promise<TrustDeviceResponse> => {
+    return this.makeRequest<TrustDeviceResponse>('devices/trust', 'POST', data);
+  };
+
+  public untrustDevice = async (deviceId: string): Promise<UntrustDeviceResponse> => {
+    return this.makeRequest<UntrustDeviceResponse>(`devices/${deviceId}/untrust`, 'POST', null);
+  };
+
+  public removeDevice = async (deviceId: string): Promise<RemoveDeviceResponse> => {
+    return this.makeRequest<RemoveDeviceResponse>(`devices/${deviceId}`, 'DELETE', null);
+  };
+
+  ////// Session Management API
+  public getSessions = async (): Promise<SessionListResponse> => {
+    return this.makeRequest<SessionListResponse>('sessions', 'GET', null);
+  };
+
+  public revokeSession = async (sessionId: string): Promise<RevokeSessionResponse> => {
+    return this.makeRequest<RevokeSessionResponse>(`sessions/${sessionId}/revoke`, 'POST', null);
+  };
+
+  public revokeAllSessions = async (): Promise<RevokeAllSessionsResponse> => {
+    return this.makeRequest<RevokeAllSessionsResponse>('sessions/revoke-all', 'POST', null);
+  };
+
+  public updateSessionHeartbeat = async (sessionId: string): Promise<SessionHeartbeatResponse> => {
+    return this.makeRequest<SessionHeartbeatResponse>(`sessions/${sessionId}/heartbeat`, 'POST', null);
   };
 }
