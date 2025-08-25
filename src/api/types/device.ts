@@ -123,3 +123,22 @@ export interface DeviceListResponse {
     deviceInfo: DeviceInfo;
     geolocation: GeolocationInfo;
   }
+
+  export enum TrustEventType {
+    LOGIN_ATTEMPT,
+    FAILED_LOGIN_ATTEMPT,
+    SUCCESSFUL_LOGIN,
+    FAILED_LOGIN,
+    PASSWORD_RESET_ATTEMPT,
+    SUCCESSFUL_PASSWORD_RESET,
+    FAILED_PASSWORD_RESET,
+    TWO_FACTOR_ATTEMPT,
+    SUCCESSFUL_TWO_FACTOR,
+    FAILED_TWO_FACTOR,
+    DEVICE_UNTRUSTED,
+    DEVICE_TRUSTED,
+    DEVICE_REMOVED,
+    USER_UNTRUSTED,
+    USER_TRUSTED,
+    USER_REMOVED,
+  }
