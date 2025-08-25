@@ -117,12 +117,14 @@ export interface ResetPasswordBody {
   newPassword: string;
 }
 
-export interface GoogleLoginRequest {
-  token: string;
-  deviceInfo: DeviceInfo;
+export interface LoginDeviceInfo {
+  deviceInfo?: DeviceInfo;
 }
 
-export interface GithubLoginRequest {
+export interface GoogleLoginRequest extends LoginDeviceInfo {
+  token: string;
+}
+
+export interface GithubLoginRequest extends LoginDeviceInfo {
   code: string;
-  deviceInfo: DeviceInfo;
 }

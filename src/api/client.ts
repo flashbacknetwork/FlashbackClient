@@ -86,6 +86,7 @@ import {
   RevokeSessionResponse,
   RevokeAllSessionsResponse,
   SessionHeartbeatResponse,
+  DeviceInfo,
 } from './types/device';
 import {
   BuySubscriptionRequest,
@@ -138,13 +139,13 @@ export class ApiClient implements IApiClient {
     }
   };
 
-  public authenticate = async (token: string, provider: ProviderType): Promise<any> => {
+  public authenticate = async (token: string, provider: ProviderType, deviceInfo?: DeviceInfo): Promise<any> => {
     this.setAuthToken(token);
     switch (provider) {
       case ProviderType.GOOGLE:
-        return this.authenticateGoogle(token);
+        return this.authenticateGoogle({ token, deviceInfo });
       case ProviderType.GITHUB:
-        return this.authenticateGithub(token);
+        return this.authenticateGithub({ code: token, deviceInfo });
       case ProviderType.WEB3_STELLAR:
         throw new Error('Call web3Authenticate for web3 authentication');
       case ProviderType.LOCAL:
