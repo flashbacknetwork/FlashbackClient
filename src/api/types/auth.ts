@@ -67,7 +67,7 @@ export interface RegisterBody {
   isBusiness: boolean;
 }
 
-export interface LoginBody {
+export interface LoginBody extends LoginDeviceInfo {
   email: string;
   password: string;
 }
