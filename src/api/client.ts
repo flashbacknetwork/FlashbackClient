@@ -96,6 +96,7 @@ import {
   PaymentsQueryParams,
   CancelSubscriptionResponse,
 } from './types/subscriptions';
+import { AuthTypes } from '.';
 
 interface ErrorResponse {
   message?: string;
@@ -254,14 +255,14 @@ export class ApiClient implements IApiClient {
   };
 
   ////// Auth API
-  private authenticateGoogle = async (token: string): Promise<any> => {
-    this.setAuthToken(token);
-    return this.makeRequest<any>('auth/google', 'POST', { token });
+  private authenticateGoogle = async (data: AuthTypes.GoogleLoginRequest): Promise<any> => {
+    this.setAuthToken(data.token);
+    return this.makeRequest<any>('auth/google', 'POST', data);
   };
 
-  private authenticateGithub = async (code: string): Promise<any> => {
-    this.setAuthToken(code);
-    return this.makeRequest<any>('auth/github', 'POST', { code });
+  private authenticateGithub = async (data: AuthTypes.GithubLoginRequest): Promise<any> => {
+    this.setAuthToken(data.code);
+    return this.makeRequest<any>('auth/github', 'POST', data);
   };
 
   /**

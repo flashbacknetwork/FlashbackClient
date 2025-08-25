@@ -1,4 +1,5 @@
 import { ProviderType } from '../interfaces';
+import { DeviceInfo } from './device';
 
 export interface AuthState {
   user: {
@@ -114,4 +115,14 @@ export interface DeactivateResponse {
 export interface ResetPasswordBody {
   token: string;
   newPassword: string;
+}
+
+export interface GoogleLoginRequest {
+  token: string;
+  deviceInfo: DeviceInfo;
+}
+
+export interface GithubLoginRequest {
+  code: string;
+  deviceInfo: DeviceInfo;
 }
