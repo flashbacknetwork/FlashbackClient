@@ -39,6 +39,7 @@ export enum MFAType {
     response: {
       clientDataJSON: string;
       attestationObject: string;
+      clientExtensionResults?: Record<string, unknown>; // Add this to match WebAuthn
     };
     type: 'public-key';
   }
