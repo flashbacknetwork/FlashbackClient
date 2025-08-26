@@ -8,5 +8,18 @@ import * as EmailTypes from './types/email';
 import * as QuotaTypes from './types/quota';
 import * as SubscriptionTypes from './types/subscriptions';
 import * as DeviceTypes from './types/device';
+import * as MFATypes from './types/mfa';
 
-export { ApiClient, ApiTypes, AuthTypes, StatsTypes, ApiInterfaces, HttpError, BridgeTypes, EmailTypes, QuotaTypes, SubscriptionTypes, DeviceTypes };
+export { ApiClient, 
+    ApiTypes, 
+    AuthTypes, 
+    StatsTypes, 
+    ApiInterfaces, 
+    HttpError, 
+    BridgeTypes, 
+    EmailTypes, 
+    QuotaTypes, 
+    SubscriptionTypes, 
+    DeviceTypes, 
+    MFATypes 
+};

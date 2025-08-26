@@ -98,6 +98,21 @@ import {
   CancelSubscriptionResponse,
 } from './types/subscriptions';
 import { AuthTypes } from '.';
+import { MFAMethodsResponse, 
+  MFASetupRequest, 
+  MFASetupResponse, 
+  MFAStatusResponse, 
+  MFAVerificationSetupRequest, 
+  MFAVerificationSetupResponse, 
+  MFAEnableRequest, 
+  MFAEnableResponse, 
+  MFADisableResponse, 
+  MFAPrimaryRequest, 
+  MFAPrimaryResponse, 
+  MFAResetResponse, 
+  MFAOrganizationEnforceRequest, 
+  MFAOrganizationEnforceResponse, 
+  MagicLinkSendResponse, PasskeyAuthOptionsResult, PasskeyCompleteRegistrationRequest, PasskeyCompleteRegistrationResponse } from './types/mfa';
 
 interface ErrorResponse {
   message?: string;
@@ -743,5 +758,59 @@ export class ApiClient implements IApiClient {
 
   public updateSessionHeartbeat = async (sessionId: string): Promise<SessionHeartbeatResponse> => {
     return this.makeRequest<SessionHeartbeatResponse>(`sessions/${sessionId}/heartbeat`, 'POST', null);
+  };
+
+  ////// MFA Status & Methods API
+  public getMFAStatus = async (): Promise<MFAStatusResponse> => {
+    return this.makeRequest<MFAStatusResponse>('mfa/status', 'GET', null);
+  };
+
+  public getAvailableMethods = async (): Promise<MFAMethodsResponse> => {
+    return this.makeRequest<MFAMethodsResponse>('mfa/methods', 'GET', null);
+  };
+
+  ////// MFA Setup & Verification API
+  public setupMFA = async (request: MFASetupRequest): Promise<MFASetupResponse> => {
+    return this.makeRequest<MFASetupResponse>('mfa/setup', 'POST', request);
+  };
+
+  public verifyMFASetup = async (request: MFAVerificationSetupRequest): Promise<MFAVerificationSetupResponse> => {
+    return this.makeRequest<MFAVerificationSetupResponse>('mfa/verify-setup', 'POST', request);
+  };
+
+  ////// MFA Management API
+  public enableMFA = async (request: MFAEnableRequest): Promise<MFAEnableResponse> => {
+    return this.makeRequest<MFAEnableResponse>('mfa/enable', 'POST', request);
+  };
+
+  public disableMFA = async (request: MFAEnableRequest): Promise<MFADisableResponse> => {
+    return this.makeRequest<MFADisableResponse>('mfa/disable', 'POST', request);
+  };
+
+  public setPrimaryMFA = async (request: MFAPrimaryRequest): Promise<MFAPrimaryResponse> => {
+    return this.makeRequest<MFAPrimaryResponse>('mfa/primary', 'POST', request);
+  };
+
+  public resetMFA = async (): Promise<MFAResetResponse> => {
+    return this.makeRequest<MFAResetResponse>('mfa/reset', 'POST', null);
+  };
+
+  ////// Organization MFA API
+  public enforceOrganizationMFA = async (request: MFAOrganizationEnforceRequest): Promise<MFAOrganizationEnforceResponse> => {
+    return this.makeRequest<MFAOrganizationEnforceResponse>('mfa/organization/enforce', 'POST', request);
+  };
+
+  ////// Magic Link MFA API
+  public sendMagicLink = async (): Promise<MagicLinkSendResponse> => {
+    return this.makeRequest<MagicLinkSendResponse>('mfa/magic-link/send', 'POST', null);
+  };
+
+  ////// Passkey MFA API
+  public getPasskeyAuthOptions = async (): Promise<PasskeyAuthOptionsResult> => {
+    return this.makeRequest<PasskeyAuthOptionsResult>('mfa/passkey/auth-options', 'POST', null);
+  };
+
+  public completePasskeyRegistration = async (request: PasskeyCompleteRegistrationRequest): Promise<PasskeyCompleteRegistrationResponse> => {
+    return this.makeRequest<PasskeyCompleteRegistrationResponse>('mfa/passkey/complete-registration', 'POST', request);
   };
 }
