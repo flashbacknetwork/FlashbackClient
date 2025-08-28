@@ -133,6 +133,10 @@ export enum MFAType {
     challenge: string;
   }
   
+  export interface MagicLinkActivationRequest {
+    token: string;
+  }
+  
   // ============================================================================
   // RESPONSE DTOs
   // ============================================================================
@@ -191,6 +195,12 @@ export enum MFAType {
   export interface MFAOrganizationEnforceResult {
     success: boolean;
     message?: string;
+    error?: string;
+  }
+  
+  export interface MagicLinkActivationResponse {
+    success: boolean;
+    message: string;
     error?: string;
   }
   

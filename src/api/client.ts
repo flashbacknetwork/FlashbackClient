@@ -112,7 +112,13 @@ import { MFAMethodsResponse,
   MFAResetResponse, 
   MFAOrganizationEnforceRequest, 
   MFAOrganizationEnforceResponse, 
-  MagicLinkSendResponse, PasskeyAuthOptionsResult, PasskeyCompleteRegistrationRequest, PasskeyCompleteRegistrationResponse } from './types/mfa';
+  MagicLinkActivationRequest,
+  MagicLinkActivationResponse,
+  MagicLinkSendResponse, 
+  PasskeyAuthOptionsResult, 
+  PasskeyCompleteRegistrationRequest, 
+  PasskeyCompleteRegistrationResponse 
+} from './types/mfa';
 
 interface ErrorResponse {
   message?: string;
@@ -803,6 +809,10 @@ export class ApiClient implements IApiClient {
   ////// Magic Link MFA API
   public sendMagicLink = async (): Promise<MagicLinkSendResponse> => {
     return this.makeRequest<MagicLinkSendResponse>('mfa/magic-link/send', 'POST', null);
+  };
+
+  public activateMagicLink = async (data: MagicLinkActivationRequest): Promise<MagicLinkActivationResponse> => {
+    return this.makeRequest<MagicLinkActivationResponse>('mfa/magic-link/activate', 'POST', data);
   };
 
   ////// Passkey MFA API
