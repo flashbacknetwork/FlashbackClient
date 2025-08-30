@@ -117,7 +117,9 @@ import { MFAMethodsResponse,
   MagicLinkSendResponse, 
   PasskeyAuthOptionsResult, 
   PasskeyCompleteRegistrationRequest, 
-  PasskeyCompleteRegistrationResponse 
+  PasskeyCompleteRegistrationResponse, 
+  MFAVerificationRequest,
+  MFAVerificationResult
 } from './types/mfa';
 
 interface ErrorResponse {
@@ -784,6 +786,9 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<MFAVerificationSetupResponse>('mfa/verify-setup', 'POST', request);
   };
 
+  public verifyMFALogin = async (request: MFAVerificationRequest): Promise<MFAVerificationResult> => {
+    return this.makeRequest<MFAVerificationResult>('mfa/verify-login', 'POST', request);
+  };
   ////// MFA Management API
   public enableMFA = async (request: MFAEnableRequest): Promise<MFAEnableResponse> => {
     return this.makeRequest<MFAEnableResponse>('mfa/enable', 'POST', request);
@@ -823,4 +828,5 @@ export class ApiClient implements IApiClient {
   public completePasskeyRegistration = async (request: PasskeyCompleteRegistrationRequest): Promise<PasskeyCompleteRegistrationResponse> => {
     return this.makeRequest<PasskeyCompleteRegistrationResponse>('mfa/passkey/complete-registration', 'POST', request);
   };
+
 }
