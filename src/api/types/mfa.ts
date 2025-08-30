@@ -203,6 +203,14 @@ export enum MFAType {
     message: string;
     error?: string;
   }
+
+  export interface MFAVerificationLoginResponse {
+    success: boolean;
+    message: string;
+    fullAccessToken: string;
+    refreshToken: string;
+  }
+  
   
   // ============================================================================
   // MFA METHOD SPECIFIC DTOs

@@ -119,7 +119,8 @@ import { MFAMethodsResponse,
   PasskeyCompleteRegistrationRequest, 
   PasskeyCompleteRegistrationResponse, 
   MFAVerificationRequest,
-  MFAVerificationResult
+  MFAVerificationResult,
+  MFAVerificationLoginResponse
 } from './types/mfa';
 
 interface ErrorResponse {
@@ -786,8 +787,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<MFAVerificationSetupResponse>('mfa/verify-setup', 'POST', request);
   };
 
-  public verifyMFALogin = async (request: MFAVerificationRequest): Promise<MFAVerificationResult> => {
-    return this.makeRequest<MFAVerificationResult>('mfa/verify-login', 'POST', request);
+  public verifyMFALogin = async (request: MFAVerificationRequest): Promise<MFAVerificationLoginResponse> => {
+    return this.makeRequest<MFAVerificationLoginResponse>('mfa/verify-login', 'POST', request);
   };
   ////// MFA Management API
   public enableMFA = async (request: MFAEnableRequest): Promise<MFAEnableResponse> => {
