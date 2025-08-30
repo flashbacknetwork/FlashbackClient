@@ -9,6 +9,7 @@ import * as QuotaTypes from './types/quota';
 import * as SubscriptionTypes from './types/subscriptions';
 import * as DeviceTypes from './types/device';
 import * as MFATypes from './types/mfa';
+import * as SettingsTypes from './types/settings';
 
 export { ApiClient, 
     ApiTypes, 
@@ -21,5 +22,6 @@ export { ApiClient,
     QuotaTypes, 
     SubscriptionTypes, 
     DeviceTypes, 
-    MFATypes 
+    MFATypes, 
+    SettingsTypes
 };

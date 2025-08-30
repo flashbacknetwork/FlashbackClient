@@ -122,6 +122,7 @@ import { MFAMethodsResponse,
   MFAVerificationResult,
   MFAVerificationLoginResponse
 } from './types/mfa';
+import { DeleteSettingsRequest, GetSettingsResponse, PartialUpdateSettingsRequest, UpdateSettingsRequest } from './types/settings';
 
 interface ErrorResponse {
   message?: string;
@@ -828,6 +829,39 @@ export class ApiClient implements IApiClient {
 
   public completePasskeyRegistration = async (request: PasskeyCompleteRegistrationRequest): Promise<PasskeyCompleteRegistrationResponse> => {
     return this.makeRequest<PasskeyCompleteRegistrationResponse>('mfa/passkey/complete-registration', 'POST', request);
+  };
+
+  public getUserSettings = async (): Promise<GetSettingsResponse> => {
+    return this.makeRequest<GetSettingsResponse>('settings/user', 'GET');
+  };
+  
+  public updateUserSettings = async (request: UpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>('settings/user', 'POST', request);
+  };
+  
+  public partialUpdateUserSettings = async (request: PartialUpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>('settings/user', 'PUT', request);
+  };
+  
+  public deleteUserSettingsKeys = async (request: DeleteSettingsRequest): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>('settings/user', 'DELETE', request);
+  };
+  
+  // Organization Settings Methods
+  public getOrganizationSettings = async (): Promise<GetSettingsResponse> => {
+    return this.makeRequest<GetSettingsResponse>('settings/organization', 'GET');
+  };
+  
+  public updateOrganizationSettings = async (request: UpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>('settings/organization', 'POST', request);
+  };
+  
+  public partialUpdateOrganizationSettings = async (request: PartialUpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>('settings/organization', 'PUT', request);
+  };
+  
+  public deleteOrganizationSettingsKeys = async (request: DeleteSettingsRequest): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>('settings/organization', 'DELETE', request);
   };
 
 }
