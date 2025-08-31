@@ -87,6 +87,7 @@ export interface RegisterResponse {
     email: string;
     name: string;
     orgId?: string;
+    orgRole?: number;
   };
   error_code?: string;
   message?: string;

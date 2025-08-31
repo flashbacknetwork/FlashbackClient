@@ -12,6 +12,7 @@ import * as MFATypes from './types/mfa';
 import * as SettingsTypes from './types/settings';
 import * as RolesTypes from './types/roles';
 import * as WorkspaceTypes from './types/workspace';
+import * as OrganizationTypes from './types/organization';
 
 export { ApiClient, 
     ApiTypes, 
@@ -27,5 +28,6 @@ export { ApiClient,
     MFATypes, 
     SettingsTypes,
     RolesTypes,
-    WorkspaceTypes
+    WorkspaceTypes,
+    OrganizationTypes
 };
