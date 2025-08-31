@@ -97,7 +97,7 @@ import {
   PaymentsQueryParams,
   CancelSubscriptionResponse,
 } from './types/subscriptions';
-import { AuthTypes } from '.';
+import { AuthTypes, WorkspaceTypes } from '.';
 import { MFAMethodsResponse, 
   MFASetupRequest, 
   MFASetupResponse, 
@@ -878,4 +878,39 @@ export class ApiClient implements IApiClient {
   public updateUserRole = async (userId: string, orgRole: number): Promise<UpdateUserRoleResponse> => {
     return this.makeRequest<UpdateUserRoleResponse>(`user/${userId}/role`, 'PUT', { orgRole });
   };
+
+  // Workspaces APIs
+    ////// Workspace Management API
+    public createWorkspace = async (request: WorkspaceTypes.CreateWorkspaceRequest): Promise<WorkspaceTypes.CreateWorkspaceResponse> => {
+      return this.makeRequest<WorkspaceTypes.CreateWorkspaceResponse>('workspace', 'POST', request);
+    };
+  
+    public getWorkspaces = async (): Promise<WorkspaceTypes.GetWorkspacesResponse> => {
+      return this.makeRequest<WorkspaceTypes.GetWorkspacesResponse>('workspace', 'GET', null);
+    };
+  
+    public getWorkspace = async (id: string): Promise<WorkspaceTypes.GetWorkspaceResponse> => {
+      return this.makeRequest<WorkspaceTypes.GetWorkspaceResponse>(`workspace/${id}`, 'GET', null);
+    };
+  
+    public updateWorkspace = async (id: string, request: WorkspaceTypes.UpdateWorkspaceRequest): Promise<WorkspaceTypes.UpdateWorkspaceResponse> => {
+      return this.makeRequest<WorkspaceTypes.UpdateWorkspaceResponse>(`workspace/${id}`, 'PUT', request);
+    };
+  
+    public deleteWorkspace = async (id: string): Promise<WorkspaceTypes.DeleteWorkspaceResponse> => {
+      return this.makeRequest<WorkspaceTypes.DeleteWorkspaceResponse>(`workspace/${id}`, 'DELETE', null);
+    };
+  
+    ////// Workspace User Management API
+    public addUserToWorkspace = async (workspaceId: string, request: WorkspaceTypes.AddUserToWorkspaceRequest): Promise<WorkspaceTypes.AddUserToWorkspaceResponse> => {
+      return this.makeRequest<WorkspaceTypes.AddUserToWorkspaceResponse>(`workspace/${workspaceId}/users`, 'POST', request);
+    };
+  
+    public updateWorkspaceUserRole = async (workspaceId: string, userId: string, request: WorkspaceTypes.UpdateUserRoleRequest): Promise<WorkspaceTypes.UpdateUserRoleResponse> => {
+      return this.makeRequest<WorkspaceTypes.UpdateUserRoleResponse>(`workspace/${workspaceId}/users/${userId}`, 'PUT', request);
+    };
+  
+    public removeUserFromWorkspace = async (workspaceId: string, userId: string): Promise<WorkspaceTypes.RemoveUserFromWorkspaceResponse> => {
+      return this.makeRequest<WorkspaceTypes.RemoveUserFromWorkspaceResponse>(`workspace/${workspaceId}/users/${userId}`, 'DELETE', null);
+    };
 }

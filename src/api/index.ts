@@ -11,6 +11,7 @@ import * as DeviceTypes from './types/device';
 import * as MFATypes from './types/mfa';
 import * as SettingsTypes from './types/settings';
 import * as RolesTypes from './types/roles';
+import * as WorkspaceTypes from './types/workspace';
 
 export { ApiClient, 
     ApiTypes, 
@@ -25,5 +26,6 @@ export { ApiClient,
     DeviceTypes, 
     MFATypes, 
     SettingsTypes,
-    RolesTypes
+    RolesTypes,
+    WorkspaceTypes
 };
