@@ -30,6 +30,7 @@ export interface CreateUnitRequest {
   secret: string;
   endpoint?: string;
   region?: string;
+  workspaceId: string;
 }
 
 export interface GetUnitNodeStatsRequest {
@@ -76,6 +77,7 @@ export interface CreateRepoRequest {
   storageType: StorageType;
   mode: ModeType;
   repoUnits: RepoUnitInfo[];
+  workspaceId: string;
 }
 
 export interface CreateRepoResponse {
@@ -117,6 +119,7 @@ export interface StorageRepo {
   apiKeys?: ApiKey[];
   createdAt: string;
   disabled?: boolean;
+  workspaceId: string;
 }
 
 export interface ApiKey {
@@ -147,6 +150,7 @@ export interface StorageUnit {
   status?: string;
   projectId?: string;
   createdAt: string;
+  workspaceId: string;
 }
 
 export interface GetUnitsResponse {
