@@ -24,5 +24,6 @@ export { ApiClient,
     SubscriptionTypes, 
     DeviceTypes, 
     MFATypes, 
-    SettingsTypes
+    SettingsTypes,
+    RolesTypes
 };
