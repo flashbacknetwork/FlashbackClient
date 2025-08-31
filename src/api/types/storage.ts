@@ -250,6 +250,7 @@ export interface CreateRepoWithBucketsRequest {
   storageType: StorageType;
   mode: ModeType;
   repoBuckets: RepoBucketInfo[];
+  workspaceId: string;
 }
 
 export interface UpdateRepoWithBucketsRequest extends CreateRepoWithBucketsRequest {}
