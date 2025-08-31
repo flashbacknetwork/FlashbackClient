@@ -10,6 +10,7 @@ import * as SubscriptionTypes from './types/subscriptions';
 import * as DeviceTypes from './types/device';
 import * as MFATypes from './types/mfa';
 import * as SettingsTypes from './types/settings';
+import * as RolesTypes from './types/roles';
 
 export { ApiClient, 
     ApiTypes, 

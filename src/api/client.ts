@@ -123,6 +123,8 @@ import { MFAMethodsResponse,
   MFAVerificationLoginResponse
 } from './types/mfa';
 import { DeleteSettingsRequest, GetSettingsResponse, PartialUpdateSettingsRequest, UpdateSettingsRequest } from './types/settings';
+import { UpdateUserRoleResponse, UserRoleResponse } from './types/roles';
+import { UserProfileResponse } from './types/roles';
 
 interface ErrorResponse {
   message?: string;
@@ -864,4 +866,16 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<{ success: boolean; message: string }>('settings/organization', 'DELETE', request);
   };
 
+  // Role/profile management methods
+  public getUserProfile = async (): Promise<UserProfileResponse> => {
+    return this.makeRequest<UserProfileResponse>('user/profile', 'GET', null);
+  };
+  
+  public getUserById = async (userId: string): Promise<UserRoleResponse> => {
+    return this.makeRequest<UserRoleResponse>(`user/${userId}`, 'GET', null);
+  };
+  
+  public updateUserRole = async (userId: string, orgRole: number): Promise<UpdateUserRoleResponse> => {
+    return this.makeRequest<UpdateUserRoleResponse>(`user/${userId}/role`, 'PUT', { orgRole });
+  };
 }
