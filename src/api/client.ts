@@ -319,6 +319,15 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code });
   };
 
+  // Token Management
+  public getTokens = async (): Promise<{ success: boolean; tokens: any[] }> => {
+    return this.makeRequest<{ success: boolean; tokens: any[] }>('token', 'GET', null);
+  };
+
+  public revokeToken = async (tokenId: string): Promise<{ success: boolean }> => {
+    return this.makeRequest<{ success: boolean }>(`token/${tokenId}`, 'DELETE', null);
+  };
+  
   ////// Units API
   public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
     return this.makeRequest<CreateUnitResponse>('unit', 'POST', data);

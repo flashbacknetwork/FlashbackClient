@@ -9,6 +9,7 @@ interface NodeSignedMessage {
   region: string;
   timestamp: number;
   signature: string;
+  id_org?: string;
 }
 
 export interface NodeStatusInfo {
@@ -56,4 +57,5 @@ export interface NodeInfo {
   latencyMs?: number;
   lastUpdated: string;
   url: string;
+  id_org?: string;
 }
