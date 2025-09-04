@@ -13,6 +13,7 @@ import * as SettingsTypes from './types/settings';
 import * as RolesTypes from './types/roles';
 import * as WorkspaceTypes from './types/workspace';
 import * as OrganizationTypes from './types/organization';
+import * as NodeRegistrationTypes from './types/noderegistration';
 
 export { ApiClient, 
     ApiTypes, 
@@ -29,5 +30,6 @@ export { ApiClient,
     SettingsTypes,
     RolesTypes,
     WorkspaceTypes,
-    OrganizationTypes
+    OrganizationTypes,
+    NodeRegistrationTypes
 };

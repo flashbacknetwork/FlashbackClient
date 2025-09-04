@@ -72,7 +72,8 @@ import {
   NodeStatsQueryWithBucketParams,
   NodeStatsDailyQueryWithBucketParams,
 } from './types/stats';
-import { NodeInfo } from './types/bridge';
+import { NodeInfo, RegisterRequest } from './types/bridge';
+import { GetOrganizationKeysResponse } from './types/noderegistration';
 import { FeedbackEmailBody } from './types/email';
 import { QuotaResponse } from './types/quota';
 import {
@@ -955,4 +956,28 @@ export class ApiClient implements IApiClient {
   public updateOrganization = async (orgId: string, request: UpdateOrganizationBody): Promise<UpdateOrganizationResponse> => {
     return this.makeRequest<UpdateOrganizationResponse>(`organization/${orgId}`, 'PUT', request);
   };
+
+  // Node registration methods
+  // Organization Keys API calls
+  public generateOrgKey = async (idOrg: string): Promise<string> => {
+    return this.makeRequest<string>(`organization/${idOrg}/key`, 'POST');
+  };
+
+  public deleteOrgKeys = async (idOrg: string): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(`organization/${idOrg}/key`, 'DELETE');
+  };
+
+  public getOrgKeys = async (idOrg: string): Promise<GetOrganizationKeysResponse> => {
+    return this.makeRequest<GetOrganizationKeysResponse>(`organization/${idOrg}/key`, 'GET');
+  };
+
+  // Node Registration API calls
+  public nodeRegister = async (data: RegisterRequest): Promise<RegisterResponse> => {
+    return this.makeRequest<RegisterResponse>('register', 'POST', data);
+  };
+
+  public nodeUnregister = async (data: RegisterRequest): Promise<RegisterResponse> => {
+    return this.makeRequest<RegisterResponse>('unregister', 'POST', data);
+  };
+
 }
