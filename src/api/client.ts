@@ -971,6 +971,10 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetOrganizationKeysResponse>(`organization/${idOrg}/key`, 'GET');
   };
 
+  public deleteOrgKey = async (idOrg: string, keyId: string): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(`organization/${idOrg}/key/${keyId}`, 'DELETE');
+  };
+
   // Node Registration API calls
   public nodeRegister = async (data: RegisterRequest): Promise<RegisterResponse> => {
     return this.makeRequest<RegisterResponse>('register', 'POST', data);
