@@ -118,10 +118,9 @@ export enum MFAType {
   export interface MFAPrimaryRequest {
     mfaType: MFAType;
   }
-  
+
   export interface MFAResetRequest {
-    // Self-service MFA reset - no additional parameters needed
-    _placeholder?: never;
+    resetUserId: string | undefined;
   }
   
   export interface MFAOrganizationEnforceRequest {

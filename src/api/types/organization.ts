@@ -7,6 +7,7 @@ export interface CreateOrgUserRequest {
     firstName: string;
     lastName: string;
     orgRole?: number;
+    sendInvite?: boolean;
   }
   
   export interface UpdateOrgUserRequest {
