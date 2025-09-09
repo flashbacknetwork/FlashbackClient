@@ -121,7 +121,8 @@ import { MFAMethodsResponse,
   PasskeyCompleteRegistrationResponse, 
   MFAVerificationRequest,
   MFAVerificationResult,
-  MFAVerificationLoginResponse
+  MFAVerificationLoginResponse,
+  MFAResetRequest
 } from './types/mfa';
 import { DeleteSettingsRequest, GetSettingsResponse, PartialUpdateSettingsRequest, UpdateSettingsRequest } from './types/settings';
 import { UpdateUserRoleResponse, UserRoleResponse } from './types/roles';
@@ -817,8 +818,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<MFAPrimaryResponse>('mfa/primary', 'POST', request);
   };
 
-  public resetMFA = async (): Promise<MFAResetResponse> => {
-    return this.makeRequest<MFAResetResponse>('mfa/reset', 'POST', null);
+  public resetMFA = async (request: MFAResetRequest): Promise<MFAResetResponse> => {
+    return this.makeRequest<MFAResetResponse>('mfa/reset', 'POST', request);
   };
 
   ////// Organization MFA API
