@@ -14,6 +14,7 @@ import * as RolesTypes from './types/roles';
 import * as WorkspaceTypes from './types/workspace';
 import * as OrganizationTypes from './types/organization';
 import * as NodeRegistrationTypes from './types/noderegistration';
+import * as SystemEventTypes from './types/systemEvent';
 
 export { ApiClient, 
     ApiTypes, 
@@ -31,5 +32,6 @@ export { ApiClient,
     RolesTypes,
     WorkspaceTypes,
     OrganizationTypes,
-    NodeRegistrationTypes
+    NodeRegistrationTypes,
+    SystemEventTypes
 };

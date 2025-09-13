@@ -128,6 +128,7 @@ import { DeleteSettingsRequest, GetSettingsResponse, PartialUpdateSettingsReques
 import { UpdateUserRoleResponse, UserRoleResponse } from './types/roles';
 import { UserProfileResponse } from './types/roles';
 import { CreateOrgUserRequest, CreateOrgUserResponse, DeleteOrgUserResponse, GetOrganizationResponse, ListOrgUsersResponse, OrgUserResponse, UpdateOrganizationBody, UpdateOrganizationResponse, UpdateOrgUserRequest, UpdateOrgUserResponse } from './types/organization';
+import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/systemEvent';
 
 interface ErrorResponse {
   message?: string;
@@ -983,6 +984,11 @@ export class ApiClient implements IApiClient {
 
   public nodeUnregister = async (data: RegisterRequest): Promise<RegisterResponse> => {
     return this.makeRequest<RegisterResponse>('unregister', 'POST', data);
+  };
+
+  // System Event API calls
+  public getSystemEvents = async (data: SystemEventQueryRequest): Promise<SystemEventQueryResponse> => {
+    return this.makeRequest<SystemEventQueryResponse>('systemevent', 'POST', data);
   };
 
 }
