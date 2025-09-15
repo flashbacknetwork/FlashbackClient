@@ -330,56 +330,14 @@ export class ApiClient implements IApiClient {
   public revokeToken = async (tokenId: string): Promise<{ success: boolean }> => {
     return this.makeRequest<{ success: boolean }>(`token/${tokenId}`, 'DELETE', null);
   };
-  
-  ////// Units API
-  public createStorageUnit = async (data: CreateUnitRequest): Promise<CreateUnitResponse> => {
-    return this.makeRequest<CreateUnitResponse>('unit', 'POST', data);
-  };
-
-  public getStorageUnits = async (): Promise<GetUnitsResponse> => {
-    return this.makeRequest<GetUnitsResponse>('unit', 'GET', null);
-  };
-
-  public validateStorageUnit = async (
-    unitId: string,
-    data: ValidateUnitRequest
-  ): Promise<ValidateUnitResponse> => {
-    return this.makeRequest<ValidateUnitResponse>(`unit/${unitId}/validate`, 'POST', data);
-  };
-
-  public updateStorageUnit = async (
-    unitId: string,
-    data: UpdateUnitRequest
-  ): Promise<UpdateUnitResponse> => {
-    return this.makeRequest<UpdateUnitResponse>(`unit/${unitId}`, 'PUT', data);
-  };
-
-  public deleteStorageUnit = async (unitId: string): Promise<ActionResponse> => {
-    return this.makeRequest<ActionResponse>(`unit/${unitId}`, 'DELETE', null);
-  };
-
-  public getAvailableStorageUnits = async (): Promise<StorageUnit[]> => {
-    return this.makeRequest<StorageUnit[]>('unit/available', 'GET', null);
-  };
-
-  public getStorageUnitStatus = async (unitId: string): Promise<StorageUnitStatusResponse> => {
-    return this.makeRequest<StorageUnitStatusResponse>(`unit/${unitId}/status`, 'GET', null);
-  };
-
-  public getUnitNodeStats = async (
-    unitId: string,
-    data: GetUnitNodeStatsRequest
-  ): Promise<GetUnitNodeStatsResponse> => {
-    return this.makeRequest<GetUnitNodeStatsResponse>(`unit/${unitId}/stats`, 'POST', data);
-  };
 
   ////// Buckets API (new bucket-based endpoints)
   public createStorageBucket = async (data: CreateBucketRequest): Promise<CreateBucketResponse> => {
     return this.makeRequest<CreateBucketResponse>('bucket', 'POST', data);
   };
 
-  public getStorageBuckets = async (): Promise<GetBucketsResponse> => {
-    return this.makeRequest<GetBucketsResponse>('bucket', 'GET', null);
+  public getStorageBuckets = async (workspaceId?: string): Promise<GetBucketsResponse> => {
+    return this.makeRequest<GetBucketsResponse>('bucket?', 'GET', null);
   };
 
   public validateStorageBucket = async (
@@ -423,8 +381,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<CreateRepoResponse>('repo', 'POST', data);
   }
 
-  public getStorageRepos = async (): Promise<GetReposResponse> => {
-    return this.makeRequest<GetReposResponse>('repo', 'GET', null);
+  public getStorageRepos = async (workspaceId?: string): Promise<GetReposResponse> => {
+    return this.makeRequest<GetReposResponse>('repo?workspaceId=' + workspaceId, 'GET', null);
   };
 
   // Function overloads for updateStorageRepo

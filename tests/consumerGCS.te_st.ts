@@ -174,6 +174,7 @@ describe('StorageClient', () => {
         throw error;
       }
       // 2. Upload File
+      
       try {
         const uploadResponse = await bucket.upload(testFilePath, {
           destination: filePath,

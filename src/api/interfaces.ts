@@ -22,6 +22,13 @@ import {
   ValidateRepoUnitsResponse,
   GetUnitNodeStatsRequest,
   GetUnitNodeStatsResponse,
+  GetBucketsResponse,
+  CreateBucketRequest,
+  CreateBucketResponse,
+  UpdateBucketRequest,
+  UpdateBucketResponse,
+  ValidateBucketRequest,
+  ValidateBucketResponse,
 } from './types/storage';
 import {
   RegisterBody,
@@ -60,18 +67,13 @@ export enum ProviderType {
 
 export interface IApiClient {
   authenticate(token: string, provider: ProviderType): Promise<any>;
-  createStorageUnit(data: CreateUnitRequest): Promise<CreateUnitResponse>;
-  getStorageUnits(): Promise<GetUnitsResponse>;
-  updateStorageUnit(unitId: string, data: UpdateUnitRequest): Promise<UpdateUnitResponse>;
-  deleteStorageUnit(unitId: string): Promise<ActionResponse>;
-  validateStorageUnit(unitId: string, data: ValidateUnitRequest): Promise<ValidateUnitResponse>;
-  getAvailableStorageUnits(): Promise<StorageUnit[]>;
-  getUnitNodeStats(
-    unitId: string,
-    data: GetUnitNodeStatsRequest
-  ): Promise<GetUnitNodeStatsResponse>;
+  getStorageBuckets(workspaceId?: string): Promise<GetBucketsResponse>;
+  createStorageBucket(data: CreateBucketRequest): Promise<CreateBucketResponse>;
+  updateStorageBucket(bucketId: string, data: UpdateBucketRequest): Promise<UpdateBucketResponse>;
+  deleteStorageBucket(bucketId: string): Promise<ActionResponse>;
+  validateStorageBucket(bucketId: string, data: ValidateBucketRequest): Promise<ValidateBucketResponse>;
   createStorageRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
-  getStorageRepos(): Promise<GetReposResponse>;
+  getStorageRepos(workspaceId?: string): Promise<GetReposResponse>;
   updateStorageRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;
   deleteStorageRepo(repoId: string): Promise<ActionResponse>;
   createRepoKey(data: CreateRepoKeyRequest): Promise<CreateRepoKeyResponse>;

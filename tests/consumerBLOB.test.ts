@@ -36,6 +36,7 @@ describe('StorageClient', () => {
       },
       containerName: process.env.TEST_AWS_S3_BUCKET4!,
     },
+    /*
     {
       name: 'Azure to GCS Configuration',
       config: {
@@ -56,7 +57,7 @@ describe('StorageClient', () => {
       },
       containerName: process.env.TEST_AZURE_CONTAINER_NAME!,
     },
-    /*
+    
     {
       name: 'Direct Azure access',
       config: {

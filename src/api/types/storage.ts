@@ -260,6 +260,7 @@ export interface StorageRepoWithBuckets {
   name: string;
   storageType: StorageType;
   mode: ModeType;
+  workspaceId: string;
   buckets: RepoBucketInfo[];
   apiKeys?: ApiKey[];
   createdAt: string;
