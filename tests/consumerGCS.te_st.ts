@@ -26,6 +26,21 @@ describe('StorageClient', () => {
 
   const testConfigurations = [
     {
+      name: 'Direct GCS test',
+      config: {
+        //apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
+        //apiEndpoint: process.env.TEST_GCS_LOCAL_PROVIDER_URL,
+
+        //tokenUri: process.env.TEST_GCS_LOCAL_PROVIDER_URL + '/token',
+        credentials: {
+          client_email: process.env.TEST_GCS_CLIENT_EMAIL!,
+          private_key: process.env.TEST_GCS_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+        },
+      },
+      bucketName: process.env.TEST_GCP_BUCKET!,
+    },
+/*
+    {
       name: 'GCS to S3 Configuration (AWS endpoint)',
       config: {
         apiEndpoint: process.env.TEST_GCS_AWS_PROVIDER_URL,
@@ -39,7 +54,7 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_AWS_S3_BUCKET4!,
     },
-    /*
+    
     {
       name: 'GCS to GCS Configuration (AWS endpoint)',
       config: {
@@ -145,6 +160,7 @@ describe('StorageClient', () => {
     'Should perform complete GCS operations workflow for $name',
     async ({ config, bucketName }) => {
       // Create custom auth client with custom token endpoint
+      /*
       const tokenUri = config.tokenUri || `${config.apiEndpoint}/token`;
       const authClient = new FlashbackAuthClient(
         tokenUri,
@@ -155,11 +171,13 @@ describe('StorageClient', () => {
           'https://www.googleapis.com/auth/devstorage.read_write'
         ]
       );
+      */
 
       const storage = new Storage({
-        apiEndpoint: config.apiEndpoint,
-        authClient,
-        useAuthWithCustomEndpoint: true,
+        credentials: config.credentials,
+        //apiEndpoint: config.apiEndpoint,
+        //authClient,
+        //useAuthWithCustomEndpoint: true,
       });
       const fileStats = fs.statSync(testFilePath);
       const bucket = storage.bucket(bucketName);

@@ -18,6 +18,7 @@ export interface SystemEventResponse {
   event: string;
   orgId: string;
   userId: string;
+  userName: string;
   workspaceId: string | null;
   jsonData: string | null;
 }
