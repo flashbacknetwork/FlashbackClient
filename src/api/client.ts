@@ -72,7 +72,7 @@ import {
   NodeStatsQueryWithBucketParams,
   NodeStatsDailyQueryWithBucketParams,
 } from './types/stats';
-import { NodeInfo, RegisterRequest } from './types/bridge';
+import { NodeInfo, NodeInfoResponse, RegisterRequest } from './types/bridge';
 import { GetOrganizationKeysResponse } from './types/noderegistration';
 import { FeedbackEmailBody } from './types/email';
 import { QuotaResponse } from './types/quota';
@@ -665,8 +665,16 @@ export class ApiClient implements IApiClient {
     );
   };
 
-  public getNodeInfo = async (): Promise<NodeInfo[]> => {
-    return this.makeRequest<NodeInfo[]>('node', 'GET', null);
+  public getNodeInfo = async (): Promise<NodeInfoResponse> => {
+    return this.makeRequest<NodeInfoResponse>('node', 'GET', null);
+  };
+
+  public getPrivateNodeInfo = async (orgId: string): Promise<NodeInfoResponse> => {
+    return this.makeRequest<NodeInfoResponse>(`organization/${orgId}/nodes`, 'GET', null);
+  };
+
+  public deletePrivateNode = async (orgId: string, nodeId: string): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(`organization/${orgId}/node/${nodeId}`, 'DELETE', null);
   };
 
   public sendFeedbackEmail = async (data: FormData): Promise<ActionResponse> => {

@@ -59,3 +59,9 @@ export interface NodeInfo {
   url: string;
   id_org?: string;
 }
+
+export interface NodeInfoResponse {
+  success: true,
+  data: NodeInfo[],
+  total: number,
+}
