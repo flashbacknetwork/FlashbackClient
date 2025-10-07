@@ -97,6 +97,8 @@ import {
   PaymentsListResponse,
   PaymentsQueryParams,
   CancelSubscriptionResponse,
+  GetCheckoutSessionStatusResponse,
+  CreateBillingPortalResponse,
 } from './types/subscriptions';
 import { AuthTypes, WorkspaceTypes } from '.';
 import { MFAMethodsResponse, 
@@ -711,6 +713,14 @@ export class ApiClient implements IApiClient {
 
   public cancelSubscription = async (): Promise<CancelSubscriptionResponse> => {
     return this.makeRequest<CancelSubscriptionResponse>('subscriptions/cancel', 'POST', null);
+  };
+
+  public createBillingPortal = async (): Promise<CreateBillingPortalResponse> => {
+    return this.makeRequest<CreateBillingPortalResponse>('subscriptions/portal', 'POST', null);
+  };
+  
+  public getCheckoutSessionStatus = async (id: string): Promise<GetCheckoutSessionStatusResponse> => {
+    return this.makeRequest<GetCheckoutSessionStatusResponse>(`subscriptions/checkout-session/${id}`, 'GET', null);
   };
 
   ////// Device Management API

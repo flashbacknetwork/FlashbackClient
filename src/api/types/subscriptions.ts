@@ -73,3 +73,20 @@ export interface CancelSubscriptionResponse {
   message?: string;
   error_code?: string;
 } 
+
+export interface CreateBillingPortalResponse {
+  success: boolean;
+  url?: string;
+  message?: string;
+  error_code?: string;
+}
+
+export interface GetCheckoutSessionStatusResponse {
+  success: boolean;
+  id?: string;
+  status?: string | null;
+  payment_status?: string | null;
+  subscriptionId?: string | null;
+  message?: string;
+  error_code?: string;
+}
