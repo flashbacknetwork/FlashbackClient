@@ -1,3 +1,5 @@
+import { PeriodType } from "./quota";
+
 export interface SubscriptionPeriodResponse {
   id: string;
   subscriptionId: string;
@@ -5,11 +7,22 @@ export interface SubscriptionPeriodResponse {
   price: number;
 }
 
+export interface SubscriptionCapability {
+  id: string;
+  code: string;
+  description: string;
+  type: string;
+  price: number;
+  periodType: PeriodType;
+  value: number;
+}
+
 export interface SubscriptionResponse {
   id: string;
   name: string;
   description: string;
   periods: SubscriptionPeriodResponse[];
+  capabilities: SubscriptionCapability[];
 }
 
 export interface BuySubscriptionRequest {
