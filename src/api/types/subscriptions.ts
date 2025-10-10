@@ -31,8 +31,8 @@ export interface BuySubscriptionRequest {
 
 export interface BuySubscriptionResponse {
   success: boolean;
-  clientSecret?: string;
-  sessionId?: string;
+  checkoutUrl?: string;  // Stripe's hosted checkout URL
+  sessionId?: string;    // Keep for tracking/debugging
   message?: string;
   error_code?: string;
 }
