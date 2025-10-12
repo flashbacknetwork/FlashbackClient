@@ -103,3 +103,56 @@ export interface GetCheckoutSessionStatusResponse {
   message?: string;
   error_code?: string;
 }
+
+export interface PendingPaymentSubscription {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface PendingPaymentSubscriptionPeriod {
+  id: string;
+  periodType: 'ALL_TIME' | 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+  price: number;
+}
+
+export interface PendingPaymentData {
+  id: string;
+  stripePaymentId: string;
+  amount: number;
+  currency: string;
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED' | 'UNPAID' | 'EXPIRED';
+  createdAt: string; // ISO date string
+  subscription: PendingPaymentSubscription;
+  subscriptionPeriod: PendingPaymentSubscriptionPeriod;
+  checkoutUrl: string | null;
+  sessionStatus: string | null;
+}
+
+export interface GetPendingPaymentResponse {
+  success: boolean;
+  data: PendingPaymentData;
+}
+
+export interface CancelPendingPaymentData {
+  paymentId: string;
+  stripePaymentId: string;
+  cancelledAt: string; // ISO date string
+}
+
+export interface CancelPendingPaymentResponse {
+  success: boolean;
+  message: string;
+  data: CancelPendingPaymentData;
+}
+
+// Error response interface (shared across endpoints)
+export interface PendingPaymentErrorResponse {
+  success: false;
+  error_code: 'NO_PENDING_PAYMENT' | 'USER_NOT_FOUND' | 'NO_ORGANIZATION' | 'SUBSCRIPTION_PERIOD_NOT_FOUND' | 'INTERNAL_ERROR';
+  message: string;
+  debug_info?: {
+    error_message: string;
+    error_type: string;
+  };
+}

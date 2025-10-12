@@ -99,6 +99,8 @@ import {
   CancelSubscriptionResponse,
   GetCheckoutSessionStatusResponse,
   CreateBillingPortalResponse,
+  GetPendingPaymentResponse,
+  CancelPendingPaymentResponse,
 } from './types/subscriptions';
 import { AuthTypes, WorkspaceTypes } from '.';
 import { MFAMethodsResponse, 
@@ -721,6 +723,14 @@ export class ApiClient implements IApiClient {
   
   public getCheckoutSessionStatus = async (id: string): Promise<GetCheckoutSessionStatusResponse> => {
     return this.makeRequest<GetCheckoutSessionStatusResponse>(`subscriptions/checkout-session/${id}`, 'GET', null);
+  };
+
+  public getPendingPayment = async (): Promise<GetPendingPaymentResponse> => {
+    return this.makeRequest<GetPendingPaymentResponse>('subscriptions/pending-payment', 'GET', null);
+  };
+  
+  public cancelPendingPayment = async (): Promise<CancelPendingPaymentResponse> => {
+    return this.makeRequest<CancelPendingPaymentResponse>('subscriptions/pending-payment', 'DELETE', null);
   };
 
   ////// Device Management API
