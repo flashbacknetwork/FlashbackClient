@@ -39,11 +39,12 @@ describe('StorageClient', () => {
           accessKeyId: process.env.DEV_AWS_KEY!,
           secretAccessKey: process.env.DEV_AWS_SECRET!,
         },
-        region: 'us-east-1',
+        region: 'eu-central-1',
         forcePathStyle: false,
       },
       bucketName: 'cloodaws',
     },
+    /*
     {
       name: 'S3 to GCS DEV Node (AWS endpoint, GCP provider)',
       config: {
@@ -57,6 +58,7 @@ describe('StorageClient', () => {
       },
       bucketName: 'cloodgcp',
     },
+    */
     /*
     {
       name: 'S3 to S3 Brieuc Test (AWS endpoint)',

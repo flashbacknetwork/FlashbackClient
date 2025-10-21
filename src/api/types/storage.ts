@@ -138,7 +138,14 @@ export interface EncryptedKey {
   message: string;
 }
 
-export interface StorageUnit {
+export interface StorageRepoBasic {
+  id: string;
+  name: string;
+  storageType: StorageType;
+  createdAt: string;
+}
+
+export interface StorageBucket {
   id: string;
   name: string;
   bucket: string;
@@ -151,6 +158,7 @@ export interface StorageUnit {
   projectId?: string;
   createdAt: string;
   workspaceId: string;
+  repos?: StorageRepoBasic[];
 }
 
 export interface GetUnitsResponse {
@@ -220,7 +228,7 @@ export interface CreateBucketRequest extends CreateUnitRequest {}
 export interface UpdateBucketRequest extends UpdateUnitRequest {}
 export interface ValidateBucketRequest extends ValidateUnitRequest {}
 export interface ValidateBucketResponse extends ValidateUnitResponse {}
-export interface StorageBucket extends StorageUnit {}
+export interface StorageUnit extends StorageBucket {}
 
 export interface GetBucketsResponse {
   success: boolean;
