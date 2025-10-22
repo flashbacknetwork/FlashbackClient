@@ -122,6 +122,7 @@ import { UpdateUserRoleResponse, UserRoleResponse } from './types/roles';
 import { UserProfileResponse } from './types/roles';
 import { CreateOrgUserRequest, CreateOrgUserResponse, DeleteOrgUserResponse, GetOrganizationResponse, ListOrgUsersResponse, OrgUserResponse, UpdateOrganizationBody, UpdateOrganizationResponse, UpdateOrgUserRequest, UpdateOrgUserResponse } from './types/organization';
 import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/systemEvent';
+import { UserUpdateRequest, UserUpdateResponse } from './types/user';
 
 interface ErrorResponse {
   message?: string;
@@ -472,6 +473,10 @@ export class ApiClient implements IApiClient {
 
   public getUserQuota = async (): Promise<QuotaResponse> => {
     return this.makeRequest<QuotaResponse>('user/quota', 'GET', null);
+  };
+
+  public updateUser = async (userId: string, data: UserUpdateRequest): Promise<UserUpdateResponse> => {
+    return this.makeRequest<UserUpdateResponse>(`user/${userId}`, 'PUT', data);
   };
 
   public requestPasswordReset = async (email: string): Promise<ActionResponse> => {
