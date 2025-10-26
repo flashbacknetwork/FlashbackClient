@@ -331,7 +331,7 @@ export class ApiClient implements IApiClient {
   };
 
   public getStorageBuckets = async (workspaceId?: string): Promise<GetBucketsResponse> => {
-    return this.makeRequest<GetBucketsResponse>('bucket?', 'GET', null);
+    return this.makeRequest<GetBucketsResponse>('bucket?workspaceId=' + workspaceId, 'GET', null);
   };
 
   public validateStorageBucket = async (
