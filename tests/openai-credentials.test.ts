@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import { describe, jest, test, expect } from '@jest/globals';
 import OpenAI from 'openai';
-import { generateOpenAICompatibleKey } from '../src/api';
 
 describe('OpenAI Chat Completions Test', () => {
   jest.setTimeout(30000);
@@ -23,16 +22,22 @@ describe('OpenAI Chat Completions Test', () => {
         messages: [
           {
             role: 'user',
-            content: 'Hello! This is a test message to verify API key authentication.'
+            content: 'Hello! This is an automated test message to verify our API client library works. Please just respond with plain text "Hello, world!".'
           }
         ],
-        max_tokens: 50,
+        max_tokens: 100,
         temperature: 0.7,
+        store: true,
+        metadata: {
+          workspace_id: 'wks_1234567890',
+          user_id: 'usr_1234567890',
+          conversation_id: 'conv_1234567890',
+        },
       });
 
-      expect(response).toBeDefined();
-      expect(response.choices).toBeDefined();
-      expect(response.choices.length).toBeGreaterThan(0);
+      console.log('\n✅ Chat Completions Request successful!', response._request_id);
+      expect(response).toBeDefined(); 
+      expect(response.choices[0].message.content).toContain('Hello, world!');
 
     } catch (error: any) {
       console.log('\n❌ Chat Completions Request failed:');

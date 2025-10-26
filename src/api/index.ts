@@ -16,29 +16,6 @@ import * as OrganizationTypes from './types/organization';
 import * as NodeRegistrationTypes from './types/noderegistration';
 import * as SystemEventTypes from './types/systemEvent';
 import * as UserTypes from './types/user';
-import * as crypto from 'crypto';
-
-/**
- * Generates an OpenAI-compatible API key/secret pair
- * @returns Object containing apiKey and secretKey
- */
-export function generateOpenAICompatibleKey(): string {
-    // Generate a random 32-byte key for the secret
-    const secretKey = crypto.randomBytes(32).toString('hex');
-    
-    // Generate OpenAI-style API key (sk- prefix + 48 random characters)
-    const randomPart = crypto.randomBytes(24).toString('base64').replace(/[+/=]/g, (char) => {
-        switch(char) {
-            case '+': return 'A';
-            case '/': return 'B';
-            case '=': return 'C';
-            default: return char;
-        }
-    });
-    const apiKey = `sk-${randomPart}`;
-    
-    return apiKey;
-}
 
 export { ApiClient, 
     ApiTypes, 
