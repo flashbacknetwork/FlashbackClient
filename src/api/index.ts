@@ -19,6 +19,7 @@ import * as UserTypes from './types/platform/user';
 import * as AiApiKeyTypes from './types/ai/aiapikey';
 import * as AiLlmTypes from './types/ai/aillm';
 import * as PolicyTypes from './types/ai/policy';
+import * as ConversationTypes from './types/ai/conversation';
 
 export { ApiClient, 
     ApiTypes, 
@@ -41,5 +42,6 @@ export { ApiClient,
     UserTypes,
     AiApiKeyTypes,
     AiLlmTypes,
-    PolicyTypes
+    PolicyTypes,
+    ConversationTypes
 };
