@@ -135,6 +135,7 @@ import { UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
 import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest } from './types/ai/policy';
+import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse } from './types/ai/conversation';
 
 interface ErrorResponse {
   message?: string;
@@ -1047,6 +1048,52 @@ export class ApiClient implements IApiClient {
 
   public deleteRepoAiApiKey = async (repoId: string, apikeyId: string): Promise<DeleteRepoAiApiKeyResponse> => {
     return this.makeRequest<DeleteRepoAiApiKeyResponse>(`repo/${repoId}/ai/apikey/${apikeyId}`, 'DELETE', null);
+  };
+
+  ////// Conversation API calls
+  public createConversation = async (data: CreateConversationRequest): Promise<CreateConversationResponse> => {
+    return this.makeRequest<CreateConversationResponse>('conversation', 'POST', data);
+  };
+
+  public sendPrompt = async (
+    conversationId: string,
+    data: SendPromptRequest
+  ): Promise<SendPromptResponse> => {
+    return this.makeRequest<SendPromptResponse>(`conversation/${conversationId}/prompt`, 'POST', data);
+  };
+
+  public getConversations = async (query: GetConversationsRequest): Promise<GetConversationsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (query.take !== undefined) {
+      queryParams.append('take', query.take.toString());
+    }
+    if (query.skip !== undefined) {
+      queryParams.append('skip', query.skip.toString());
+    }
+    if (query.from) {
+      queryParams.append('from', query.from);
+    }
+    if (query.to) {
+      queryParams.append('to', query.to);
+    }
+    if (query.userId) {
+      queryParams.append('userId', query.userId);
+    }
+    if (query.workspaceId) {
+      queryParams.append('workspaceId', query.workspaceId);
+    }
+    if (query.repoId) {
+      queryParams.append('repoId', query.repoId);
+    }
+    return this.makeRequest<GetConversationsResponse>(
+      `conversation?${queryParams.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getConversationMessages = async (conversationId: string): Promise<GetConversationMessagesResponse> => {
+    return this.makeRequest<GetConversationMessagesResponse>(`conversation/${conversationId}/messages`, 'GET', null);
   };
 
   ////// Policy API calls
