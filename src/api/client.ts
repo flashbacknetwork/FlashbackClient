@@ -29,7 +29,7 @@ import {
   UpdateRepoWithBucketsRequest,
   ValidateRepoBucketsRequest,
   ValidateRepoBucketsResponse,
-} from './types/storage';
+} from './types/storage/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import {
   ActivateResponse,
@@ -44,7 +44,7 @@ import {
   RegisterResponse,
   ResetPasswordBody,
   Web3RegisterBody,
-} from './types/auth';
+} from './types/platform/auth';
 import {
   StatsQueryParams,
   StatsResponse,
@@ -60,11 +60,11 @@ import {
   StatsQueryWithBucketParams,
   NodeStatsQueryWithBucketParams,
   NodeStatsDailyQueryWithBucketParams,
-} from './types/stats';
-import { NodeInfo, NodeInfoResponse, RegisterRequest } from './types/bridge';
-import { GetOrganizationKeysResponse } from './types/noderegistration';
-import { FeedbackEmailBody } from './types/email';
-import { QuotaResponse } from './types/quota';
+} from './types/storage/stats';
+import { NodeInfo, NodeInfoResponse, RegisterRequest } from './types/storage/bridge';
+import { GetOrganizationKeysResponse } from './types/storage/noderegistration';
+import { FeedbackEmailBody } from './types/platform/email';
+import { QuotaResponse } from './types/platform/quota';
 import {
   DeviceListResponse,
   DeviceDetailsResponse,
@@ -77,7 +77,7 @@ import {
   RevokeAllSessionsResponse,
   SessionHeartbeatResponse,
   DeviceInfo,
-} from './types/device';
+} from './types/platform/device';
 import {
   BuySubscriptionRequest,
   BuySubscriptionResponse,
@@ -90,7 +90,7 @@ import {
   CreateBillingPortalResponse,
   GetPendingPaymentResponse,
   CancelPendingPaymentResponse,
-} from './types/subscriptions';
+} from './types/platform/subscriptions';
 import { AuthTypes, WorkspaceTypes } from '.';
 import { MFAMethodsResponse, 
   MFASetupRequest, 
@@ -116,13 +116,25 @@ import { MFAMethodsResponse,
   MFAVerificationResult,
   MFAVerificationLoginResponse,
   MFAResetRequest
-} from './types/mfa';
-import { DeleteSettingsRequest, GetSettingsResponse, PartialUpdateSettingsRequest, UpdateSettingsRequest } from './types/settings';
-import { UpdateUserRoleResponse, UserRoleResponse } from './types/roles';
-import { UserProfileResponse } from './types/roles';
-import { CreateOrgUserRequest, CreateOrgUserResponse, DeleteOrgUserResponse, GetOrganizationResponse, ListOrgUsersResponse, OrgUserResponse, UpdateOrganizationBody, UpdateOrganizationResponse, UpdateOrgUserRequest, UpdateOrgUserResponse } from './types/organization';
-import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/systemEvent';
-import { UserUpdateRequest, UserUpdateResponse } from './types/user';
+} from './types/platform/mfa';
+import { DeleteSettingsRequest, GetSettingsResponse, PartialUpdateSettingsRequest, UpdateSettingsRequest } from './types/platform/settings';
+import { UpdateUserRoleResponse, UserRoleResponse } from './types/platform/roles';
+import { UserProfileResponse } from './types/platform/roles';
+import { CreateOrgUserRequest, 
+  CreateOrgUserResponse, 
+  DeleteOrgUserResponse, 
+  GetOrganizationResponse, 
+  ListOrgUsersResponse, 
+  OrgUserResponse, 
+  UpdateOrganizationBody, 
+  UpdateOrganizationResponse, 
+  UpdateOrgUserRequest, 
+  UpdateOrgUserResponse } from './types/platform/organization';
+import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/platform/systemevent';
+import { UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
+import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
+import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
+import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest } from './types/ai/policy';
 
 interface ErrorResponse {
   message?: string;
@@ -969,6 +981,168 @@ export class ApiClient implements IApiClient {
   // System Event API calls
   public getSystemEvents = async (data: SystemEventQueryRequest): Promise<SystemEventQueryResponse> => {
     return this.makeRequest<SystemEventQueryResponse>('systemevent', 'POST', data);
+  };
+
+  ////// AI LLM API calls
+  public createAiLlm = async (data: CreateAiLlmRequest): Promise<CreateAiLlmResponse> => {
+    return this.makeRequest<CreateAiLlmResponse>('ai/llm', 'POST', data);
+  };
+
+  public getAiLlms = async (workspaceId?: string): Promise<GetAiLlmsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (workspaceId) {
+      queryParams.append('workspaceId', workspaceId);
+    }
+    return this.makeRequest<GetAiLlmsResponse>(
+      `ai/llm${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public getAiLlmStats = async (aiLlmId?: string): Promise<AiLlmStatsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (aiLlmId) {
+      queryParams.append('aiLlmId', aiLlmId);
+    }
+    return this.makeRequest<AiLlmStatsResponse>(
+      `ai/llm/stats${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public getAvailableAiLlms = async (): Promise<GetAiLlmsResponse> => {
+    return this.makeRequest<GetAiLlmsResponse>('ai/llm/available', 'GET', null);
+  };
+
+  public updateAiLlm = async (id: string, data: UpdateAiLlmRequest): Promise<UpdateAiLlmResponse> => {
+    return this.makeRequest<UpdateAiLlmResponse>(`ai/llm/${id}`, 'PUT', data);
+  };
+
+  public deleteAiLlm = async (id: string): Promise<DeleteAiLlmResponse> => {
+    return this.makeRequest<DeleteAiLlmResponse>(`ai/llm/${id}`, 'DELETE', null);
+  };
+
+  public validateAiLlm = async (id: string): Promise<ValidateAiLlmResponse> => {
+    return this.makeRequest<ValidateAiLlmResponse>(`ai/llm/${id}/validate`, 'POST', null);
+  };
+
+  ////// AI API Key API calls
+  public createRepoAiApiKey = async (repoId: string, data: CreateRepoAiApiKeyRequest): Promise<CreateRepoAiApiKeyResponse> => {
+    return this.makeRequest<CreateRepoAiApiKeyResponse>(`repo/${repoId}/ai/apikey`, 'POST', data);
+  };
+
+  public getRepoAiApiKeys = async (repoId: string): Promise<GetRepoAiApiKeysResponse> => {
+    return this.makeRequest<GetRepoAiApiKeysResponse>(`repo/${repoId}/ai/apikey`, 'GET', null);
+  };
+
+  public updateRepoAiApiKey = async (
+    repoId: string,
+    apikeyId: string,
+    data: UpdateRepoAiApiKeyRequest
+  ): Promise<UpdateRepoAiApiKeyResponse> => {
+    return this.makeRequest<UpdateRepoAiApiKeyResponse>(`repo/${repoId}/ai/apikey/${apikeyId}`, 'PUT', data);
+  };
+
+  public deleteRepoAiApiKey = async (repoId: string, apikeyId: string): Promise<DeleteRepoAiApiKeyResponse> => {
+    return this.makeRequest<DeleteRepoAiApiKeyResponse>(`repo/${repoId}/ai/apikey/${apikeyId}`, 'DELETE', null);
+  };
+
+  ////// Policy API calls
+  public createPolicy = async (data: CreatePolicyRequest): Promise<{ success: boolean; policy: PolicyDTO }> => {
+    return this.makeRequest<{ success: boolean; policy: PolicyDTO }>('policy', 'POST', data);
+  };
+
+  public getPolicies = async (query: GetPoliciesQuery): Promise<{ success: boolean; policies: PolicyDTO[] }> => {
+    const queryParams = new URLSearchParams();
+    queryParams.append('orgId', query.orgId);
+    if (query.workspaceId) {
+      queryParams.append('workspaceId', query.workspaceId);
+    }
+    if (query.repoId) {
+      queryParams.append('repoId', query.repoId);
+    }
+    return this.makeRequest<{ success: boolean; policies: PolicyDTO[] }>(
+      `policy?${queryParams.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getPolicy = async (policyId: string): Promise<{ success: boolean; policy: PolicyDTO }> => {
+    return this.makeRequest<{ success: boolean; policy: PolicyDTO }>(`policy/${policyId}`, 'GET', null);
+  };
+
+  public updatePolicy = async (
+    policyId: string,
+    data: UpdatePolicyRequest
+  ): Promise<{ success: boolean; policy: PolicyDTO }> => {
+    return this.makeRequest<{ success: boolean; policy: PolicyDTO }>(`policy/${policyId}`, 'PUT', data);
+  };
+
+  public deletePolicy = async (policyId: string): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>(`policy/${policyId}`, 'DELETE', null);
+  };
+
+  public getPolicyViolations = async (query: GetPolicyViolationsQuery): Promise<GetPolicyViolationsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (query.workspaceId) {
+      queryParams.append('workspaceId', query.workspaceId);
+    }
+    if (query.repoId) {
+      queryParams.append('repoId', query.repoId);
+    }
+    if (query.policyId) {
+      queryParams.append('policyId', query.policyId);
+    }
+    if (query.from) {
+      queryParams.append('from', query.from);
+    }
+    if (query.to) {
+      queryParams.append('to', query.to);
+    }
+    if (query.take !== undefined) {
+      queryParams.append('take', query.take.toString());
+    }
+    if (query.skip !== undefined) {
+      queryParams.append('skip', query.skip.toString());
+    }
+    return this.makeRequest<GetPolicyViolationsResponse>(
+      `policy/violations?${queryParams.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getPolicyViolationsByPolicyId = async (
+    policyId: string,
+    query: Omit<GetPolicyViolationsQuery, 'policyId'>
+  ): Promise<GetPolicyViolationsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (query.workspaceId) {
+      queryParams.append('workspaceId', query.workspaceId);
+    }
+    if (query.repoId) {
+      queryParams.append('repoId', query.repoId);
+    }
+    if (query.from) {
+      queryParams.append('from', query.from);
+    }
+    if (query.to) {
+      queryParams.append('to', query.to);
+    }
+    if (query.take !== undefined) {
+      queryParams.append('take', query.take.toString());
+    }
+    if (query.skip !== undefined) {
+      queryParams.append('skip', query.skip.toString());
+    }
+    return this.makeRequest<GetPolicyViolationsResponse>(
+      `policy/${policyId}/violations${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
   };
 
 }

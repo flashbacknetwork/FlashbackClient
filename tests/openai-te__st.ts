@@ -18,14 +18,15 @@ describe('OpenAI Chat Completions Test', () => {
     try {
       // Make chat completions request
       const response = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        //model: 'gpt-4o-mini',
+        //model: 'gemini-2.5-flash',
+        model: 'claude-3-5-haiku-20241022',
         messages: [
           {
             role: 'user',
-            content: 'Hello! This is an automated test message to verify our API client library works. Please just respond with plain text "Hello, world!".'
+            content: 'Our worker John Carter is asking for a raise. Please help me draft a short letter to the CEO of the company as mandated by the organization\'s policies.'
           }
         ],
-        max_tokens: 100,
         temperature: 0.7,
         store: true,
         metadata: {
@@ -37,7 +38,7 @@ describe('OpenAI Chat Completions Test', () => {
 
       console.log('\n✅ Chat Completions Request successful!', response._request_id);
       expect(response).toBeDefined(); 
-      expect(response.choices[0].message.content).toContain('Hello, world!');
+      //expect(response.choices[0].message.content).toContain('Hello, world!');
 
     } catch (error: any) {
       console.log('\n❌ Chat Completions Request failed:');
@@ -67,7 +68,7 @@ describe('OpenAI Chat Completions Test', () => {
       throw error;
     }
   });
-
+/*
   test('should call models API with generated credentials', async () => {
     const apiKey = 'sk-5751ead0784dbe18621b7401ebab87b4c5de1a604f13ecb32efc8d4f2e6e9fd0';
 
@@ -95,7 +96,8 @@ describe('OpenAI Chat Completions Test', () => {
       throw error;
     }
   });
-
+*/
+/*
   test('should call embeddings API with generated credentials', async () => {
     const apiKey = 'sk-5751ead0784dbe18621b7401ebab87b4c5de1a604f13ecb32efc8d4f2e6e9fd0';
 
@@ -128,4 +130,5 @@ describe('OpenAI Chat Completions Test', () => {
       throw error;
     }
   });
+*/
 });

@@ -1,4 +1,4 @@
-import { ProviderType } from '../interfaces';
+import { ProviderType } from '../../interfaces';
 import { DeviceInfo } from './device';
 
 export interface AuthState {

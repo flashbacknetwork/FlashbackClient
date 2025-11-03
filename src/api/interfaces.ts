@@ -29,7 +29,7 @@ import {
   UpdateBucketResponse,
   ValidateBucketRequest,
   ValidateBucketResponse,
-} from './types/storage';
+} from './types/storage/storage';
 import {
   RegisterBody,
   LoginBody,
@@ -40,14 +40,14 @@ import {
   DeactivateResponse,
   RefreshTokenResponse,
   RefreshTokenErrorResponse,
-} from './types/auth';
+} from './types/platform/auth';
 import {
   StatsQueryParams,
   StatsResponse,
   NodeStatsMinuteResponse,
   NodeStatsDailyResponse,
   NodeStatsQueryParams,
-} from './types/stats';
+} from './types/storage/stats';
 import {
   BuySubscriptionRequest,
   BuySubscriptionResponse,
@@ -56,7 +56,7 @@ import {
   PaymentsListResponse,
   PaymentsQueryParams,
   CancelSubscriptionResponse,
-} from './types/subscriptions';
+} from './types/platform/subscriptions';
 
 export enum ProviderType {
   GOOGLE = 'GOOGLE',

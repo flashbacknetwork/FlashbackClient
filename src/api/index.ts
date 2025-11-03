@@ -1,21 +1,24 @@
 import { ApiClient, HttpError } from './client';
-import * as ApiTypes from './types/storage';
-import * as AuthTypes from './types/auth';
-import * as StatsTypes from './types/stats';
+import * as ApiTypes from './types/storage/storage';
+import * as AuthTypes from './types/platform/auth';
+import * as StatsTypes from './types/storage/stats';
 import * as ApiInterfaces from './interfaces';
-import * as BridgeTypes from './types/bridge';
-import * as EmailTypes from './types/email';
-import * as QuotaTypes from './types/quota';
-import * as SubscriptionTypes from './types/subscriptions';
-import * as DeviceTypes from './types/device';
-import * as MFATypes from './types/mfa';
-import * as SettingsTypes from './types/settings';
-import * as RolesTypes from './types/roles';
-import * as WorkspaceTypes from './types/workspace';
-import * as OrganizationTypes from './types/organization';
-import * as NodeRegistrationTypes from './types/noderegistration';
-import * as SystemEventTypes from './types/systemEvent';
-import * as UserTypes from './types/user';
+import * as BridgeTypes from './types/storage/bridge';
+import * as EmailTypes from './types/platform/email';
+import * as QuotaTypes from './types/platform/quota';
+import * as SubscriptionTypes from './types/platform/subscriptions';
+import * as DeviceTypes from './types/platform/device';
+import * as MFATypes from './types/platform/mfa';
+import * as SettingsTypes from './types/platform/settings';
+import * as RolesTypes from './types/platform/roles';
+import * as WorkspaceTypes from './types/platform/workspace';
+import * as OrganizationTypes from './types/platform/organization';
+import * as NodeRegistrationTypes from './types/storage/noderegistration';
+import * as SystemEventTypes from './types/platform/systemevent';
+import * as UserTypes from './types/platform/user';
+import * as AiApiKeyTypes from './types/ai/aiapikey';
+import * as AiLlmTypes from './types/ai/aillm';
+import * as PolicyTypes from './types/ai/policy';
 
 export { ApiClient, 
     ApiTypes, 
@@ -35,5 +38,8 @@ export { ApiClient,
     OrganizationTypes,
     NodeRegistrationTypes,
     SystemEventTypes,
-    UserTypes
+    UserTypes,
+    AiApiKeyTypes,
+    AiLlmTypes,
+    PolicyTypes
 };

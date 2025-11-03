@@ -43,7 +43,10 @@ export class ContextTypeHelper {
     'usersettings',
     'orgsettings',
     'flashbacknode',
-    'orgkey'
+    'orgkey',
+    'aillm',
+    'aillmapikey',
+    'conversation'
   ] as const;
 
   /**
