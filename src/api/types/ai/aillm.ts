@@ -84,3 +84,8 @@ export interface AiLlmStatsResponse {
   }[];
 }
 
+export interface RepoAiLlmInfo {
+  aiLlmId?: string;
+  aiLlm?: AiLlmDTO;
+}
+

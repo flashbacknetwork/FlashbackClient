@@ -1,4 +1,5 @@
 import { NodeStatusInfo, NodeStatusType } from './bridge';
+import { RepoAiLlmInfo } from '../ai/aillm';
 
 export enum StorageType {
   S3 = 'S3',
@@ -77,6 +78,7 @@ export interface CreateRepoRequest {
   storageType: StorageType;
   mode: ModeType;
   repoUnits: RepoUnitInfo[];
+  repoAiLlms?: RepoAiLlmInfo[];
   workspaceId: string;
 }
 
@@ -116,6 +118,7 @@ export interface StorageRepo {
   storageType: StorageType;
   mode: ModeType;
   units: RepoUnitInfo[];
+  aiLlms?: RepoAiLlmInfo[];
   apiKeys?: ApiKey[];
   createdAt: string;
   disabled?: boolean;
@@ -258,6 +261,7 @@ export interface CreateRepoWithBucketsRequest {
   storageType: StorageType;
   mode: ModeType;
   repoBuckets: RepoBucketInfo[];
+  repoAiLlms?: RepoAiLlmInfo[];
   workspaceId: string;
 }
 
@@ -270,6 +274,7 @@ export interface StorageRepoWithBuckets {
   mode: ModeType;
   workspaceId: string;
   buckets: RepoBucketInfo[];
+  aiLlms?: RepoAiLlmInfo[];
   apiKeys?: ApiKey[];
   createdAt: string;
   disabled?: boolean;
