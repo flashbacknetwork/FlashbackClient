@@ -1,5 +1,6 @@
 import { NodeStatusInfo, NodeStatusType } from './bridge';
 import { RepoAiLlmInfo } from '../ai/aillm';
+import { RepoAiApiKeyDTO } from '../ai/aiapikey';
 
 export enum StorageType {
   S3 = 'S3',
@@ -276,6 +277,7 @@ export interface StorageRepoWithBuckets {
   buckets: RepoBucketInfo[];
   aiLlms?: RepoAiLlmInfo[];
   apiKeys?: ApiKey[];
+  aiApiKeys?: RepoAiApiKeyDTO[];
   createdAt: string;
   disabled?: boolean;
 }
