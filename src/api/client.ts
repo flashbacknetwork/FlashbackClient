@@ -135,7 +135,7 @@ import { UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
 import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest } from './types/ai/policy';
-import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse } from './types/ai/conversation';
+import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest } from './types/ai/conversation';
 
 interface ErrorResponse {
   message?: string;
@@ -1092,7 +1092,14 @@ export class ApiClient implements IApiClient {
     );
   };
 
-  public getConversationMessages = async (conversationId: string): Promise<GetConversationMessagesResponse> => {
+  public getConversationMessages = async (conversationId: string, query: GetConversationMessagesRequest): Promise<GetConversationMessagesResponse> => {
+    const queryParams = new URLSearchParams();
+    if (query.take !== undefined) {
+      queryParams.append('take', query.take.toString());
+    }
+    if (query.skip !== undefined) {
+      queryParams.append('skip', query.skip.toString());
+    }
     return this.makeRequest<GetConversationMessagesResponse>(`conversation/${conversationId}/messages`, 'GET', null);
   };
 
