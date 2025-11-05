@@ -29,6 +29,11 @@ export interface GetConversationsRequest {
   repoId?: string;
 }
 
+export interface GetConversationMessagesRequest {
+  take?: number;
+  skip?: number;
+}
+
 export interface ConversationDTO {
   id: string;
   orgId: string;
