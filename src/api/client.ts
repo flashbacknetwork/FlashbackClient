@@ -134,7 +134,7 @@ import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/platf
 import { UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
-import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest } from './types/ai/policy';
+import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
 import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest } from './types/ai/conversation';
 
 interface ErrorResponse {
@@ -1197,6 +1197,14 @@ export class ApiClient implements IApiClient {
       'GET',
       null
     );
+  };
+
+  public validatePolicies = async (data: PolicyValidationRequest): Promise<PolicyValidationResponse> => {
+    return this.makeRequest<PolicyValidationResponse>('policy/validate', 'POST', data);
+  };
+
+  public recommendPolicies = async (data: PolicyRecommendationRequest): Promise<PolicyRecommendationResponse> => {
+    return this.makeRequest<PolicyRecommendationResponse>('policy/recommend', 'POST', data);
   };
 
 }
