@@ -34,6 +34,8 @@ import { IApiClient, ProviderType } from './interfaces';
 import {
   ActivateResponse,
   DeactivateResponse,
+  DemoRequestBody,
+  DemoRequestResponse,
   LoginBody,
   LoginResponse,
   LogoutResponse,
@@ -498,6 +500,10 @@ export class ApiClient implements IApiClient {
 
   public resetPassword = async (data: ResetPasswordBody): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>('user/reset-password', 'POST', data);
+  };
+
+  public requestDemo = async (data: DemoRequestBody): Promise<DemoRequestResponse> => {
+    return this.makeRequest<DemoRequestResponse>('demo/request', 'POST', data);
   };
 
   ////// Stats API

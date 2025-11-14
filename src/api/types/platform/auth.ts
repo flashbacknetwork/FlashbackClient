@@ -129,3 +129,14 @@ export interface GoogleLoginRequest extends LoginDeviceInfo {
 export interface GithubLoginRequest extends LoginDeviceInfo {
   code: string;
 }
+
+export interface DemoRequestBody {
+  userId: string;
+  email: string;
+  name: string;
+}
+
+export interface DemoRequestResponse {
+  success: boolean;
+  calendarUrl: string;
+}
