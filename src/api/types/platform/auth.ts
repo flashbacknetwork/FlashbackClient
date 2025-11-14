@@ -140,3 +140,26 @@ export interface DemoRequestResponse {
   success: boolean;
   calendarUrl: string;
 }
+
+export interface ActivateUserRequest {
+  uid: string;
+  token: string;
+  registrationInfo: RegisterBody;
+}
+
+export interface ActivateUserResponse {
+  success: boolean;
+  error_code?: string;
+  message?: string;
+  accessToken?: string;
+  refreshToken?: string;
+  tokenId?: string;
+  expiresAt?: number;
+  user?: {
+    id: string;
+    email: string;
+    name: string;
+    orgId?: string;
+    orgRole?: number;
+  };
+}

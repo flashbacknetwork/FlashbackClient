@@ -33,6 +33,8 @@ import {
 import { IApiClient, ProviderType } from './interfaces';
 import {
   ActivateResponse,
+  ActivateUserRequest,
+  ActivateUserResponse,
   DeactivateResponse,
   DemoRequestBody,
   DemoRequestResponse,
@@ -478,8 +480,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<LogoutResponse>('user/logout', 'POST', { refresh_token: refreshToken });
   };
 
-  public userActivate = async (): Promise<ActivateResponse> => {
-    return this.makeRequest<ActivateResponse>('user/activate', 'POST', null);
+  public userActivate = async (data: ActivateUserRequest): Promise<ActivateUserResponse> => {
+    return this.makeRequest<ActivateUserResponse>('user/activate', 'POST', data);
   };
 
   public userDeactivate = async (): Promise<DeactivateResponse> => {

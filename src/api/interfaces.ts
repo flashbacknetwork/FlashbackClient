@@ -37,6 +37,8 @@ import {
   LoginResponse,
   LogoutResponse,
   ActivateResponse,
+  ActivateUserRequest,
+  ActivateUserResponse,
   DeactivateResponse,
   RefreshTokenResponse,
   RefreshTokenErrorResponse,
@@ -90,7 +92,7 @@ export interface IApiClient {
   userLogin(loginBody: LoginBody): Promise<LoginResponse>;
   userRefresh(refreshToken: string): Promise<RefreshTokenResponse | RefreshTokenErrorResponse>;
   userLogout(refreshToken: string): Promise<LogoutResponse>;
-  userActivate(): Promise<ActivateResponse>;
+  userActivate(data: ActivateUserRequest): Promise<ActivateUserResponse>;
   userDeactivate(): Promise<DeactivateResponse>;
   getDailyStats(params: StatsQueryParams): Promise<StatsResponse>;
   getMinuteStats(params: StatsQueryParams): Promise<StatsResponse>;
