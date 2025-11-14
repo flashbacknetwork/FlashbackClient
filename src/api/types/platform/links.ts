@@ -14,6 +14,7 @@ export interface ActivationLinkDTO {
   activatedAt: Date | string | null;
   createdBy: string;
   creator: CreatorInfo;
+  activationLink: string;
 }
 
 // GET /links - Query parameters
