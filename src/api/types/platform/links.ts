@@ -1,3 +1,10 @@
+// Creator information
+export interface CreatorInfo {
+  email: string;
+  name: string;
+  lastName: string;
+}
+
 // Activation Link DTO
 export interface ActivationLinkDTO {
   id: string;
@@ -6,6 +13,7 @@ export interface ActivationLinkDTO {
   email: string;
   activatedAt: Date | string | null;
   createdBy: string;
+  creator: CreatorInfo;
 }
 
 // GET /links - Query parameters
