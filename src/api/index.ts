@@ -20,6 +20,7 @@ import * as AiApiKeyTypes from './types/ai/aiapikey';
 import * as AiLlmTypes from './types/ai/aillm';
 import * as PolicyTypes from './types/ai/policy';
 import * as ConversationTypes from './types/ai/conversation';
+import * as LinksTypes from './types/platform/links';
 
 export { ApiClient, 
     ApiTypes, 
@@ -43,5 +44,6 @@ export { ApiClient,
     AiApiKeyTypes,
     AiLlmTypes,
     PolicyTypes,
-    ConversationTypes
+    ConversationTypes,
+    LinksTypes
 };

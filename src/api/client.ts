@@ -140,6 +140,7 @@ import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiK
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
 import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
 import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest } from './types/ai/conversation';
+import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse } from './types/platform/links';
 
 interface ErrorResponse {
   message?: string;
@@ -200,12 +201,10 @@ export class ApiClient implements IApiClient {
   public exchangeCode = async (
     code: string,
     provider: ProviderType,
-    uid?: string,
-    token?: string
   ): Promise<OAuth2ResponseDTO> => {
     switch (provider) {
       case ProviderType.GOOGLE:
-        return this.exchangeGoogleCode(code, uid, token);
+        return this.exchangeGoogleCode(code);
       case ProviderType.GITHUB:
         return this.exchangeGithubCode(code);
       case ProviderType.WEB3_STELLAR:
@@ -331,8 +330,8 @@ export class ApiClient implements IApiClient {
     });
   };
 
-  private exchangeGoogleCode = async (code: string, uid?: string, token?: string): Promise<OAuth2ResponseDTO> => {
-    return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code, uid, token });
+  private exchangeGoogleCode = async (code: string): Promise<OAuth2ResponseDTO> => {
+    return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code });
   };
 
   // Token Management
@@ -508,6 +507,43 @@ export class ApiClient implements IApiClient {
 
   public requestDemo = async (data: DemoRequestBody): Promise<DemoRequestResponse> => {
     return this.makeRequest<DemoRequestResponse>('demo/request', 'POST', data);
+  };
+
+  ////// Links API
+  public getLinks = async (query?: GetLinksRequest): Promise<GetLinksResponse> => {
+    const queryParams = new URLSearchParams();
+    if (query?.from) {
+      queryParams.append('from', query.from);
+    }
+    if (query?.to) {
+      queryParams.append('to', query.to);
+    }
+    if (query?.take !== undefined) {
+      queryParams.append('take', query.take.toString());
+    }
+    if (query?.skip !== undefined) {
+      queryParams.append('skip', query.skip.toString());
+    }
+    if (query?.status) {
+      queryParams.append('status', query.status);
+    }
+    return this.makeRequest<GetLinksResponse>(
+      `links${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public createLink = async (data: CreateLinkRequest): Promise<CreateLinkResponse> => {
+    return this.makeRequest<CreateLinkResponse>('links', 'POST', data);
+  };
+
+  public updateLink = async (linkId: string, data: UpdateLinkRequest): Promise<UpdateLinkResponse> => {
+    return this.makeRequest<UpdateLinkResponse>(`links/${linkId}`, 'PUT', data);
+  };
+
+  public deleteLink = async (linkId: string): Promise<DeleteLinkResponse> => {
+    return this.makeRequest<DeleteLinkResponse>(`links/${linkId}`, 'DELETE', null);
   };
 
   ////// Stats API
