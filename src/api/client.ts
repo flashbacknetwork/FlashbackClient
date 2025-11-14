@@ -199,11 +199,13 @@ export class ApiClient implements IApiClient {
 
   public exchangeCode = async (
     code: string,
-    provider: ProviderType
+    provider: ProviderType,
+    uid?: string,
+    token?: string
   ): Promise<OAuth2ResponseDTO> => {
     switch (provider) {
       case ProviderType.GOOGLE:
-        return this.exchangeGoogleCode(code);
+        return this.exchangeGoogleCode(code, uid, token);
       case ProviderType.GITHUB:
         return this.exchangeGithubCode(code);
       case ProviderType.WEB3_STELLAR:
@@ -329,8 +331,8 @@ export class ApiClient implements IApiClient {
     });
   };
 
-  private exchangeGoogleCode = async (code: string): Promise<OAuth2ResponseDTO> => {
-    return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code });
+  private exchangeGoogleCode = async (code: string, uid?: string, token?: string): Promise<OAuth2ResponseDTO> => {
+    return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code, uid, token });
   };
 
   // Token Management
