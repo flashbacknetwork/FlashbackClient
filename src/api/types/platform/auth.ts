@@ -65,6 +65,8 @@ export interface RegisterBody {
   country?: string;
   website?: string;
   isBusiness: boolean;
+  activationUid?: string;
+  activationToken?: string;
 }
 
 export interface LoginBody extends LoginDeviceInfo {
@@ -122,12 +124,20 @@ export interface LoginDeviceInfo {
   deviceInfo?: DeviceInfo;
 }
 
+export interface GoogleExchangeCodeRequest {
+  code: string;
+  activationUid?: string;
+  activationToken?: string;
+}
+
 export interface GoogleLoginRequest extends LoginDeviceInfo {
   token: string;
 }
 
 export interface GithubLoginRequest extends LoginDeviceInfo {
   code: string;
+  activationUid?: string;
+  activationToken?: string;
 }
 
 export interface DemoRequestBody {

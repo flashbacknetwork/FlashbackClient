@@ -38,6 +38,7 @@ import {
   DeactivateResponse,
   DemoRequestBody,
   DemoRequestResponse,
+  GoogleExchangeCodeRequest,
   LoginBody,
   LoginResponse,
   LogoutResponse,
@@ -140,7 +141,7 @@ import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiK
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
 import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
 import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest } from './types/ai/conversation';
-import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse } from './types/platform/links';
+import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse, GetLinkByTokenResponse } from './types/platform/links';
 
 interface ErrorResponse {
   message?: string;
@@ -182,13 +183,19 @@ export class ApiClient implements IApiClient {
     }
   };
 
-  public authenticate = async (token: string, provider: ProviderType, deviceInfo?: DeviceInfo): Promise<any> => {
+  public authenticate = async (
+    token: string, 
+    provider: ProviderType, 
+    deviceInfo?: DeviceInfo,
+    activationUid?: string,
+    activationToken?: string
+  ): Promise<any> => {
     this.setAuthToken(token);
     switch (provider) {
       case ProviderType.GOOGLE:
         return this.authenticateGoogle({ token, deviceInfo });
       case ProviderType.GITHUB:
-        return this.authenticateGithub({ code: token, deviceInfo });
+        return this.authenticateGithub({ code: token, deviceInfo, activationUid, activationToken });
       case ProviderType.WEB3_STELLAR:
         throw new Error('Call web3Authenticate for web3 authentication');
       case ProviderType.LOCAL:
@@ -201,10 +208,12 @@ export class ApiClient implements IApiClient {
   public exchangeCode = async (
     code: string,
     provider: ProviderType,
+    activationUid?: string,
+    activationToken?: string
   ): Promise<OAuth2ResponseDTO> => {
     switch (provider) {
       case ProviderType.GOOGLE:
-        return this.exchangeGoogleCode(code);
+        return this.exchangeGoogleCode({ code, activationUid, activationToken });
       case ProviderType.GITHUB:
         return this.exchangeGithubCode(code);
       case ProviderType.WEB3_STELLAR:
@@ -330,8 +339,8 @@ export class ApiClient implements IApiClient {
     });
   };
 
-  private exchangeGoogleCode = async (code: string): Promise<OAuth2ResponseDTO> => {
-    return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', { code });
+  private exchangeGoogleCode = async (data: GoogleExchangeCodeRequest): Promise<OAuth2ResponseDTO> => {
+    return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', data);
   };
 
   // Token Management
@@ -544,6 +553,10 @@ export class ApiClient implements IApiClient {
 
   public deleteLink = async (linkId: string): Promise<DeleteLinkResponse> => {
     return this.makeRequest<DeleteLinkResponse>(`links/${linkId}`, 'DELETE', null);
+  };
+
+  public getLink = async (linkId: string, token: string): Promise<GetLinkByTokenResponse> => {
+    return this.makeRequest<GetLinkByTokenResponse>(`links/${linkId}?token=${encodeURIComponent(token)}`, 'GET', null);
   };
 
   ////// Stats API

@@ -71,3 +71,18 @@ export interface DeleteLinkResponse {
   error_code?: string;
 }
 
+// GET /links/:linkId - Query parameters
+export interface GetLinkByTokenRequest {
+  token: string;
+}
+
+// GET /links/:linkId - Response
+export interface GetLinkByTokenResponse {
+  success: boolean;
+  uuid: string;
+  email: string;
+  activatedAt: Date | string | null;
+  error_code?: string;
+  message?: string;
+}
+
