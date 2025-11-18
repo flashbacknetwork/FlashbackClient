@@ -47,6 +47,7 @@ import {
   RefreshTokenResponse,
   RegisterBody,
   RegisterResponse,
+  ResendVerificationEmailResponse,
   ResetPasswordBody,
   Web3RegisterBody,
 } from './types/platform/auth';
@@ -470,6 +471,10 @@ export class ApiClient implements IApiClient {
 
   public validateRegistration = async (token: string): Promise<RegisterResponse> => {
     return this.makeRequest<RegisterResponse>('/user/verify-email', 'POST', { token });
+  };
+
+  public resendVerificationEmail = async (verificationTokenId: string): Promise<ResendVerificationEmailResponse> => {
+    return this.makeRequest<ResendVerificationEmailResponse>(`user/resend-verification/${verificationTokenId}`, 'POST', null);
   };
 
   public userLogin = async (data: LoginBody): Promise<LoginResponse> => {

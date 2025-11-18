@@ -93,6 +93,7 @@ export interface RegisterResponse {
   };
   error_code?: string;
   message?: string;
+  verificationTokenId?: string;
 }
 
 export interface LoginResponse extends RegisterResponse {}
@@ -104,6 +105,12 @@ export interface LogoutResponse {
 }
 
 export interface ActivateResponse {
+  success: boolean;
+  error_code?: string;
+  message?: string;
+}
+
+export interface ResendVerificationEmailResponse {
   success: boolean;
   error_code?: string;
   message?: string;

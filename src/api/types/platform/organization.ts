@@ -8,6 +8,8 @@ export interface CreateOrgUserRequest {
     lastName: string;
     orgRole?: number;
     sendInvite?: boolean;
+    provider?: string;
+    authMethod?: 'LOCAL' | 'GOOGLE' | 'GITHUB';
   }
   
   export interface UpdateOrgUserRequest {
