@@ -996,6 +996,10 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<CreateOrgUserResponse>('organization/users', 'POST', request);
   };
 
+  public resendTeamUserInvitation = async (userId: string): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>(`organization/users/${userId}/resend-invitation`, 'POST', null);
+  };
+
   public getOrganizationUser = async (userId: string): Promise<OrgUserResponse | { success: false; message: string }> => {
     return this.makeRequest<OrgUserResponse | { success: false; message: string }>(`organization/users/${userId}`, 'GET', null);
   };
