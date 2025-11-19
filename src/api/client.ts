@@ -473,8 +473,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<PreVerifyEmailResponse>('user/pre-verify-email', 'POST', { token });
   };
 
-  public validateRegistration = async (token: string): Promise<RegisterResponse> => {
-    return this.makeRequest<RegisterResponse>('/user/verify-email', 'POST', { token });
+  public validateRegistration = async (token: string, password?: string): Promise<RegisterResponse> => {
+    return this.makeRequest<RegisterResponse>('/user/verify-email', 'POST', { token, password });
   };
 
   public resendVerificationEmail = async (verificationTokenId: string): Promise<ResendVerificationEmailResponse> => {
