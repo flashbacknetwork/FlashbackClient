@@ -24,6 +24,7 @@ export interface GetLinksRequest {
   take?: number;
   skip?: number;
   status?: 'activated' | 'pending' | 'all';
+  text?: string;
 }
 
 // GET /links - Response

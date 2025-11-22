@@ -545,6 +545,9 @@ export class ApiClient implements IApiClient {
     if (query?.status) {
       queryParams.append('status', query.status);
     }
+    if (query?.text) {
+      queryParams.append('text', query.text);
+    }
     return this.makeRequest<GetLinksResponse>(
       `links${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
       'GET',
