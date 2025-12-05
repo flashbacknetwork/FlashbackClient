@@ -40,7 +40,7 @@ export interface RegisterRequest extends NodeSignedMessage {
   region: string;
   version: string;
   id_org?: string;
-  serviceFlag?: number;
+  nodeServices?: number;
 }
 
 export interface RegisterResponse {
