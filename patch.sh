@@ -30,6 +30,24 @@ git push && git push --tags
 
 npm run format
 npm run build
-npm publish --access public
 
-echo "Successfully bumped version and pushed changes"
+# Attempt to publish
+if npm publish --access public; then
+    echo "Successfully bumped version and pushed changes"
+else
+    echo ""
+    echo "❌ Publishing failed!"
+    echo ""
+    echo "If you see a 403 error about 2FA, you need to either:"
+    echo "  1. Enable 2FA on your npm account:"
+    echo "     - Visit https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
+    echo "     - Enable 2FA authentication"
+    echo ""
+    echo "  2. OR create a granular access token with 'bypass 2fa' enabled:"
+    echo "     - Visit https://www.npmjs.com/settings/YOUR_USERNAME/tokens"
+    echo "     - Create a new token with 'Automation' or 'Publish' permissions"
+    echo "     - Make sure 'bypass 2fa' is enabled"
+    echo "     - Then run: npm config set //registry.npmjs.org/:_authToken YOUR_TOKEN"
+    echo ""
+    exit 1
+fi

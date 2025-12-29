@@ -358,8 +358,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<CreateBucketResponse>('bucket', 'POST', data);
   };
 
-  public getStorageBuckets = async (workspaceId?: string): Promise<GetBucketsResponse> => {
-    return this.makeRequest<GetBucketsResponse>('bucket?workspaceId=' + workspaceId, 'GET', null);
+  public getStorageBuckets = async (workspaceId?: string, walletAddress?: string): Promise<GetBucketsResponse> => {
+    return this.makeRequest<GetBucketsResponse>('bucket?workspaceId=' + workspaceId + '&walletAddress=' + walletAddress, 'GET', null);
   };
 
   public validateStorageBucket = async (
@@ -403,8 +403,8 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<CreateRepoResponse>('repo', 'POST', data);
   }
 
-  public getStorageRepos = async (workspaceId?: string): Promise<GetReposResponse> => {
-    return this.makeRequest<GetReposResponse>('repo?workspaceId=' + workspaceId, 'GET', null);
+  public getStorageRepos = async (workspaceId?: string, walletAddress?: string): Promise<GetReposResponse> => {
+    return this.makeRequest<GetReposResponse>('repo?workspaceId=' + workspaceId + '&walletAddress=' + walletAddress, 'GET', null);
   };
 
   // Function overloads for updateStorageRepo
