@@ -33,6 +33,7 @@ export interface CreateUnitRequest {
   endpoint?: string;
   region?: string;
   workspaceId: string;
+  walletAddress?: string;
 }
 
 export interface GetUnitNodeStatsRequest {
@@ -81,6 +82,7 @@ export interface CreateRepoRequest {
   repoUnits: RepoUnitInfo[];
   repoAiLlms?: RepoAiLlmInfo[];
   workspaceId: string;
+  walletAddress?: string;
 }
 
 export interface CreateRepoResponse {
@@ -124,6 +126,7 @@ export interface StorageRepo {
   createdAt: string;
   disabled?: boolean;
   workspaceId: string;
+  walletAddress?: string;
 }
 
 export interface ApiKey {
@@ -162,6 +165,7 @@ export interface StorageBucket {
   projectId?: string;
   createdAt: string;
   workspaceId: string;
+  walletAddress?: string;
   repos?: StorageRepoBasic[];
 }
 
@@ -264,6 +268,7 @@ export interface CreateRepoWithBucketsRequest {
   repoBuckets: RepoBucketInfo[];
   repoAiLlms?: RepoAiLlmInfo[];
   workspaceId: string;
+  walletAddress?: string;
 }
 
 export interface UpdateRepoWithBucketsRequest extends CreateRepoWithBucketsRequest {}
@@ -280,6 +285,7 @@ export interface StorageRepoWithBuckets {
   aiApiKeys?: RepoAiApiKeyDTO[];
   createdAt: string;
   disabled?: boolean;
+  walletAddress?: string;
 }
 
 export interface ValidateRepoBucketsRequest {
