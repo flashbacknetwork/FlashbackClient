@@ -1,39 +1,19 @@
 export interface DeviceListResponse {
     success: boolean;
-    devices: Array<{
-      id: string;
-      deviceName: string;
-      deviceType: string;
-      os: string;
-      browser: string;
-      ipAddress?: string;
-      country?: string;
-      city?: string;
-      isTrusted: boolean;
-      trustLevel: string;
-      lastSeen: string;
-      createdAt: string;
-      trustExpiresAt?: string;
-    }>;
+    devices: Array<DeviceItem>;
   }
   
   export interface SessionListResponse {
     success: boolean;
-    sessions: Array<{
-      id: string;
-      deviceName: string;
-      ipAddress?: string;
-      location?: string;
-      startedAt: string;
-      lastActivity: string;
-      expiresAt: string;
-      loginMethod: string;
-    }>;
+    sessions: Array<SessionItem>;
   }
 
   export interface DeviceDetailsResponse {
     success: boolean;
-    device: {
+    device: DeviceItem;
+  }
+
+  export interface DeviceItem {
       id: string;
       deviceName: string;
       deviceType: string;
@@ -49,16 +29,17 @@ export interface DeviceListResponse {
       trustExpiresAt?: string;
       userAgent?: string;
       deviceFingerprint?: string;
-      sessions: Array<{
-        id: string;
-        ipAddress?: string;
-        location?: string;
-        startedAt: string;
-        lastActivity: string;
-        expiresAt: string;
-        loginMethod: string;
-      }>;
-    };
+      sessions?: Array<SessionItem>;
+  }
+  
+  export interface SessionItem {
+    id: string;
+    ipAddress?: string;
+    location?: string;
+    startedAt: string;
+    lastActivity: string;
+    expiresAt: string;
+    loginMethod: string;
   }
 
   export interface TrustDeviceRequest {
