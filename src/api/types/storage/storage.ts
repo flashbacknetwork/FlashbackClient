@@ -79,7 +79,7 @@ export interface CreateRepoRequest {
   name: string;
   storageType: StorageType;
   mode: ModeType;
-  repoUnits: RepoUnitInfo[];
+  repoUnits?: RepoUnitInfo[];
   repoAiLlms?: RepoAiLlmInfo[];
   workspaceId: string;
   walletAddress?: string;
@@ -265,7 +265,7 @@ export interface CreateRepoWithBucketsRequest {
   name: string;
   storageType: StorageType;
   mode: ModeType;
-  repoBuckets: RepoBucketInfo[];
+  repoBuckets?: RepoBucketInfo[];
   repoAiLlms?: RepoAiLlmInfo[];
   workspaceId: string;
   walletAddress?: string;
