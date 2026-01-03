@@ -141,7 +141,7 @@ import { PreVerifyEmailResponse, UserUpdateRequest, UserUpdateResponse } from '.
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
 import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
-import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest } from './types/ai/conversation';
+import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest, DeleteConversationRequest, DeleteConversationResponse } from './types/ai/conversation';
 import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse, GetLinkByTokenResponse } from './types/platform/links';
 
 interface ErrorResponse {
@@ -1160,6 +1160,9 @@ export class ApiClient implements IApiClient {
     if (query.repoId) {
       queryParams.append('repoId', query.repoId);
     }
+    if (query.showDeleted !== undefined) {
+      queryParams.append('showDeleted', query.showDeleted.toString());
+    }
     return this.makeRequest<GetConversationsResponse>(
       `conversation?${queryParams.toString()}`,
       'GET',
@@ -1176,6 +1179,14 @@ export class ApiClient implements IApiClient {
       queryParams.append('skip', query.skip.toString());
     }
     return this.makeRequest<GetConversationMessagesResponse>(`conversation/${conversationId}/messages`, 'GET', null);
+  };
+
+  public deleteConversation = async (data: DeleteConversationRequest): Promise<DeleteConversationResponse> => {
+    return this.makeRequest<DeleteConversationResponse>(
+      `conversation/${encodeURIComponent(data.conversationId)}?hardDelete=${data.hardDelete}`,
+      'DELETE',
+      null
+    );
   };
 
   ////// Policy API calls

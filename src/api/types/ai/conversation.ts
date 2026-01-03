@@ -27,6 +27,7 @@ export interface GetConversationsRequest {
   userId?: string;
   workspaceId?: string;
   repoId?: string;
+  showDeleted?: boolean;
 }
 
 export interface GetConversationMessagesRequest {
@@ -44,6 +45,7 @@ export interface ConversationDTO {
   repoId: string;
   tokensIn: string; // BigInt as string
   tokensOut: string; // BigInt as string
+  deletedAt?: string | null; // ISO date string
   creator?: {
     id: string;
     name: string;
@@ -73,6 +75,16 @@ export interface MessageDTO {
 export interface GetConversationMessagesResponse {
   success: boolean;
   messages: MessageDTO[];
+  message?: string;
+}
+
+export interface DeleteConversationRequest {
+  conversationId: string;
+  hardDelete: boolean;
+}
+
+export interface DeleteConversationResponse {
+  success: boolean;
   message?: string;
 }
 
