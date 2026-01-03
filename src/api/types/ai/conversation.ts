@@ -46,6 +46,10 @@ export interface ConversationDTO {
   tokensIn: string; // BigInt as string
   tokensOut: string; // BigInt as string
   deletedAt?: string | null; // ISO date string
+  repo?: {
+    id: string;
+    name: string;
+  };
   creator?: {
     id: string;
     name: string;
