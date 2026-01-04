@@ -179,6 +179,11 @@ export interface GetReposResponse {
   repos: StorageRepoWithBuckets[];
 }
 
+export interface GetRepoResponse {
+  success: boolean;
+  repo: StorageRepoWithBuckets;
+}
+
 export interface GetRepoKeysResponse {
   success: boolean;
   keys: ApiKey[];

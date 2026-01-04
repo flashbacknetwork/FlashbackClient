@@ -29,6 +29,8 @@ import {
   UpdateRepoWithBucketsRequest,
   ValidateRepoBucketsRequest,
   ValidateRepoBucketsResponse,
+  GetRepoResponse,
+  StorageRepoWithBuckets,
 } from './types/storage/storage';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -403,8 +405,26 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<CreateRepoResponse>('repo', 'POST', data);
   }
 
-  public getStorageRepos = async (workspaceId?: string, walletAddress?: string): Promise<GetReposResponse> => {
-    return this.makeRequest<GetReposResponse>('repo?workspaceId=' + workspaceId + '&walletAddress=' + walletAddress, 'GET', null);
+  public getStorageRepos = async (workspaceId?: string, walletAddress?: string, repoId?: string): Promise<GetReposResponse> => {
+    const queryParams = new URLSearchParams();
+    if (workspaceId) {
+      queryParams.append('workspaceId', workspaceId);
+    }
+    if (repoId) {
+      queryParams.append('repoId', repoId);
+    }
+    if (walletAddress) {
+      queryParams.append('walletAddress', walletAddress);
+    }
+    return this.makeRequest<GetReposResponse>('repo?' + queryParams.toString(), 'GET', null);
+  };
+
+  public getStorageRepo = async (repoId: string): Promise<GetRepoResponse> => {
+    const response = await this.getStorageRepos(undefined, undefined, repoId);
+    if (response.success && response.repos.length > 0) {
+      return { success: true, repo: response.repos[0] as StorageRepoWithBuckets };
+    }
+    return { success: false, repo: {} as StorageRepoWithBuckets };
   };
 
   // Function overloads for updateStorageRepo
