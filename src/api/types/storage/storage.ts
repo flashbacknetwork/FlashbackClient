@@ -123,6 +123,7 @@ export interface StorageRepo {
   units: RepoUnitInfo[];
   aiLlms?: RepoAiLlmInfo[];
   apiKeys?: ApiKey[];
+  aiApiKeys?: RepoAiApiKeyDTO[];
   createdAt: string;
   disabled?: boolean;
   workspaceId: string;

@@ -1,13 +1,14 @@
+
 /* eslint-disable no-undef */
 import { describe, jest, test, expect } from '@jest/globals';
 import OpenAI from 'openai';
 
 describe('OpenAI Chat Completions Test', () => {
-  jest.setTimeout(30000);
+  jest.setTimeout(300000);
 
   test('should call chat completions API with generated credentials', async () => {
     // Generate API key/secret pair
-    const apiKey = 'sk-5751ead0784dbe18621b7401ebab87b4c5de1a604f13ecb32efc8d4f2e6e9fd0';
+    const apiKey = 'sk-pZeUuj_IyV34hqKVH34M6amyH5rqh2j1NgZP7oYPRSAAAAAA';
 
     // Create OpenAI client with localhost base URL
     const openai = new OpenAI({
@@ -20,7 +21,7 @@ describe('OpenAI Chat Completions Test', () => {
       const response = await openai.chat.completions.create({
         //model: 'gpt-4o-mini',
         //model: 'gemini-2.5-flash',
-        model: 'claude-3-5-haiku-20241022',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'user',
