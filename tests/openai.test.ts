@@ -9,6 +9,7 @@ describe('OpenAI Chat Completions Test', () => {
   test('should call chat completions API with generated credentials', async () => {
     // Generate API key/secret pair
     const apiKey = 'sk-pZeUuj_IyV34hqKVH34M6amyH5rqh2j1NgZP7oYPRSAAAAAA';
+    //const apiKey = 'sk-k5q_fQqUz-0tRm8Z1VgoEszM3Oh2Wp3J3TLZzmhA_fUAAAAA';
 
     // Create OpenAI client with localhost base URL
     const openai = new OpenAI({
@@ -18,10 +19,13 @@ describe('OpenAI Chat Completions Test', () => {
 
     try {
       // Make chat completions request
+      const models = await openai.models.list();
+      console.log('Models:', models);
       const response = await openai.chat.completions.create({
-        //model: 'gpt-4o-mini',
+        model: 'claude-sonnet-4-20250514',
         //model: 'gemini-2.5-flash',
-        model: 'gpt-4o-mini',
+        //model: 'gpt-4o-mini',
+        //model: 'mistral.mistral-large-2402-v1',   // bedrock model
         messages: [
           {
             role: 'user',
@@ -30,6 +34,7 @@ describe('OpenAI Chat Completions Test', () => {
         ],
         temperature: 0.7,
         store: true,
+        max_tokens: 4000,
         metadata: {
           workspace_id: 'wks_1234567890',
           user_id: 'usr_1234567890',

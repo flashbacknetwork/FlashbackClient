@@ -48,6 +48,7 @@ export interface UserRoleResponse {
       orgRoles: OrgRoles[];
       validated: boolean;
       mfaRequired: boolean;
+      isBusiness: boolean;
     };
     message?: string;
     error?: string;

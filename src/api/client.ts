@@ -69,6 +69,11 @@ import {
   NodeStatsQueryWithBucketParams,
   NodeStatsDailyQueryWithBucketParams,
 } from './types/storage/stats';
+import {
+  AiStatsQueryParams,
+  AiStatsResponse,
+} from './types/ai/stats';
+
 import { NodeInfo, NodeInfoResponse, RegisterRequest } from './types/storage/bridge';
 import { GetOrganizationKeysResponse } from './types/storage/noderegistration';
 import { FeedbackEmailBody } from './types/platform/email';
@@ -664,6 +669,69 @@ export class ApiClient implements IApiClient {
     }
 
     return this.makeRequest<StatsResponse>(`stats/minute?${queryParams.toString()}`, 'GET', null);
+  }
+
+  // AI Stats methods
+  public async getAiStatsDaily(params: AiStatsQueryParams): Promise<AiStatsResponse> {
+    this.validateDateRange(params.startDate, params.endDate);
+
+    const queryParams = new URLSearchParams();
+
+    if (params.startDate) {
+      queryParams.append('startDate', params.startDate.toISOString());
+    }
+
+    if (params.endDate) {
+      queryParams.append('endDate', params.endDate.toISOString());
+    }
+
+    if (params.repoId && params.repoId.length > 0)
+      queryParams.append('repoId', params.repoId.join(','));
+
+    if (params.aiLlmId && params.aiLlmId.length > 0) {
+      queryParams.append('aiLlmId', params.aiLlmId.join(','));
+    }
+
+    if (params.repoAiApiKeyId && params.repoAiApiKeyId.length > 0) {
+      queryParams.append('repoAiApiKeyId', params.repoAiApiKeyId.join(','));
+    }
+
+    if (params.hosts && params.hosts.length > 0) {
+      queryParams.append('hosts', params.hosts.join(','));
+    }
+
+    return this.makeRequest<AiStatsResponse>(`aistats/daily?${queryParams.toString()}`, 'GET', null);
+  }
+
+  public async getAiStatsMinute(params: AiStatsQueryParams): Promise<AiStatsResponse> {
+    this.validateDateRange(params.startDate, params.endDate);
+
+    const queryParams = new URLSearchParams();
+
+    if (params.startDate) {
+      queryParams.append('startDate', params.startDate.toISOString());
+    }
+
+    if (params.endDate) {
+      queryParams.append('endDate', params.endDate.toISOString());
+    }
+
+    if (params.repoId && params.repoId.length > 0)
+      queryParams.append('repoId', params.repoId.join(','));
+
+    if (params.aiLlmId && params.aiLlmId.length > 0) {
+      queryParams.append('aiLlmId', params.aiLlmId.join(','));
+    }
+
+    if (params.repoAiApiKeyId && params.repoAiApiKeyId.length > 0) {
+      queryParams.append('repoAiApiKeyId', params.repoAiApiKeyId.join(','));
+    }
+
+    if (params.hosts && params.hosts.length > 0) {
+      queryParams.append('hosts', params.hosts.join(','));
+    }
+
+    return this.makeRequest<AiStatsResponse>(`aistats/minute?${queryParams.toString()}`, 'GET', null);
   }
 
   // Function overloads for getNodeStatsMinute
