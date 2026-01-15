@@ -5,6 +5,8 @@ export interface AiStatsQueryParams {
   aiLlmId?: string[];
   repoAiApiKeyId?: string[];
   hosts?: string[];
+  llmType?: string[];
+  llmModel?: string[];
 }
 
 export interface AiStatsResponse {
@@ -27,6 +29,9 @@ export interface AiStatsData {
   policyViolations: number;
   numAlerts: number;
   numBlocks: number;
+  numSeverityLow: number;
+  numSeverityMedium: number;
+  numSeverityHigh: number;
   latency_ms: number;
   llmType: string;
   llmModel: string;

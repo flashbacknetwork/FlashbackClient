@@ -700,6 +700,14 @@ export class ApiClient implements IApiClient {
       queryParams.append('hosts', params.hosts.join(','));
     }
 
+    if (params.llmType && params.llmType.length > 0) {
+      queryParams.append('llmType', params.llmType.join(','));
+    }
+
+    if (params.llmModel && params.llmModel.length > 0) {
+      queryParams.append('llmModel', params.llmModel.join(','));
+    }
+
     return this.makeRequest<AiStatsResponse>(`aistats/daily?${queryParams.toString()}`, 'GET', null);
   }
 
@@ -729,6 +737,14 @@ export class ApiClient implements IApiClient {
 
     if (params.hosts && params.hosts.length > 0) {
       queryParams.append('hosts', params.hosts.join(','));
+    }
+
+    if (params.llmType && params.llmType.length > 0) {
+      queryParams.append('llmType', params.llmType.join(','));
+    }
+
+    if (params.llmModel && params.llmModel.length > 0) {
+      queryParams.append('llmModel', params.llmModel.join(','));
     }
 
     return this.makeRequest<AiStatsResponse>(`aistats/minute?${queryParams.toString()}`, 'GET', null);
@@ -1336,6 +1352,21 @@ export class ApiClient implements IApiClient {
     if (query.skip !== undefined) {
       queryParams.append('skip', query.skip.toString());
     }
+    if (query.llmType && query.llmType.length > 0) {
+      queryParams.append('llmType', query.llmType.join(','));
+    }
+    if (query.llmModel && query.llmModel.length > 0) {
+      queryParams.append('llmModel', query.llmModel.join(','));
+    }
+    if (query.host && query.host.length > 0) {
+      queryParams.append('host', query.host.join(','));
+    }
+    if (query.severity && query.severity.length > 0) {
+      queryParams.append('severity', query.severity.join(','));
+    }
+    if (query.block !== undefined) {
+      queryParams.append('block', query.block.toString());
+    }
     return this.makeRequest<GetPolicyViolationsResponse>(
       `policy/violations?${queryParams.toString()}`,
       'GET',
@@ -1365,6 +1396,21 @@ export class ApiClient implements IApiClient {
     }
     if (query.skip !== undefined) {
       queryParams.append('skip', query.skip.toString());
+    }
+    if (query.llmType && query.llmType.length > 0) {
+      queryParams.append('llmType', query.llmType.join(','));
+    }
+    if (query.llmModel && query.llmModel.length > 0) {
+      queryParams.append('llmModel', query.llmModel.join(','));
+    }
+    if (query.host && query.host.length > 0) {
+      queryParams.append('host', query.host.join(','));
+    }
+    if (query.severity && query.severity.length > 0) {
+      queryParams.append('severity', query.severity.join(','));
+    }
+    if (query.block !== undefined) {
+      queryParams.append('block', query.block.toString());
     }
     return this.makeRequest<GetPolicyViolationsResponse>(
       `policy/${policyId}/violations${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
@@ -1396,6 +1442,15 @@ export class ApiClient implements IApiClient {
     if (query.skip !== undefined) {
       queryParams.append('skip', query.skip.toString());
     }
+    if (query.llmType && query.llmType.length > 0) {
+      queryParams.append('llmType', query.llmType.join(','));
+    }
+    if (query.llmModel && query.llmModel.length > 0) {
+      queryParams.append('llmModel', query.llmModel.join(','));
+    }
+    if (query.host && query.host.length > 0) {
+      queryParams.append('host', query.host.join(','));
+    }
     return this.makeRequest<GetPolicyAlertsResponse>(
       `policy/alerts?${queryParams.toString()}`,
       'GET',
@@ -1425,6 +1480,15 @@ export class ApiClient implements IApiClient {
     }
     if (query.skip !== undefined) {
       queryParams.append('skip', query.skip.toString());
+    }
+    if (query.llmType && query.llmType.length > 0) {
+      queryParams.append('llmType', query.llmType.join(','));
+    }
+    if (query.llmModel && query.llmModel.length > 0) {
+      queryParams.append('llmModel', query.llmModel.join(','));
+    }
+    if (query.host && query.host.length > 0) {
+      queryParams.append('host', query.host.join(','));
     }
     return this.makeRequest<GetPolicyAlertsResponse>(
       `policy/${policyId}/alerts${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,

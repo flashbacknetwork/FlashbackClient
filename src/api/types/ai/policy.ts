@@ -68,6 +68,11 @@ export interface GetPolicyViolationsQuery {
   to?: string;
   take?: number;
   skip?: number;
+  llmType?: string[];
+  llmModel?: string[];
+  host?: string[];
+  severity?: RiskType[];
+  block?: boolean;
 }
 
 export interface PolicyViolationDTO {
@@ -83,6 +88,11 @@ export interface PolicyViolationDTO {
   userName: string;
   repoAiApiKeyId: string;
   repoAiApiKeyName: string;
+  severity: RiskType | null;
+  block: boolean;
+  llmType: string;
+  llmModel: string;
+  host: string;
 }
 
 export interface GetPolicyViolationsResponse {
@@ -101,6 +111,9 @@ export interface GetPolicyAlertsQuery {
   to?: string;
   take?: number;
   skip?: number;
+  llmType?: string[];
+  llmModel?: string[];
+  host?: string[];
 }
 
 export interface PolicyAlertDTO {
@@ -116,6 +129,9 @@ export interface PolicyAlertDTO {
   userName: string;
   repoAiApiKeyId: string;
   repoAiApiKeyName: string;
+  llmType: string;
+  llmModel: string;
+  host: string;
 }
 
 export interface GetPolicyAlertsResponse {
