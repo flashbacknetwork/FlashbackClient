@@ -93,6 +93,39 @@ export interface GetPolicyViolationsResponse {
   take: number;
 }
 
+export interface GetPolicyAlertsQuery {
+  workspaceId?: string;
+  repoId?: string;
+  policyId?: string;
+  from?: string;
+  to?: string;
+  take?: number;
+  skip?: number;
+}
+
+export interface PolicyAlertDTO {
+  id: string;
+  policyId: string;
+  policyName: string;
+  timestamp: Date;
+  message: string;
+  conversationId: string | null;
+  repoId: string;
+  repoName: string;
+  userId: string;
+  userName: string;
+  repoAiApiKeyId: string;
+  repoAiApiKeyName: string;
+}
+
+export interface GetPolicyAlertsResponse {
+  success: boolean;
+  alerts: PolicyAlertDTO[];
+  total: number;
+  skip: number;
+  take: number;
+}
+
 // ============================================
 // Policy Validation DTOs
 // ============================================

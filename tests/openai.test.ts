@@ -22,8 +22,8 @@ describe('OpenAI Chat Completions Test', () => {
       const models = await openai.models.list();
       console.log('Models:', models);
       const response = await openai.chat.completions.create({
-        model: 'claude-sonnet-4-20250514',
-        //model: 'gemini-2.5-flash',
+        //model: 'claude-sonnet-4-20250514',
+        model: 'gemini-2.5-flash',
         //model: 'gpt-4o-mini',
         //model: 'mistral.mistral-large-2402-v1',   // bedrock model
         messages: [

@@ -147,7 +147,7 @@ import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/platf
 import { PreVerifyEmailResponse, UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
-import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
+import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, GetPolicyAlertsQuery, GetPolicyAlertsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
 import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest, DeleteConversationRequest, DeleteConversationResponse } from './types/ai/conversation';
 import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse, GetLinkByTokenResponse } from './types/platform/links';
 
@@ -1368,6 +1368,66 @@ export class ApiClient implements IApiClient {
     }
     return this.makeRequest<GetPolicyViolationsResponse>(
       `policy/${policyId}/violations${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
+      'GET',
+      null
+    );
+  };
+
+  public getPolicyAlerts = async (query: GetPolicyAlertsQuery): Promise<GetPolicyAlertsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (query.workspaceId) {
+      queryParams.append('workspaceId', query.workspaceId);
+    }
+    if (query.repoId) {
+      queryParams.append('repoId', query.repoId);
+    }
+    if (query.policyId) {
+      queryParams.append('policyId', query.policyId);
+    }
+    if (query.from) {
+      queryParams.append('from', query.from);
+    }
+    if (query.to) {
+      queryParams.append('to', query.to);
+    }
+    if (query.take !== undefined) {
+      queryParams.append('take', query.take.toString());
+    }
+    if (query.skip !== undefined) {
+      queryParams.append('skip', query.skip.toString());
+    }
+    return this.makeRequest<GetPolicyAlertsResponse>(
+      `policy/alerts?${queryParams.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getPolicyAlertsByPolicyId = async (
+    policyId: string,
+    query: Omit<GetPolicyAlertsQuery, 'policyId'>
+  ): Promise<GetPolicyAlertsResponse> => {
+    const queryParams = new URLSearchParams();
+    if (query.workspaceId) {
+      queryParams.append('workspaceId', query.workspaceId);
+    }
+    if (query.repoId) {
+      queryParams.append('repoId', query.repoId);
+    }
+    if (query.from) {
+      queryParams.append('from', query.from);
+    }
+    if (query.to) {
+      queryParams.append('to', query.to);
+    }
+    if (query.take !== undefined) {
+      queryParams.append('take', query.take.toString());
+    }
+    if (query.skip !== undefined) {
+      queryParams.append('skip', query.skip.toString());
+    }
+    return this.makeRequest<GetPolicyAlertsResponse>(
+      `policy/${policyId}/alerts${queryParams.toString() ? `?${queryParams.toString()}` : ''}`,
       'GET',
       null
     );
