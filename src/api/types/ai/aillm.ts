@@ -89,3 +89,25 @@ export interface RepoAiLlmInfo {
   aiLlm?: AiLlmDTO;
 }
 
+// /ai/models API
+
+export interface GetAiModelsRequest {
+  repoId: string;
+  aiType?: AiType;
+  llmType?: string;
+}
+
+export interface AiModelDTO {
+  id: string;
+  name: string;
+  created?: number;
+  aiType: AiType;
+  llmType: string;
+  llmProvider: string;
+}
+
+export interface GetAiModelsResponse {
+  success: boolean;
+  models: AiModelDTO[];
+}
+

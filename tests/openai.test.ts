@@ -8,43 +8,46 @@ describe('OpenAI Chat Completions Test', () => {
 
   test('should call chat completions API with generated credentials', async () => {
     // Generate API key/secret pair
-    const apiKey = 'sk-pZeUuj_IyV34hqKVH34M6amyH5rqh2j1NgZP7oYPRSAAAAAA';
-    //const apiKey = 'sk-k5q_fQqUz-0tRm8Z1VgoEszM3Oh2Wp3J3TLZzmhA_fUAAAAA';
-
+    //const apiKey = 'sk-vi_igsCNRun6WIGbLudGt_h3Te6YzeH3nIEyndSwI1YAAAAA';  // local
+    const apiKey = 'sk-wPHuxJekvOS7vFuQGDWl7o5QkkbgyHgcic47XOpQzHIAAAAA';   // test
+    //const apiKey = 'sk-k5q_fQqUz-0tRm8Z1VgoEszM3Oh2Wp3J3TLZzmhA_fUAAAAA';  // prod
+    
     // Create OpenAI client with localhost base URL
     const openai = new OpenAI({
       apiKey: apiKey,
-      baseURL: 'http://localhost:3010/v1/',
+      baseURL: 'https://ai-us-east-1-gcp.flashback.tech/v1/',
+      //baseURL: 'http://localhost:3010/v1/',
     });
 
     try {
       // Make chat completions request
       const models = await openai.models.list();
       console.log('Models:', models);
-      const response = await openai.chat.completions.create({
-        //model: 'claude-sonnet-4-20250514',
-        model: 'gemini-2.5-flash',
-        //model: 'gpt-4o-mini',
-        //model: 'mistral.mistral-large-2402-v1',   // bedrock model
-        messages: [
-          {
-            role: 'user',
-            content: 'Our worker John Carter is asking for a raise. Please help me draft a short letter to the CEO of the company as mandated by the organization\'s policies.'
-          }
-        ],
-        temperature: 0.7,
-        store: true,
-        max_tokens: 4000,
-        metadata: {
-          workspace_id: 'wks_1234567890',
-          user_id: 'usr_1234567890',
-          conversation_id: 'conv_1234567890',
-        },
-      });
-
-      console.log('\n✅ Chat Completions Request successful!', response._request_id);
-      expect(response).toBeDefined(); 
-      //expect(response.choices[0].message.content).toContain('Hello, world!');
+      const modelList = ['gpt-4o-mini', 'claude-sonnet-4-20250514', 'gemini-2.5-flash'
+        //, 'mistral.mistral-large-2402-v1'];
+      ];
+      for (const model of modelList) {
+        const response = await openai.chat.completions.create({
+          model: model,
+          messages: [
+            {
+              role: 'user',
+              content: 'Our worker John Carter is asking for a raise. Please help me draft a short letter to the CEO of the company as mandated by the organization\'s policies.'
+            }
+          ],
+          temperature: 0.5,
+          store: true,
+          max_tokens: 4000,
+          metadata: {
+            workspace_id: 'wks_1234567890',
+            user_id: 'usr_1234567890',
+            conversation_id: 'conv_1234567890',
+          },
+        });
+        console.log('\n✅ Chat Completions Request successful!', response._request_id);
+        expect(response).toBeDefined(); 
+        //expect(response.choices[0].message.content).toContain('Hello, world!');
+      }
 
     } catch (error: any) {
       console.log('\n❌ Chat Completions Request failed:');

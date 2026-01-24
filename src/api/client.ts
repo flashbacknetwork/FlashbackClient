@@ -146,7 +146,7 @@ import { CreateOrgUserRequest,
 import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/platform/systemevent';
 import { PreVerifyEmailResponse, UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
-import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse } from './types/ai/aillm';
+import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse, GetAiModelsRequest, GetAiModelsResponse } from './types/ai/aillm';
 import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, GetPolicyAlertsQuery, GetPolicyAlertsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
 import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest, DeleteConversationRequest, DeleteConversationResponse } from './types/ai/conversation';
 import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse, GetLinkByTokenResponse } from './types/platform/links';
@@ -1503,6 +1503,10 @@ export class ApiClient implements IApiClient {
 
   public recommendPolicies = async (data: PolicyRecommendationRequest): Promise<PolicyRecommendationResponse> => {
     return this.makeRequest<PolicyRecommendationResponse>('policy/recommend', 'POST', data);
+  };
+
+  public getAiModels = async (data: GetAiModelsRequest): Promise<GetAiModelsResponse> => {
+    return this.makeRequest<GetAiModelsResponse>('ai/models', 'POST', data);
   };
 
 }
