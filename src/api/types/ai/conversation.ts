@@ -80,6 +80,7 @@ export interface GetConversationMessagesResponse {
   success: boolean;
   messages: MessageDTO[];
   message?: string;
+  title?: string;
 }
 
 export interface DeleteConversationRequest {
