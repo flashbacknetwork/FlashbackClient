@@ -56,6 +56,7 @@ export interface ConversationDTO {
     lastName: string;
     email: string;
   };
+  title?: string;
 }
 
 export interface GetConversationsResponse {
