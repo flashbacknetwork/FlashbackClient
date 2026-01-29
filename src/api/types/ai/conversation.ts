@@ -10,7 +10,7 @@ export interface CreateConversationResponse {
 
 export interface SendPromptRequest {
   prompt: string;
-  // Additional fields can be added here when implementing the external API integration
+  model: string;
 }
 
 export interface SendPromptResponse {
