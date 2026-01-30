@@ -150,6 +150,17 @@ import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLl
 import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, GetPolicyAlertsQuery, GetPolicyAlertsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
 import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest, DeleteConversationRequest, DeleteConversationResponse } from './types/ai/conversation';
 import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse, GetLinkByTokenResponse } from './types/platform/links';
+import {
+  GetCreditsBalanceResponse,
+  GetCreditsTransactionsRequest,
+  GetCreditsTransactionsResponse,
+  GetCreditsConsumptionRequest,
+  GetCreditsConsumptionResponse,
+  BuyCreditsPackRequest,
+  BuyCreditsPackResponse,
+  GetCreditsPacksResponse,
+  GetCreditsRatesResponse,
+} from './types/platform/credits';
 
 interface ErrorResponse {
   message?: string;
@@ -1509,4 +1520,29 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetAiModelsResponse>('ai/models', 'POST', data);
   };
 
+  ////// Credits API calls
+  public getCreditsBalance = async (): Promise<GetCreditsBalanceResponse> => {
+    return this.makeRequest<GetCreditsBalanceResponse>('credits/balance', 'GET', null);
+  };
+
+  public getCreditsTransactions = async (query: GetCreditsTransactionsRequest): Promise<GetCreditsTransactionsResponse> => {
+    return this.makeRequest<GetCreditsTransactionsResponse>('credits/transactions', 'GET', query);
+  };
+
+  /** Consumption = transactions with direction 'out' (backend uses same endpoint) */
+  public getCreditsConsumption = async (query: GetCreditsConsumptionRequest): Promise<GetCreditsConsumptionResponse> => {
+    return this.makeRequest<GetCreditsConsumptionResponse>('credits/transactions', 'GET', { ...query, direction: 'out' });
+  };
+
+  public buyCreditsPack = async (body: BuyCreditsPackRequest): Promise<BuyCreditsPackResponse> => {
+    return this.makeRequest<BuyCreditsPackResponse>('credits/packs/buy', 'POST', body);
+  };
+
+  public getCreditsPacks = async (): Promise<GetCreditsPacksResponse> => {
+    return this.makeRequest<GetCreditsPacksResponse>('credits/packs', 'GET', null);
+  };
+
+  public getCreditsRates = async (): Promise<GetCreditsRatesResponse> => {
+    return this.makeRequest<GetCreditsRatesResponse>('credits/rates', 'GET', null);
+  };
 }

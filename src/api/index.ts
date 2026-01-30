@@ -22,6 +22,7 @@ import * as PolicyTypes from './types/ai/policy';
 import * as ConversationTypes from './types/ai/conversation';
 import * as AiStatsTypes from './types/ai/stats';
 import * as LinksTypes from './types/platform/links';
+import * as CreditsTypes from './types/platform/credits';
 
 export { ApiClient, 
     ApiTypes, 
@@ -47,5 +48,6 @@ export { ApiClient,
     PolicyTypes,
     ConversationTypes,
     AiStatsTypes,
-    LinksTypes
+    LinksTypes,
+    CreditsTypes
 };
