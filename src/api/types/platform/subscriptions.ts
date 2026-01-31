@@ -5,6 +5,8 @@ export interface SubscriptionPeriodResponse {
   subscriptionId: string;
   periodType: string;
   price: number;
+  /** Credits granted per period (credits-based billing) */
+  creditsGranted?: number;
 }
 
 export interface SubscriptionCapability {
