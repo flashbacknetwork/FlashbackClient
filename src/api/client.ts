@@ -277,20 +277,42 @@ export class ApiClient implements IApiClient {
 
   private makeRequest = async <T>(path: string, method: string, data?: any): Promise<T> => {
     const isFormData = data instanceof FormData;
-    
+    const isGetOrHead = method === 'GET' || method === 'HEAD';
+
+    // GET/HEAD cannot have a body: serialize plain objects as query string
+    let requestPath = path.startsWith('/') ? path.substring(1) : path;
+    let body: RequestInit['body'] = null;
+
+    if (data != null) {
+      if (isGetOrHead && !isFormData && typeof data === 'object' && data.constructor === Object) {
+        const params = new URLSearchParams();
+        for (const [k, v] of Object.entries(data)) {
+          if (v !== undefined && v !== null) {
+            params.set(k, String(v));
+          }
+        }
+        const qs = params.toString();
+        if (qs) {
+          requestPath += (requestPath.includes('?') ? '&' : '?') + qs;
+        }
+      } else if (!isGetOrHead) {
+        body = isFormData ? data : JSON.stringify(data);
+      }
+    }
+
     const options: RequestInit = {
       method,
       headers: this.headers,
-      body: data ? (isFormData ? data : JSON.stringify(data)) : null,
+      body,
     };
-    
-    if (data && !isFormData) {
+
+    if (body && !isFormData) {
       options.headers = {
         ...options.headers,
         'Content-Type': 'application/json',
       };
     }
-    const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+    const cleanPath = requestPath;
     if (this.debug) {
       console.log(`DEBUG: ${method} ${cleanPath} ${JSON.stringify(data)}`);
       console.log(`DEBUG: ${JSON.stringify(this.headers)}`);
@@ -1528,7 +1550,10 @@ export class ApiClient implements IApiClient {
   };
 
   public getCreditsTransactions = async (query: GetCreditsTransactionsRequest): Promise<GetCreditsTransactionsResponse> => {
-    return this.makeRequest<GetCreditsTransactionsResponse>('credits/transactions', 'GET', query);
+    console.log('[ApiClient] getCreditsTransactions called', query);
+    const result = await this.makeRequest<GetCreditsTransactionsResponse>('credits/transactions', 'GET', query);
+    console.log('[ApiClient] getCreditsTransactions result', result);
+    return result;
   };
 
   /** Consumption = transactions with direction 'out' (backend uses same endpoint) */
@@ -1550,6 +1575,9 @@ export class ApiClient implements IApiClient {
 
   /** Get aggregated monthly credit stats for histogram (consumption, purchases, grants, balance) */
   public getCreditsMonthlyStats = async (query?: GetCreditsMonthlyStatsRequest): Promise<GetCreditsMonthlyStatsResponse> => {
-    return this.makeRequest<GetCreditsMonthlyStatsResponse>('credits/stats/monthly', 'GET', query ?? null);
+    console.log('[ApiClient] getCreditsMonthlyStats called', query);
+    const result = await this.makeRequest<GetCreditsMonthlyStatsResponse>('credits/stats/monthly', 'GET', query ?? null);
+    console.log('[ApiClient] getCreditsMonthlyStats result', result);
+    return result;
   };
 }
