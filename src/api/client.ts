@@ -160,6 +160,8 @@ import {
   BuyCreditsPackResponse,
   GetCreditsPacksResponse,
   GetCreditsRatesResponse,
+  GetCreditsMonthlyStatsRequest,
+  GetCreditsMonthlyStatsResponse,
 } from './types/platform/credits';
 
 interface ErrorResponse {
@@ -1544,5 +1546,10 @@ export class ApiClient implements IApiClient {
 
   public getCreditsRates = async (): Promise<GetCreditsRatesResponse> => {
     return this.makeRequest<GetCreditsRatesResponse>('credits/rates', 'GET', null);
+  };
+
+  /** Get aggregated monthly credit stats for histogram (consumption, purchases, grants, balance) */
+  public getCreditsMonthlyStats = async (query?: GetCreditsMonthlyStatsRequest): Promise<GetCreditsMonthlyStatsResponse> => {
+    return this.makeRequest<GetCreditsMonthlyStatsResponse>('credits/stats/monthly', 'GET', query ?? null);
   };
 }

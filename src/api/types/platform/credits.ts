@@ -121,3 +121,36 @@ export interface GetCreditsRatesResponse {
   error_code?: string;
   message?: string;
 }
+
+// ---- Monthly stats (for histogram) ----
+
+export interface MonthlyCreditsStatsItem {
+  /** ISO date string for first day of month, e.g. "2025-01-01T00:00:00.000Z" */
+  month: string;
+  /** Credits consumed (as positive number for display, from negative transactions) */
+  consumption: number;
+  /** Credits from pack purchases */
+  purchases: number;
+  /** Credits from subscription grants */
+  grants: number;
+  /** Net change: grants + purchases - consumption */
+  balance: number;
+}
+
+export interface GetCreditsMonthlyStatsRequest {
+  /** Number of months to return (default 12, max 24) */
+  months?: number;
+}
+
+export interface GetCreditsMonthlyStatsResponse {
+  success: boolean;
+  data?: MonthlyCreditsStatsItem[];
+  totals?: {
+    consumption: number;
+    purchases: number;
+    grants: number;
+    balance: number;
+  };
+  error_code?: string;
+  message?: string;
+}
