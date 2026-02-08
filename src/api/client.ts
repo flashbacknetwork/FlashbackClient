@@ -143,7 +143,7 @@ import { CreateOrgUserRequest,
   UpdateOrganizationResponse, 
   UpdateOrgUserRequest, 
   UpdateOrgUserResponse } from './types/platform/organization';
-import { SystemEventQueryRequest, SystemEventQueryResponse } from './types/platform/systemevent';
+import { SystemEventQueryRequest, SystemEventQueryResponse, SystemEventReadStatusResponse } from './types/platform/systemevent';
 import { PreVerifyEmailResponse, UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse, GetAiModelsRequest, GetAiModelsResponse } from './types/ai/aillm';
@@ -1198,6 +1198,14 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<SystemEventQueryResponse>('systemevent', 'POST', data);
   };
 
+  public markSystemEventAsRead = async (systemEventLogId: number): Promise<SystemEventReadStatusResponse> => {
+    return this.makeRequest<SystemEventReadStatusResponse>(`systemevent/${systemEventLogId}/read`, 'POST', null);
+  };
+
+  public markSystemEventAsUnread = async (systemEventLogId: number): Promise<SystemEventReadStatusResponse> => {
+    return this.makeRequest<SystemEventReadStatusResponse>(`systemevent/${systemEventLogId}/read`, 'DELETE', null);
+  };
+
   ////// AI LLM API calls
   public createAiLlm = async (data: CreateAiLlmRequest): Promise<CreateAiLlmResponse> => {
     return this.makeRequest<CreateAiLlmResponse>('ai/llm', 'POST', data);
@@ -1550,9 +1558,7 @@ export class ApiClient implements IApiClient {
   };
 
   public getCreditsTransactions = async (query: GetCreditsTransactionsRequest): Promise<GetCreditsTransactionsResponse> => {
-    console.log('[ApiClient] getCreditsTransactions called', query);
     const result = await this.makeRequest<GetCreditsTransactionsResponse>('credits/transactions', 'GET', query);
-    console.log('[ApiClient] getCreditsTransactions result', result);
     return result;
   };
 
@@ -1575,9 +1581,7 @@ export class ApiClient implements IApiClient {
 
   /** Get aggregated monthly credit stats for histogram (consumption, purchases, grants, balance) */
   public getCreditsMonthlyStats = async (query?: GetCreditsMonthlyStatsRequest): Promise<GetCreditsMonthlyStatsResponse> => {
-    console.log('[ApiClient] getCreditsMonthlyStats called', query);
     const result = await this.makeRequest<GetCreditsMonthlyStatsResponse>('credits/stats/monthly', 'GET', query ?? null);
-    console.log('[ApiClient] getCreditsMonthlyStats result', result);
     return result;
   };
 }

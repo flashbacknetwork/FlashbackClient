@@ -6,6 +6,8 @@ export interface SystemEventQueryRequest {
   event?: number;
   userId?: string;
   workspaceId?: string;
+  /** When true, only return events the current user has not read. */
+  showUnread?: boolean;
   skip: number;
   take: number;
 }
@@ -22,6 +24,8 @@ export interface SystemEventResponse {
   userEmail: string;
   workspaceId: string | null;
   jsonData: string | null;
+  /** True when the current user has not read this event. */
+  showUnread: boolean;
 }
 
 export interface SystemEventQueryResponse {
@@ -29,6 +33,11 @@ export interface SystemEventQueryResponse {
   total: number;
   skip: number;
   take: number;
+}
+
+/** Response for mark-as-read / mark-as-unread. */
+export interface SystemEventReadStatusResponse {
+  success: boolean;
 }
 
 // Helper class for context type translation
