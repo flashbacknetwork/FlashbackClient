@@ -743,6 +743,14 @@ export class ApiClient implements IApiClient {
       queryParams.append('llmModel', params.llmModel.join(','));
     }
 
+    if (params.userUuid && params.userUuid.length > 0) {
+      queryParams.append('userUuid', params.userUuid.join(','));
+    }
+
+    if (params.conversationUuid && params.conversationUuid.length > 0) {
+      queryParams.append('conversationUuid', params.conversationUuid.join(','));
+    }
+
     return this.makeRequest<AiStatsResponse>(`aistats/daily?${queryParams.toString()}`, 'GET', null);
   }
 
@@ -780,6 +788,14 @@ export class ApiClient implements IApiClient {
 
     if (params.llmModel && params.llmModel.length > 0) {
       queryParams.append('llmModel', params.llmModel.join(','));
+    }
+
+    if (params.userUuid && params.userUuid.length > 0) {
+      queryParams.append('userUuid', params.userUuid.join(','));
+    }
+
+    if (params.conversationUuid && params.conversationUuid.length > 0) {
+      queryParams.append('conversationUuid', params.conversationUuid.join(','));
     }
 
     return this.makeRequest<AiStatsResponse>(`aistats/minute?${queryParams.toString()}`, 'GET', null);

@@ -7,6 +7,8 @@ export interface AiStatsQueryParams {
   hosts?: string[];
   llmType?: string[];
   llmModel?: string[];
+  userUuid?: string[];
+  conversationUuid?: string[];
 }
 
 export interface AiStatsResponse {
@@ -36,4 +38,6 @@ export interface AiStatsData {
   llmType: string;
   llmModel: string;
   host: string;
+  userUuid: string;
+  conversationUuid: string;
 }
