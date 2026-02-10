@@ -35,6 +35,12 @@ export interface SystemEventQueryResponse {
   take: number;
 }
 
+/** Request body for mark-as-read / mark-as-unread: single id or array of ids. */
+export interface SystemEventReadIdsRequest {
+  id?: number;
+  ids?: number[];
+}
+
 /** Response for mark-as-read / mark-as-unread. */
 export interface SystemEventReadStatusResponse {
   success: boolean;

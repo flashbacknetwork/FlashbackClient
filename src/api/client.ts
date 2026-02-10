@@ -143,7 +143,7 @@ import { CreateOrgUserRequest,
   UpdateOrganizationResponse, 
   UpdateOrgUserRequest, 
   UpdateOrgUserResponse } from './types/platform/organization';
-import { SystemEventQueryRequest, SystemEventQueryResponse, SystemEventReadStatusResponse } from './types/platform/systemevent';
+import { SystemEventQueryRequest, SystemEventQueryResponse, SystemEventReadIdsRequest, SystemEventReadStatusResponse } from './types/platform/systemevent';
 import { PreVerifyEmailResponse, UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
 import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
 import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse, GetAiModelsRequest, GetAiModelsResponse } from './types/ai/aillm';
@@ -1214,12 +1214,18 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<SystemEventQueryResponse>('systemevent', 'POST', data);
   };
 
-  public markSystemEventAsRead = async (systemEventLogId: number): Promise<SystemEventReadStatusResponse> => {
-    return this.makeRequest<SystemEventReadStatusResponse>(`systemevent/${systemEventLogId}/read`, 'POST', null);
+  public markSystemEventAsRead = async (systemEventLogId: number | number[]): Promise<SystemEventReadStatusResponse> => {
+    const body: SystemEventReadIdsRequest = Array.isArray(systemEventLogId)
+      ? { ids: systemEventLogId }
+      : { id: systemEventLogId };
+    return this.makeRequest<SystemEventReadStatusResponse>('systemevent/read', 'POST', body);
   };
 
-  public markSystemEventAsUnread = async (systemEventLogId: number): Promise<SystemEventReadStatusResponse> => {
-    return this.makeRequest<SystemEventReadStatusResponse>(`systemevent/${systemEventLogId}/read`, 'DELETE', null);
+  public markSystemEventAsUnread = async (systemEventLogId: number | number[]): Promise<SystemEventReadStatusResponse> => {
+    const body: SystemEventReadIdsRequest = Array.isArray(systemEventLogId)
+      ? { ids: systemEventLogId }
+      : { id: systemEventLogId };
+    return this.makeRequest<SystemEventReadStatusResponse>('systemevent/read', 'DELETE', body);
   };
 
   ////// AI LLM API calls
