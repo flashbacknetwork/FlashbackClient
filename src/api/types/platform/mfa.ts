@@ -131,6 +131,7 @@ export enum MFAType {
 
   export interface MFAResetRequest {
     resetUserId: string | undefined;
+    enable: boolean;
   }
   
   export interface MFAOrganizationEnforceRequest {
