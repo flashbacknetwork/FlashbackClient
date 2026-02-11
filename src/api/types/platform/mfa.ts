@@ -62,6 +62,16 @@ export enum MFAType {
     userVerification?: 'required' | 'preferred' | 'discouraged';
     timeout?: number;
   }
+
+  export interface PasskeyCredentialDescriptor {
+    id: string;
+    type?: 'public-key';
+    transports?: Array<'ble' | 'hybrid' | 'internal' | 'nfc' | 'usb'>;
+  }
+
+  export interface PasskeyAuthenticationOptions extends PasskeyChallengeOptions {
+    allowCredentials?: PasskeyCredentialDescriptor[];
+  }
   
   export interface PasskeyRegistrationOptions extends PasskeyChallengeOptions {
     rp: {
@@ -227,14 +237,17 @@ export enum MFAType {
   }
   
   export interface PasskeySetupData {
-    challenge: PasskeyRegistrationOptions;
+    challenge: string;
     rpName: string;
     userName: string;
+    rpID?: string;
+    origin?: string;
+    userId?: string;
   }
   
   export interface PasskeyAuthOptionsResult {
     success: boolean;
-    data?: PasskeyChallengeOptions;
+    data?: PasskeyAuthenticationOptions;
     error?: string;
   }
   
@@ -313,7 +326,7 @@ export enum MFAType {
   export type MFAPrimaryResponse = APIResponse<MFAPrimaryResult>;
   export type MFAResetResponse = APIResponse<MFAResetResult>;
   export type MFAOrganizationEnforceResponse = APIResponse<MFAOrganizationEnforceResult>;
-  export type PasskeyAuthOptionsResponse = APIResponse<PasskeyChallengeOptions>;
+  export type PasskeyAuthOptionsResponse = APIResponse<PasskeyAuthenticationOptions>;
   export type PasskeyCompleteRegistrationResponse = APIResponse<PasskeyCompleteRegistrationResult>;
   export type MagicLinkSendResponse = APIResponse<{ message: string }>;
   
