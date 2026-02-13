@@ -170,6 +170,8 @@ export enum MFAType {
     isEnforced: boolean;
     enabledMethods: MFAType[];
     primaryMethod?: MFAType;
+    /** True when the current token is a full-access token (post-MFA). Server-signed, tamper-proof. */
+    sessionVerified?: boolean;
   }
   
   export interface MFAVerificationSetupResult {
