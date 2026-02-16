@@ -97,6 +97,7 @@ export interface CreateOrgUserRequest {
     phone?: string;
     state?: string;
     country?: string;
+    website?: string;
     is_business?: boolean;
     mfaEnforced?: boolean;
   }
