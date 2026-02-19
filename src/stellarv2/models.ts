@@ -164,7 +164,6 @@ export interface DealCreateParams {
   duration_secs: bigint;
   agreed_storage_gb: number;
   agreed_egress_gb: number;
-  fb_repo_id: string;
   api_compatibility: string;
 }
 
