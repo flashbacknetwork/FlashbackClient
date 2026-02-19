@@ -27,11 +27,13 @@ export class DealOps {
       consumer_id: string,
       provider_id: string,
       bucket_id: number,
+      fb_repo_id: string,
       params: DealCreateParams
     ): Promise<any> => {
       const response: ContractMethodResponse = await executeWalletTransaction(this.context, consumer_id, "create_deal", [
         { value: provider_id, type: 'address' },
         { value: bucket_id, type: 'u32' },
+        { value: fb_repo_id, type: 'string' },
         { value: params.duration_secs, type: 'u64' },
         { value: params.agreed_storage_gb, type: 'u32' },
         { value: params.agreed_egress_gb, type: 'u32' },
