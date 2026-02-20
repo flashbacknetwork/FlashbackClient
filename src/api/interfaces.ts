@@ -63,6 +63,7 @@ import {
 export enum ProviderType {
   GOOGLE = 'GOOGLE',
   GITHUB = 'GITHUB',
+  MICROSOFT = 'MICROSOFT',
   WEB3_STELLAR = 'WEB3_STELLAR',
   LOCAL = 'LOCAL',
 }

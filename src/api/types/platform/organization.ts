@@ -9,7 +9,7 @@ export interface CreateOrgUserRequest {
     orgRole?: number;
     sendInvite?: boolean;
     provider?: string;
-    authMethod?: 'LOCAL' | 'GOOGLE' | 'GITHUB';
+    authMethod?: 'LOCAL' | 'GOOGLE' | 'GITHUB' | 'MICROSOFT';
   }
   
   export interface UpdateOrgUserRequest {

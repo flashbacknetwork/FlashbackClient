@@ -41,6 +41,7 @@ import {
   DemoRequestBody,
   DemoRequestResponse,
   GoogleExchangeCodeRequest,
+  MicrosoftExchangeCodeRequest,
   LoginBody,
   LoginResponse,
   LogoutResponse,
@@ -217,6 +218,8 @@ export class ApiClient implements IApiClient {
         return this.authenticateGoogle({ token, deviceInfo });
       case ProviderType.GITHUB:
         return this.authenticateGithub({ code: token, deviceInfo, activationUid, activationToken });
+      case ProviderType.MICROSOFT:
+        return this.authenticateMicrosoft({ token, deviceInfo });
       case ProviderType.WEB3_STELLAR:
         throw new Error('Call web3Authenticate for web3 authentication');
       case ProviderType.LOCAL:
@@ -237,6 +240,8 @@ export class ApiClient implements IApiClient {
         return this.exchangeGoogleCode({ code, activationUid, activationToken });
       case ProviderType.GITHUB:
         return this.exchangeGithubCode(code);
+      case ProviderType.MICROSOFT:
+        return this.exchangeMicrosoftCode({ code, activationUid, activationToken });
       case ProviderType.WEB3_STELLAR:
         return this.exchangeWeb3StellarCode(code);
       default:
@@ -267,6 +272,8 @@ export class ApiClient implements IApiClient {
         return this.refreshGoogleToken(refreshToken);
       case ProviderType.GITHUB:
         return this.refreshGithubToken(refreshToken);
+      case ProviderType.MICROSOFT:
+        return this.refreshMicrosoftToken(refreshToken);
       case ProviderType.LOCAL:
       case ProviderType.WEB3_STELLAR:
         return this.userRefresh(refreshToken);
@@ -361,6 +368,11 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<any>('auth/github', 'POST', data);
   };
 
+  private authenticateMicrosoft = async (data: AuthTypes.MicrosoftLoginRequest): Promise<any> => {
+    this.setAuthToken(data.token);
+    return this.makeRequest<any>('auth/microsoft', 'POST', data);
+  };
+
   /**
    * Authenticate with a web3 provider
    * @param data - The data to authenticate with
@@ -382,8 +394,18 @@ export class ApiClient implements IApiClient {
     });
   };
 
+  private refreshMicrosoftToken = async (refreshToken: string): Promise<RefreshTokenResponse> => {
+    return this.makeRequest<RefreshTokenResponse>('auth/microsoft/refresh', 'POST', {
+      refresh_token: refreshToken,
+    });
+  };
+
   private exchangeGoogleCode = async (data: GoogleExchangeCodeRequest): Promise<OAuth2ResponseDTO> => {
     return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', data);
+  };
+
+  private exchangeMicrosoftCode = async (data: MicrosoftExchangeCodeRequest): Promise<OAuth2ResponseDTO> => {
+    return this.makeRequest<OAuth2ResponseDTO>('auth/microsoft/exchange', 'POST', data);
   };
 
   // Token Management

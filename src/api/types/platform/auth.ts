@@ -147,6 +147,16 @@ export interface GithubLoginRequest extends LoginDeviceInfo {
   activationToken?: string;
 }
 
+export interface MicrosoftLoginRequest extends LoginDeviceInfo {
+  token: string;
+}
+
+export interface MicrosoftExchangeCodeRequest {
+  code: string;
+  activationUid?: string;
+  activationToken?: string;
+}
+
 export interface DemoRequestBody {
   userId: string;
   email: string;
