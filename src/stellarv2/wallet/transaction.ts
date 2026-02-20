@@ -62,7 +62,8 @@ const getServer = (network: StellarNetwork): rpc.Server => {
       serverUrl = "https://soroban-testnet.stellar.org";
       break;
     case "PUBLIC":
-      serverUrl = "https://rpc.stellar.org";
+      //serverUrl = "https://rpc.stellar.org";
+      serverUrl = "https://stellar-soroban-public.nodies.app";
       break;
   }
   
