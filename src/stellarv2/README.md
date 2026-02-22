@@ -111,8 +111,8 @@ const dealId = await client.deals.createDeal(
   bucketId,
   {
     duration_secs: BigInt(86400), // 1 day
-    agreed_storage_gb: 100,
-    agreed_egress_gb: 50,
+    agreed_storage_mb: 102400,  // 100 GB in MB
+    agreed_egress_mb: 51200,    // 50 GB in MB
     fb_repo_id: 'flashback_repo_id',
     api_compatibility: 'S3'
   }

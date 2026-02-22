@@ -35,8 +35,8 @@ export class DealOps {
         { value: bucket_id, type: 'u32' },
         { value: fb_repo_id, type: 'string' },
         { value: params.duration_secs, type: 'u64' },
-        { value: params.agreed_storage_gb, type: 'u32' },
-        { value: params.agreed_egress_gb, type: 'u32' },
+        { value: params.agreed_storage_mb, type: 'u64' },
+        { value: params.agreed_egress_mb, type: 'u64' },
         { value: params.api_compatibility, type: 'string' }
       ]);
 
@@ -391,8 +391,8 @@ export class DealOps {
         { value: provider_id, type: 'address' },
         { value: consumer_id, type: 'address' },
         { value: deal_id, type: 'u32' },
-        { value: params.storage_gb, type: 'u32' },
-        { value: params.egress_gb, type: 'u32' }
+        { value: params.storage_mb, type: 'u64' },
+        { value: params.egress_mb, type: 'u64' }
       ]);
     }
   );

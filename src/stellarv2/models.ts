@@ -87,19 +87,19 @@ export interface Deal {
   api_compatibility: string; // e.g. ["S3", "GCS"]
   start_ts: bigint;
   duration_secs: bigint;
-  agreed_storage_gb: number;
-  agreed_egress_gb: number;
-  unpaid_storage_gb: number;
-  unpaid_egress_gb: number;
-  paid_storage_gb: number;
-  paid_egress_gb: number;
+  agreed_storage_mb: number;
+  agreed_egress_mb: number;
+  unpaid_storage_mb: number;
+  unpaid_egress_mb: number;
+  paid_storage_mb: number;
+  paid_egress_mb: number;
   status: DealStatus;
   balance_consumer: bigint;
   balance_provider: bigint;
   sla_avg_latency_ms: number;
   sla_avg_uptime_pct: number;
-  slash_storage_gb: number;
-  slash_egress_gb: number;
+  slash_storage_mb: number;
+  slash_egress_mb: number;
   slash_amount_usd: bigint;
   /** Ledger timestamp of last settlement. Oracle uses this to query consumption from last_settled_ts to now. */
   last_settled_ts: bigint;
@@ -164,8 +164,8 @@ export interface BucketCreateParams {
 
 export interface DealCreateParams {
   duration_secs: bigint;
-  agreed_storage_gb: number;
-  agreed_egress_gb: number;
+  agreed_storage_mb: number;
+  agreed_egress_mb: number;
   api_compatibility: string;
 }
 
@@ -185,8 +185,8 @@ export interface BucketUpdateConditionsParams {
 }
 
 export interface DealConsumptionUpdateParams {
-  storage_gb: number;
-  egress_gb: number;
+  storage_mb: number;
+  egress_mb: number;
 }
 
 export interface DealSLAUpdateParams {
