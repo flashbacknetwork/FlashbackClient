@@ -101,6 +101,8 @@ export interface Deal {
   slash_storage_gb: number;
   slash_egress_gb: number;
   slash_amount_usd: bigint;
+  /** Ledger timestamp of last settlement. Oracle uses this to query consumption from last_settled_ts to now. */
+  last_settled_ts: bigint;
 }
 
 export interface DealInfo  {
