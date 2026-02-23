@@ -128,6 +128,70 @@ export const getHorizonServer = (network: string) => {
   }
 };
 
+/**
+ * Executes a contract call using a server-side source account.
+ * Unlike executeWalletTransaction, this does NOT prepend the source address
+ * to the contract args — the args are passed as-is to the contract method.
+ * Used for owner-only operations invoked from backend workers.
+ */
+export const executeServerTransaction = async (
+  context: ClientContext,
+  sourceAddress: string,
+  method: string,
+  args: Array<{
+    value:
+      | string
+      | number
+      | bigint
+      | boolean
+      | null
+      | Array<unknown>
+      | undefined;
+    type:
+      | "string"
+      | "symbol"
+      | "address"
+      | "u32"
+      | "i32"
+      | "u64"
+      | "i64"
+      | "u128"
+      | "i128"
+      | "bool"
+      | "vec";
+  }> = [],
+): Promise<ContractMethodResponse> => {
+  try {
+    const response = await prepareTransaction(context, sourceAddress, {
+      method,
+      args,
+    });
+
+    if (response.isSuccess) {
+      if (response.isReadOnly) {
+        return response;
+      }
+
+      const signedTxXDR = await context.signTransaction!(
+        response.result as string,
+      );
+
+      const sendResponse = await sendTransaction(context, signedTxXDR);
+
+      return {
+        isSuccess: true,
+        isReadOnly: false,
+        result: sendResponse,
+      };
+    }
+
+    return response;
+  } catch (error) {
+    console.error('executeServerTransaction: Error occurred:', error);
+    throw error;
+  }
+};
+
 export const executeWalletTransaction = async (
   context: ClientContext,
   wallet_address: string,
@@ -373,6 +437,22 @@ const signTransaction = async (
   const sourceKeypair = Keypair.fromSecret(privateKey);
   preparedTransaction.sign(sourceKeypair);
   return preparedTransaction;
+};
+
+/**
+ * Creates a signTransaction callback that signs with a private key.
+ * Use this for server-side / backend workers where there is no browser wallet.
+ */
+export const createPrivateKeySigner = (
+  secretKey: string,
+  networkPassphrase: string,
+): ((xdrToSign: string) => Promise<string>) => {
+  return async (xdrToSign: string): Promise<string> => {
+    const keypair = Keypair.fromSecret(secretKey);
+    const tx = TransactionBuilder.fromXDR(xdrToSign, networkPassphrase);
+    tx.sign(keypair);
+    return tx.toXDR();
+  };
 };
 
 const sendTransaction = async (

@@ -21,6 +21,13 @@ export interface FlashOnStellarClientConfigV2 {
   signTransaction?: (xdrToSign: string) => Promise<string>;
   /** Network configuration for Stellar (testnet/public) */
   network: StellarNetwork;
+  /**
+   * Stellar public key used as the source account for owner-only
+   * server-side operations (e.g. oracle worker calls).
+   * When set, owner-only methods use executeServerTransaction
+   * which does NOT prepend this address to the contract args.
+   */
+  serverSourceAddress?: string;
 }
 
 export type ClientContext = FlashOnStellarClientConfigV2;

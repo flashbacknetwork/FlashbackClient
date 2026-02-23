@@ -1,6 +1,6 @@
 import { ClientContext } from '.';
 import { Deal, DealCreateParams, DealConsumptionUpdateParams, DealSLAUpdateParams, DealInfo } from '../models';
-import { ContractMethodResponse, executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
+import { ContractMethodResponse, executeWalletTransaction, executeServerTransaction, prepareTransaction } from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
 /**
@@ -364,11 +364,16 @@ export class DealOps {
       consumer_id: string,
       deal_id: number
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, '', "pay_pending_consumption", [
-        { value: provider_id, type: 'address' },
-        { value: consumer_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
-      ]);
+      const args = [
+        { value: provider_id, type: 'address' as const },
+        { value: consumer_id, type: 'address' as const },
+        { value: deal_id, type: 'u32' as const }
+      ];
+      if (this.context.serverSourceAddress) {
+        await executeServerTransaction(this.context, this.context.serverSourceAddress, "pay_pending_consumption", args);
+      } else {
+        await executeWalletTransaction(this.context, '', "pay_pending_consumption", args);
+      }
     }
   );
 
@@ -387,13 +392,18 @@ export class DealOps {
       deal_id: number,
       params: DealConsumptionUpdateParams
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, '', "update_deal_consumption", [
-        { value: provider_id, type: 'address' },
-        { value: consumer_id, type: 'address' },
-        { value: deal_id, type: 'u32' },
-        { value: params.storage_mb, type: 'u64' },
-        { value: params.egress_mb, type: 'u64' }
-      ]);
+      const args = [
+        { value: provider_id, type: 'address' as const },
+        { value: consumer_id, type: 'address' as const },
+        { value: deal_id, type: 'u32' as const },
+        { value: params.storage_mb, type: 'u64' as const },
+        { value: params.egress_mb, type: 'u64' as const }
+      ];
+      if (this.context.serverSourceAddress) {
+        await executeServerTransaction(this.context, this.context.serverSourceAddress, "update_deal_consumption", args);
+      } else {
+        await executeWalletTransaction(this.context, '', "update_deal_consumption", args);
+      }
     }
   );
 
@@ -412,13 +422,18 @@ export class DealOps {
       deal_id: number,
       params: DealSLAUpdateParams
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, '', "update_deal_sla", [
-        { value: provider_id, type: 'address' },
-        { value: consumer_id, type: 'address' },
-        { value: deal_id, type: 'u32' },
-        { value: params.sla_avg_latency_ms, type: 'u32' },
-        { value: params.sla_avg_uptime_pct, type: 'u32' }
-      ]);
+      const args = [
+        { value: provider_id, type: 'address' as const },
+        { value: consumer_id, type: 'address' as const },
+        { value: deal_id, type: 'u32' as const },
+        { value: params.sla_avg_latency_ms, type: 'u32' as const },
+        { value: params.sla_avg_uptime_pct, type: 'u32' as const }
+      ];
+      if (this.context.serverSourceAddress) {
+        await executeServerTransaction(this.context, this.context.serverSourceAddress, "update_deal_sla", args);
+      } else {
+        await executeWalletTransaction(this.context, '', "update_deal_sla", args);
+      }
     }
   );
 
