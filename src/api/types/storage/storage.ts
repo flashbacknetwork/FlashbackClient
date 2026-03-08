@@ -28,12 +28,13 @@ export interface CreateUnitRequest {
   name: string;
   bucket: string;
   storageType: StorageType;
-  key: string;
-  secret: string;
+  key?: string;
+  secret?: string;
   endpoint?: string;
   region?: string;
   workspaceId: string;
   walletAddress?: string;
+  apiKeyUuid?: string;
 }
 
 export interface GetUnitNodeStatsRequest {
@@ -158,7 +159,7 @@ export interface StorageBucket {
   name: string;
   bucket: string;
   storageType: StorageType;
-  key: string;
+  key?: string;
   secret?: EncryptedKey;
   endpoint?: string;
   region?: string;
@@ -168,6 +169,7 @@ export interface StorageBucket {
   workspaceId: string;
   walletAddress?: string;
   repos?: StorageRepoBasic[];
+  apiKeyId?: string;
 }
 
 export interface GetUnitsResponse {
@@ -191,10 +193,11 @@ export interface GetRepoKeysResponse {
 }
 
 export interface ValidateUnitRequest {
-  key: string;
-  secret: string;
+  key?: string;
+  secret?: string;
   endpoint?: string;
   bucket: string;
+  apiKeyUuid?: string;
 }
 
 export interface ValidateUnitResponse {
@@ -309,6 +312,20 @@ export interface ValidateRepoBucketsResponse {
 export interface StorageBucketStatusResponse {
   bucketId: string;
   nodeStatus: NodeStatusInfo[];
+}
+
+export interface ProviderApiKeyDTO {
+  id: string;
+  key: string;
+  endpoint?: string;
+  region?: string;
+  provider: string;
+  createdAt: string;
+}
+
+export interface GetProviderApiKeysResponse {
+  success: boolean;
+  apiKeys: ProviderApiKeyDTO[];
 }
 
 export interface GetBucketNodeStatsRequest {
