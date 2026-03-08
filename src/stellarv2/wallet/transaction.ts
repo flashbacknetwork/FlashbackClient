@@ -55,32 +55,47 @@ const getPublicKeyFromPrivateKey = (privateKey: string): string => {
   return keypair.publicKey();
 };
 
+const DEFAULT_RPC_URLS: Record<string, string> = {
+  TESTNET: "https://soroban-testnet.stellar.org",
+  PUBLIC: "https://soroban-rpc.creit.tech",
+};
+
+const customRpcUrls: Record<string, string> = {};
+
+/**
+ * Set a custom Soroban RPC server URL for a network.
+ * Use this to point the client at a different RPC endpoint (e.g. your own node).
+ * Pass `undefined` as url to clear the override and revert to the default for that network.
+ */
+export const setServer = (network: string, url: string | undefined): void => {
+  if (url === undefined) {
+    delete customRpcUrls[network];
+  } else {
+    customRpcUrls[network] = url;
+  }
+};
+
 const getServer = (network: StellarNetwork): rpc.Server => {
-  let serverUrl = "";
-  switch (network.network) {
-    case "TESTNET":
-      serverUrl = "https://soroban-testnet.stellar.org";
-      break;
-    case "PUBLIC":
-      //serverUrl = "https://rpc.stellar.org";
-      //serverUrl = "https://stellar-soroban-public.nodies.app";
-      serverUrl = "https://soroban-rpc.mainnet.stellar.gateway.fm";
-      break;
+  const serverUrl =
+    customRpcUrls[network.network] ?? DEFAULT_RPC_URLS[network.network] ?? "";
+
+  if (!serverUrl) {
+    throw new Error(
+      `No RPC URL configured for network "${network.network}". Use setServer(network, url) or ensure the network is one of: TESTNET, PUBLIC.`
+    );
   }
-  
-  // For Stellar SDK v13+, we need to handle the allowHttp issue
-  let server;
-  
-  // Approach 1: Try with allowHttp option
+
   try {
-    server = new rpc.Server(serverUrl, { allowHttp: true });
-    return server;
+    return new rpc.Server(serverUrl, { allowHttp: true });
   } catch (error) {
-    console.log(`Failed with allowHttp: true:`, error instanceof Error ? error.message : String(error));
+    console.log(
+      `Failed with allowHttp: true:`,
+      error instanceof Error ? error.message : String(error)
+    );
+    throw new Error(
+      `Failed to create Soroban RPC server for ${network.network} at ${serverUrl}. All configuration attempts failed.`
+    );
   }
-  
-  // If all approaches fail, throw a comprehensive error
-  throw new Error(`Failed to create Soroban RPC server for ${network.network} at ${serverUrl}. All configuration attempts failed.`);
 };
 
 const TIMEOUT_TRANSACTION = 60;

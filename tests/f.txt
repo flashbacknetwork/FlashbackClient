@@ -1,0 +1,30 @@
+316G	/Users/me
+186G	/Users/me/Library
+ 88G	/Users/me/Development
+ 11G	/Users/me/.rustup
+9,1G	/Users/me/.gradle
+6,5G	/Users/me/.npm
+4,4G	/Users/me/.android
+4,0G	/Users/me/.cargo
+2,0G	/Users/me/go
+1,9G	/Users/me/.expo
+1,4G	/Users/me/Downloads
+808M	/Users/me/.cursor
+668M	/Users/me/.cache
+
+186G	/Users/me/Library
+ 95G	/Users/me/Library/Containers
+ 48G	/Users/me/Library/Developer
+ 20G	/Users/me/Library/Application Support
+ 13G	/Users/me/Library/Caches
+9,8G	/Users/me/Library/Android
+
+Containers
+ 95G	/Users/me/Library/Containers
+ 94G	/Users/me/Library/Containers/com.docker.docker
+469M	/Users/me/Library/Containers/com.apple.CoreDevice.CoreDeviceService
+
+du -h -d 1 ~/Library/Developer | sort -hr
+ 48G	/Users/me/Library/Developer
+ 28G	/Users/me/Library/Developer/Xcode
+ 20G	/Users/me/Library/Developer/CoreSimulator

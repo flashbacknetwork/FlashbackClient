@@ -31,15 +31,29 @@ describe('StorageClient', () => {
   jest.setTimeout(600000);
 
   const testConfigurations = [
+   /* {
+      name: 'S3 to S3 DEV Node (AWS endpoint, GCP provider)',
+      config: {
+        //endpoint: process.env.TEST_FB_ACCESS_KEY_ID,
+        credentials: {
+          accessKeyId: process.env.TEST_FB_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.TEST_FB_SECRET_ACCESS_KEY!,
+        },
+        region: 'us-east-1',
+        forcePathStyle: false,
+      },
+      bucketName: 'cloodaws',
+    },*/
     {
       name: 'S3 to S3 DEV Node (AWS endpoint, GCP provider)',
       config: {
-        endpoint: process.env.DEV_AWS_PROVIDER_URL,
+        //endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
+        endpoint: 'http://gcs-us-east-1-local.flashback.tech:3002/',
         credentials: {
-          accessKeyId: process.env.DEV_AWS_KEY!,
-          secretAccessKey: process.env.DEV_AWS_SECRET!,
+          accessKeyId: process.env.TEST_FB_STELLAR_REPO!,
+          secretAccessKey: process.env.TEST_FB_STELLAR_REPO_SECRET!,
         },
-        region: 'eu-central-1',
+        region: 'us-east-1',
         forcePathStyle: false,
       },
       bucketName: 'cloodaws',
@@ -248,6 +262,7 @@ describe('StorageClient', () => {
       const fileStream = fs.createReadStream(testFilePath);
 
       // 1. Head Bucket - Check if bucket exists
+      
       let headBucketResponse: HeadBucketCommandOutput;
       try {
         headBucketResponse = await s3Client.send(
