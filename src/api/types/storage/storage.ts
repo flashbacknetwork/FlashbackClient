@@ -321,12 +321,39 @@ export interface ProviderApiKeyDTO {
   region?: string;
   provider: string;
   createdAt: string;
+  bucket_count?: number;
+  aillm_count?: number;
 }
 
 export interface GetProviderApiKeysResponse {
   success: boolean;
   apiKeys: ProviderApiKeyDTO[];
 }
+
+export interface CreateProviderApiKeyRequest {
+  key: string;
+  secret: string;
+  endpoint?: string;
+  region?: string;
+  provider: string;
+  workspaceId: string;
+}
+
+export interface CreateProviderApiKeyResponse extends ActionResponse {
+  apiKeyId: string;
+}
+
+export interface UpdateProviderApiKeyRequest {
+  key?: string;
+  secret?: string;
+  endpoint?: string;
+  region?: string;
+  provider?: string;
+}
+
+export interface UpdateProviderApiKeyResponse extends ActionResponse {}
+
+export interface DeleteProviderApiKeyResponse extends ActionResponse {}
 
 export interface GetBucketNodeStatsRequest {
   day: Date;

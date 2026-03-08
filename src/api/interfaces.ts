@@ -29,6 +29,12 @@ import {
   UpdateBucketResponse,
   ValidateBucketRequest,
   ValidateBucketResponse,
+  GetProviderApiKeysResponse,
+  CreateProviderApiKeyRequest,
+  CreateProviderApiKeyResponse,
+  UpdateProviderApiKeyRequest,
+  UpdateProviderApiKeyResponse,
+  DeleteProviderApiKeyResponse,
 } from './types/storage/storage';
 import {
   RegisterBody,
@@ -75,6 +81,10 @@ export interface IApiClient {
   updateStorageBucket(bucketId: string, data: UpdateBucketRequest): Promise<UpdateBucketResponse>;
   deleteStorageBucket(bucketId: string): Promise<ActionResponse>;
   validateStorageBucket(bucketId: string, data: ValidateBucketRequest): Promise<ValidateBucketResponse>;
+  getApiKeys(workspaceId?: string): Promise<GetProviderApiKeysResponse>;
+  createApiKey(data: CreateProviderApiKeyRequest): Promise<CreateProviderApiKeyResponse>;
+  updateApiKey(apiKeyId: string, data: UpdateProviderApiKeyRequest): Promise<UpdateProviderApiKeyResponse>;
+  deleteApiKey(apiKeyId: string): Promise<DeleteProviderApiKeyResponse>;
   createStorageRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
   getStorageRepos(workspaceId?: string): Promise<GetReposResponse>;
   updateStorageRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;

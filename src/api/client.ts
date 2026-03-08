@@ -24,6 +24,12 @@ import {
   StorageBucketStatusResponse,
   GetBucketNodeStatsRequest,
   GetBucketNodeStatsResponse,
+  GetProviderApiKeysResponse,
+  CreateProviderApiKeyRequest,
+  CreateProviderApiKeyResponse,
+  UpdateProviderApiKeyRequest,
+  UpdateProviderApiKeyResponse,
+  DeleteProviderApiKeyResponse,
   // Bucket-based repo interfaces
   CreateRepoWithBucketsRequest,
   UpdateRepoWithBucketsRequest,
@@ -457,6 +463,26 @@ export class ApiClient implements IApiClient {
     data: GetBucketNodeStatsRequest
   ): Promise<GetBucketNodeStatsResponse> => {
     return this.makeRequest<GetBucketNodeStatsResponse>(`bucket/${bucketId}/stats`, 'POST', data);
+  };
+
+  public getApiKeys = async (workspaceId?: string): Promise<GetProviderApiKeysResponse> => {
+    const queryParams = new URLSearchParams();
+    if (workspaceId) {
+      queryParams.append('workspaceId', workspaceId);
+    }
+    return this.makeRequest<GetProviderApiKeysResponse>('apikeys?' + queryParams.toString(), 'GET', null);
+  };
+
+  public createApiKey = async (data: CreateProviderApiKeyRequest): Promise<CreateProviderApiKeyResponse> => {
+    return this.makeRequest<CreateProviderApiKeyResponse>('apikeys', 'POST', data);
+  };
+
+  public updateApiKey = async (apiKeyId: string, data: UpdateProviderApiKeyRequest): Promise<UpdateProviderApiKeyResponse> => {
+    return this.makeRequest<UpdateProviderApiKeyResponse>(`apikeys/${apiKeyId}`, 'PUT', data);
+  };
+
+  public deleteApiKey = async (apiKeyId: string): Promise<DeleteProviderApiKeyResponse> => {
+    return this.makeRequest<DeleteProviderApiKeyResponse>(`apikeys/${apiKeyId}`, 'DELETE', null);
   };
 
   ////// Repos API
