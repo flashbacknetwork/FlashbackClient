@@ -81,7 +81,7 @@ import {
   AiStatsResponse,
 } from './types/ai/stats';
 
-import { NodeInfo, NodeInfoResponse, RegisterRequest } from './types/storage/bridge';
+import { NodeInfo, NodeInfoResponse, RegisterRequest, ServiceFlag } from './types/storage/bridge';
 import { GetOrganizationKeysResponse } from './types/storage/noderegistration';
 import { FeedbackEmailBody } from './types/platform/email';
 import { QuotaResponse } from './types/platform/quota';
@@ -950,8 +950,8 @@ export class ApiClient implements IApiClient {
     );
   };
 
-  public getNodeInfo = async (): Promise<NodeInfoResponse> => {
-    return this.makeRequest<NodeInfoResponse>('node', 'GET', null);
+  public getNodeInfo = async (nodeServices: number): Promise<NodeInfoResponse> => {
+    return this.makeRequest<NodeInfoResponse>('node?nodeServices=' + nodeServices, 'GET', null);
   };
 
   public getPrivateNodeInfo = async (orgId: string): Promise<NodeInfoResponse> => {

@@ -59,10 +59,18 @@ export interface NodeInfo {
   lastUpdated: string;
   url: string;
   id_org?: string;
+  nodeServices: number;
 }
 
 export interface NodeInfoResponse {
   success: true,
   data: NodeInfo[],
   total: number,
+}
+
+export enum ServiceFlag {
+  SERVICE_FLAG_NONE = 0,
+  SERVICE_FLAG_STORAGE = 1,
+  SERVICE_FLAG_AILLM = 2,
+  SERVICE_FLAG_CHAT = 4,
 }
