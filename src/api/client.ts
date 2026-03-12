@@ -170,6 +170,32 @@ import {
   GetCreditsMonthlyStatsRequest,
   GetCreditsMonthlyStatsResponse,
 } from './types/platform/credits';
+import {
+  StorageStatsQueryParams as V2StorageStatsQueryParams,
+  StorageTimeSeriesResponse,
+  StorageBreakdownResponse,
+  StorageProviderBreakdownResponse,
+  StorageBreakdownBy,
+  AiGatewayStatsQueryParams,
+  AiGatewayTimeSeriesResponse,
+  AiGatewayBreakdownResponse,
+  AiBreakdownBy,
+  PrivateChatStatsQueryParams,
+  PrivateChatTimeSeriesResponse,
+  PrivateChatModelBreakdownResponse,
+  PrivateChatUsersBreakdownResponse,
+  PolicyStatsQueryParams,
+  PolicyTimeSeriesResponse,
+  PolicyTokenTimeSeriesResponse,
+  PolicyBreakdownResponse,
+  PolicyBreakdownBy,
+  CreditStatsQueryParams,
+  CreditTimeSeriesResponse,
+  CreditBreakdownResponse,
+  CreditBreakdownBy,
+  DashboardStatsQueryParams,
+  DashboardBreakdownQueryParams,
+} from './types/dashboard/stats';
 
 interface ErrorResponse {
   message?: string;
@@ -1653,5 +1679,138 @@ export class ApiClient implements IApiClient {
   public getCreditsMonthlyStats = async (query?: GetCreditsMonthlyStatsRequest): Promise<GetCreditsMonthlyStatsResponse> => {
     const result = await this.makeRequest<GetCreditsMonthlyStatsResponse>('credits/stats/monthly', 'GET', query ?? null);
     return result;
+  };
+
+  // ====================================================================
+  // V2 Dashboard Statistics API
+  // ====================================================================
+
+  // ---- Storage Gateway ----
+
+  /** GET /v2/stats/storage — Time-series for storage gateway metrics. */
+  public getStorageGatewayStats = async (
+    params: V2StorageStatsQueryParams
+  ): Promise<StorageTimeSeriesResponse> => {
+    return this.makeRequest<StorageTimeSeriesResponse>('v2/stats/storage', 'GET', params);
+  };
+
+  /**
+   * GET /v2/stats/storage/breakdown/{by} — Storage breakdown by dimension.
+   * Use `by = 'providers'` for the provider breakdown which returns protocol/endpoint metadata.
+   */
+  public getStorageGatewayBreakdown = async (
+    by: Exclude<StorageBreakdownBy, 'providers'>,
+    params: DashboardBreakdownQueryParams
+  ): Promise<StorageBreakdownResponse> => {
+    return this.makeRequest<StorageBreakdownResponse>(`v2/stats/storage/breakdown/${by}`, 'GET', params);
+  };
+
+  /** GET /v2/stats/storage/breakdown/providers — Includes protocol, provider, endpoint. */
+  public getStorageGatewayProviderBreakdown = async (
+    params: DashboardBreakdownQueryParams
+  ): Promise<StorageProviderBreakdownResponse> => {
+    return this.makeRequest<StorageProviderBreakdownResponse>(
+      'v2/stats/storage/breakdown/providers',
+      'GET',
+      params
+    );
+  };
+
+  // ---- AI Gateway ----
+
+  /** GET /v2/stats/ai — Time-series for AI gateway metrics (excludes Private Chat). */
+  public getAiGatewayStats = async (
+    params: AiGatewayStatsQueryParams
+  ): Promise<AiGatewayTimeSeriesResponse> => {
+    return this.makeRequest<AiGatewayTimeSeriesResponse>('v2/stats/ai', 'GET', params);
+  };
+
+  /** GET /v2/stats/ai/breakdown/{by} — AI breakdown by dimension. */
+  public getAiGatewayBreakdown = async (
+    by: AiBreakdownBy,
+    params: DashboardBreakdownQueryParams
+  ): Promise<AiGatewayBreakdownResponse> => {
+    return this.makeRequest<AiGatewayBreakdownResponse>(`v2/stats/ai/breakdown/${by}`, 'GET', params);
+  };
+
+  // ---- Private Chat ----
+
+  /**
+   * GET /v2/stats/private-chat — Time-series for private-chat metrics.
+   * Supports resource-level filters: `model` and `userId`.
+   */
+  public getPrivateChatStats = async (
+    params: PrivateChatStatsQueryParams
+  ): Promise<PrivateChatTimeSeriesResponse> => {
+    return this.makeRequest<PrivateChatTimeSeriesResponse>('v2/stats/private-chat', 'GET', params);
+  };
+
+  /** GET /v2/stats/private-chat/breakdown/models — Model breakdown with optional series. */
+  public getPrivateChatModelsBreakdown = async (
+    params: DashboardBreakdownQueryParams
+  ): Promise<PrivateChatModelBreakdownResponse> => {
+    return this.makeRequest<PrivateChatModelBreakdownResponse>(
+      'v2/stats/private-chat/breakdown/models',
+      'GET',
+      params
+    );
+  };
+
+  /**
+   * GET /v2/stats/private-chat/breakdown/users — Per-user totals + optional series.
+   * Returns conversationsCount and lastActiveAt per user.
+   */
+  public getPrivateChatUsersBreakdown = async (
+    params: DashboardBreakdownQueryParams
+  ): Promise<PrivateChatUsersBreakdownResponse> => {
+    return this.makeRequest<PrivateChatUsersBreakdownResponse>(
+      'v2/stats/private-chat/breakdown/users',
+      'GET',
+      params
+    );
+  };
+
+  // ---- Policies ----
+
+  /**
+   * GET /v2/stats/policies — Time-series of policy enforcement + token overhead.
+   * Supports resource-level filter: `ruleId`.
+   */
+  public getPolicyStats = async (
+    params: PolicyStatsQueryParams
+  ): Promise<PolicyTimeSeriesResponse> => {
+    return this.makeRequest<PolicyTimeSeriesResponse>('v2/stats/policies', 'GET', params);
+  };
+
+  /** GET /v2/stats/policies/tokens — Dedicated policy-token consumption time-series. */
+  public getPolicyTokenStats = async (
+    params: DashboardStatsQueryParams
+  ): Promise<PolicyTokenTimeSeriesResponse> => {
+    return this.makeRequest<PolicyTokenTimeSeriesResponse>('v2/stats/policies/tokens', 'GET', params);
+  };
+
+  /** GET /v2/stats/policies/breakdown/{by} — Policy breakdown by rules or users. */
+  public getPolicyBreakdown = async (
+    by: PolicyBreakdownBy,
+    params: DashboardBreakdownQueryParams
+  ): Promise<PolicyBreakdownResponse> => {
+    return this.makeRequest<PolicyBreakdownResponse>(`v2/stats/policies/breakdown/${by}`, 'GET', params);
+  };
+
+  // ---- Credits ----
+
+  /** GET /v2/stats/credits — Credit consumption/grant time-series. */
+  public getCreditStats = async (
+    params: CreditStatsQueryParams
+  ): Promise<CreditTimeSeriesResponse> => {
+    return this.makeRequest<CreditTimeSeriesResponse>('v2/stats/credits', 'GET', params);
+  };
+
+  /** GET /v2/stats/credits/breakdown/{by} — Credit breakdown by dimension. */
+  public getCreditBreakdown = async (
+    by: CreditBreakdownBy,
+    params: DashboardBreakdownQueryParams
+  ): Promise<CreditBreakdownResponse> => {
+    return this.makeRequest<CreditBreakdownResponse>(`v2/stats/credits/breakdown/${by}`, 'GET', params);
   };
 }
