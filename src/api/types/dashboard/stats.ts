@@ -77,7 +77,7 @@ export interface TimeSeriesMeta {
   window: DashboardWindow;
   timeBucketSize: DashboardTimeBucketSize;
   resourceFilter?: {
-    type: 'bucket' | 'model' | 'user' | 'node' | 'rule';
+    type: 'bucket' | 'model' | 'user' | 'node' | 'rule' | 'apiKey';
     id: string;
   };
 }
@@ -212,9 +212,10 @@ export interface AiGatewayTimeSeriesPoint extends AiGatewayMetrics {
   entityId?: string;
 }
 
-/** GET /v2/stats/ai?scope=...&id=...&window=...&model=... */
+/** GET /v2/stats/ai?scope=...&id=...&window=...&model=...&apiKeyId=... */
 export interface AiGatewayStatsQueryParams extends DashboardStatsQueryParams {
   model?: string;
+  apiKeyId?: string;
 }
 
 export type AiGatewayTimeSeriesResponse = TimeSeriesResponse<AiGatewayTimeSeriesPoint>;
@@ -237,14 +238,15 @@ export interface PrivateChatTimeSeriesPoint extends PrivateChatMetrics {
 }
 
 /**
- * GET /v2/stats/private-chat?scope=...&id=...&window=...&model=...&userId=...
+ * GET /v2/stats/private-chat?scope=...&id=...&window=...&model=...&userId=...&apiKeyId=...
  *
- * `model` and `userId` are resource-level filters that narrow the time-series
- * to a single model or user respectively.
+ * `model`, `userId`, and `apiKeyId` are resource-level filters that narrow the
+ * time-series to a single model, user, or API key respectively.
  */
 export interface PrivateChatStatsQueryParams extends DashboardStatsQueryParams {
   model?: string;
   userId?: string;
+  apiKeyId?: string;
 }
 
 export type PrivateChatTimeSeriesResponse = TimeSeriesResponse<PrivateChatTimeSeriesPoint>;
@@ -298,9 +300,10 @@ export interface PolicyTimeSeriesPoint extends PolicyMetrics {
   entityId?: string;
 }
 
-/** GET /v2/stats/policies?scope=...&id=...&window=...&ruleId=... */
+/** GET /v2/stats/policies?scope=...&id=...&window=...&ruleId=...&apiKeyId=... */
 export interface PolicyStatsQueryParams extends DashboardStatsQueryParams {
   ruleId?: string;
+  apiKeyId?: string;
 }
 
 export type PolicyTimeSeriesResponse = TimeSeriesResponse<PolicyTimeSeriesPoint>;
@@ -334,8 +337,10 @@ export interface CreditTimeSeriesPoint extends CreditMetrics {
   entityId?: string;
 }
 
-/** GET /v2/stats/credits?scope=...&id=...&window=... */
-export type CreditStatsQueryParams = DashboardStatsQueryParams;
+/** GET /v2/stats/credits?scope=...&id=...&window=...&apiKeyId=... */
+export interface CreditStatsQueryParams extends DashboardStatsQueryParams {
+  apiKeyId?: string;
+}
 
 export type CreditTimeSeriesResponse = TimeSeriesResponse<CreditTimeSeriesPoint>;
 
