@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { FlashOnStellarClient } from '../src/stellar';
 import { jest } from '@jest/globals';
 import dotenv from 'dotenv';

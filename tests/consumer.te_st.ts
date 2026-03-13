@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { DeleteParams, GetUrlParams, StorageClient, UploadRequest } from '../src/consumer/file';
 import { jest } from '@jest/globals';
 import dotenv from 'dotenv';

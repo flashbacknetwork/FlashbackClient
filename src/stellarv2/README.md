@@ -7,7 +7,7 @@ This directory contains the TypeScript client implementation for the FlashOnStel
 The V2 client follows a modular architecture where each major operation type has its own class:
 
 - **ConsumerOps** - Consumer registration and management
-- **ProviderOps** - Provider registration and management  
+- **ProviderOps** - Provider registration and management
 - **BucketOps** - Storage bucket creation and management
 - **DealOps** - Deal lifecycle management
 - **FundingOps** - Funding and asset management (owner only)
@@ -27,7 +27,7 @@ const client = new FlashOnStellarClient({
   signTransaction: async (xdr) => {
     // Implement your transaction signing logic here
     return signedXdr;
-  }
+  },
 });
 
 // Access operation classes
@@ -42,10 +42,7 @@ Handles all consumer-related operations:
 
 ```typescript
 // Register a new consumer
-await client.consumers.registerConsumer(
-  'consumer_address',
-  'Consumer description'
-);
+await client.consumers.registerConsumer('consumer_address', 'Consumer description');
 
 // Get consumer information
 const consumer = await client.consumers.getConsumer('consumer_address');
@@ -60,10 +57,7 @@ Handles all provider-related operations:
 
 ```typescript
 // Register a new provider
-await client.providers.registerProvider(
-  'provider_address',
-  'Provider description'
-);
+await client.providers.registerProvider('provider_address', 'Provider description');
 
 // Get provider information
 const provider = await client.providers.getProvider('provider_address');
@@ -86,7 +80,7 @@ const bucketId = await client.buckets.createBucket('provider_address', {
   fb_bucket_id: 'flashback_bucket_id',
   api_compatibility: 'S3',
   price_per_gb_storage: BigInt(1000000), // $0.10 per GB (scaled by 10^7)
-  price_per_gb_egress: BigInt(500000)    // $0.05 per GB (scaled by 10^7)
+  price_per_gb_egress: BigInt(500000), // $0.05 per GB (scaled by 10^7)
 });
 
 // Get bucket information
@@ -95,7 +89,7 @@ const bucket = await client.buckets.getBucket('provider_address', bucketId);
 // Update bucket pricing
 await client.buckets.updateBucketPricing('provider_address', bucketId, {
   price_per_gb_storage: BigInt(1200000), // $0.12 per GB
-  max_storage_gb: 1000
+  max_storage_gb: 1000,
 });
 ```
 
@@ -105,25 +99,16 @@ Handles all deal-related operations:
 
 ```typescript
 // Create a new deal
-const dealId = await client.deals.createDeal(
-  'consumer_address',
-  'provider_address',
-  bucketId,
-  {
-    duration_secs: BigInt(86400), // 1 day
-    agreed_storage_mb: 102400,  // 100 GB in MB
-    agreed_egress_mb: 51200,    // 50 GB in MB
-    fb_repo_id: 'flashback_repo_id',
-    api_compatibility: 'S3'
-  }
-);
+const dealId = await client.deals.createDeal('consumer_address', 'provider_address', bucketId, {
+  duration_secs: BigInt(86400), // 1 day
+  agreed_storage_mb: 102400, // 100 GB in MB
+  agreed_egress_mb: 51200, // 50 GB in MB
+  fb_repo_id: 'flashback_repo_id',
+  api_compatibility: 'S3',
+});
 
 // Accept a deal (provider)
-await client.deals.setDealAccepted(
-  'consumer_address',
-  'provider_address',
-  dealId
-);
+await client.deals.setDealAccepted('consumer_address', 'provider_address', dealId);
 
 // Fund a deal (consumer)
 await client.deals.setDealFunded(
@@ -134,11 +119,7 @@ await client.deals.setDealFunded(
 );
 
 // Complete a deal
-await client.deals.setDealCompleted(
-  'consumer_address',
-  'provider_address',
-  dealId
-);
+await client.deals.setDealCompleted('consumer_address', 'provider_address', dealId);
 ```
 
 ### FundingOps
@@ -204,6 +185,7 @@ The client uses TypeScript interfaces that match the Rust contract types:
 ## Error Handling
 
 All methods return Promises and will throw errors for:
+
 - Contract call failures
 - Invalid parameters
 - Network issues
@@ -231,10 +213,10 @@ const client = new FlashOnStellarClient({
     // - Wallet integration
     // - Hardware wallet
     // - etc.
-    
+
     // Return the signed XDR string
     return signedXdr;
-  }
+  },
 });
 ```
 
@@ -246,13 +228,13 @@ The client supports both testnet and mainnet:
 // Testnet
 const testnetConfig = {
   network: 'TESTNET',
-  networkPassphrase: 'Test SDF Network ; September 2015'
+  networkPassphrase: 'Test SDF Network ; September 2015',
 };
 
 // Mainnet
 const mainnetConfig = {
   network: 'PUBLIC',
-  networkPassphrase: 'Public Global Stellar Network ; September 2015'
+  networkPassphrase: 'Public Global Stellar Network ; September 2015',
 };
 ```
 
@@ -269,4 +251,4 @@ The V2 client introduces several improvements over V1:
 
 ## Examples
 
-See the test files in the parent directory for comprehensive usage examples of the V2 client. 
+See the test files in the parent directory for comprehensive usage examples of the V2 client.

@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { S3Client, HeadBucketCommand, HeadBucketCommandOutput } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { describe, jest, test, expect } from '@jest/globals';

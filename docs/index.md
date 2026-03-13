@@ -14,6 +14,7 @@ The library is designed to support both decentralized blockchain operations and 
 ## API Clients
 
 ### [Stellar Client](./stellar-client.md)
+
 **File**: `src/stellar/client.ts`
 
 The Stellar Client (`FlashOnStellarClient`) provides direct access to Stellar blockchain smart contracts for decentralized storage operations. This client handles:
@@ -27,6 +28,7 @@ The Stellar Client (`FlashOnStellarClient`) provides direct access to Stellar bl
 **Use Case**: Applications that need direct blockchain interaction, decentralized operations, or want to bypass centralized services.
 
 ### [API Client](./api-client.md)
+
 **File**: `src/api/client.ts`
 
 The API Client (`ApiClient`) facilitates communication between frontend applications and the Flashback backend services. This client handles:
@@ -67,7 +69,7 @@ import { FlashOnStellarClient } from 'flashback-client/stellar';
 
 const stellarClient = new FlashOnStellarClient({
   contractAddress: 'your-contract-address',
-  network: StellarNetwork.TESTNET
+  network: StellarNetwork.TESTNET,
 });
 
 // Using API Client
@@ -78,4 +80,4 @@ const apiClient = new ApiClient('https://api.flashback.tech');
 
 ## Support
 
-For detailed method documentation, parameters, and examples, please refer to the individual client documentation pages linked above. 
+For detailed method documentation, parameters, and examples, please refer to the individual client documentation pages linked above.

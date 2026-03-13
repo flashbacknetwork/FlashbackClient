@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { Storage } from '@google-cloud/storage';
 import {
   OAuth2Client,

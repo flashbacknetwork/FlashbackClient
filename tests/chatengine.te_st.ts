@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { describe, jest, test, expect } from '@jest/globals';
 import OpenAI from 'openai';
 

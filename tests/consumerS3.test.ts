@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import {
   S3Client,
   HeadBucketCommand,

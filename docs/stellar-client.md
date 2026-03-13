@@ -15,7 +15,7 @@ const client = new FlashOnStellarClient({
   signTransaction: async (xdrToSign: string) => {
     // Your custom signing function
     return signedXdr;
-  }
+  },
 });
 ```
 
@@ -23,11 +23,11 @@ const client = new FlashOnStellarClient({
 
 ### FlashOnStellarClientConfig
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `contractAddress` | `string` | Yes | Stellar contract address for the FlashOnStellar system |
-| `network` | `StellarNetwork` | Yes | Network configuration (TESTNET/PUBLIC) |
-| `signTransaction` | `(xdrToSign: string) => Promise<string>` | No | Custom transaction signing function |
+| Property          | Type                                     | Required | Description                                            |
+| ----------------- | ---------------------------------------- | -------- | ------------------------------------------------------ |
+| `contractAddress` | `string`                                 | Yes      | Stellar contract address for the FlashOnStellar system |
+| `network`         | `StellarNetwork`                         | Yes      | Network configuration (TESTNET/PUBLIC)                 |
+| `signTransaction` | `(xdrToSign: string) => Promise<string>` | No       | Custom transaction signing function                    |
 
 ## Utility Methods
 
@@ -40,11 +40,13 @@ getPublicKey(privateKey: string): string
 ```
 
 **Parameters:**
+
 - `privateKey` (string): Stellar private key
 
 **Returns:** The corresponding public key
 
 **Example:**
+
 ```typescript
 const publicKey = client.getPublicKey('SXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
 console.log(publicKey); // GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -59,12 +61,14 @@ signTransactionWithKey(xdrToSign: string, privateKey: string): Promise<string>
 ```
 
 **Parameters:**
+
 - `xdrToSign` (string): XDR-encoded transaction to sign
 - `privateKey` (string): Stellar private key to sign with
 
 **Returns:** Promise resolving to the signed XDR string
 
 **Example:**
+
 ```typescript
 const signedXdr = await client.signTransactionWithKey(xdrTransaction, privateKey);
 ```
@@ -80,11 +84,13 @@ get_stats(wallet_address: string): Promise<DashboardStats>
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 
 **Returns:** Promise resolving to DashboardStats object
 
 **Example:**
+
 ```typescript
 const stats = await client.get_stats('GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
 console.log(stats);
@@ -101,6 +107,7 @@ get_provider(wallet_address: string, provider_address: string, load_units?: bool
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `provider_address` (string): Address of the provider to retrieve
 - `load_units` (boolean, optional): Flag to include provider's units in the response
@@ -108,6 +115,7 @@ get_provider(wallet_address: string, provider_address: string, load_units?: bool
 **Returns:** Promise resolving to StorageProvider object
 
 **Example:**
+
 ```typescript
 const provider = await client.get_provider(
   'GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
@@ -125,15 +133,17 @@ get_provider_units(wallet_address: string, provider_address: string): Promise<St
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `provider_address` (string): Address of the provider
 
 **Returns:** Promise resolving to an array of StorageUnit objects
 
 **Example:**
+
 ```typescript
 const units = await client.get_provider_units(walletAddress, providerAddress);
-units.forEach(unit => console.log(`Unit ${unit.id}: ${unit.capacity}GB`));
+units.forEach((unit) => console.log(`Unit ${unit.id}: ${unit.capacity}GB`));
 ```
 
 ### get_providers
@@ -145,6 +155,7 @@ get_providers(wallet_address: string, skip?: number, take?: number): Promise<Sto
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `skip` (number, optional): Number of items to skip for pagination (default: 0)
 - `take` (number, optional): Number of items to take per page (default: 10)
@@ -152,6 +163,7 @@ get_providers(wallet_address: string, skip?: number, take?: number): Promise<Sto
 **Returns:** Promise resolving to an array of StorageProvider objects
 
 **Example:**
+
 ```typescript
 const providers = await client.get_providers(walletAddress, 0, 20);
 ```
@@ -165,11 +177,13 @@ get_provider_count(wallet_address: string): Promise<number>
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 
 **Returns:** Promise resolving to the total number of providers
 
 **Example:**
+
 ```typescript
 const count = await client.get_provider_count(walletAddress);
 console.log(`Total providers: ${count}`);
@@ -184,6 +198,7 @@ register_provider(wallet_address: string, provider_address: string, provider_des
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet registering the provider
 - `provider_address` (string): Address for the new provider
 - `provider_description` (string): Description of the provider
@@ -193,6 +208,7 @@ register_provider(wallet_address: string, provider_address: string, provider_des
 **Throws:** Will throw if provider address is already registered
 
 **Example:**
+
 ```typescript
 const result = await client.register_provider(
   walletAddress,
@@ -210,6 +226,7 @@ update_provider(wallet_address: string, provider_address: string, provider_descr
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider to update
 - `provider_description` (string): New description for the provider
@@ -217,6 +234,7 @@ update_provider(wallet_address: string, provider_address: string, provider_descr
 **Returns:** Promise resolving to the update transaction result
 
 **Example:**
+
 ```typescript
 const result = await client.update_provider(
   walletAddress,
@@ -234,12 +252,14 @@ delete_provider(wallet_address: string, provider_address: string): Promise<Trans
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider to delete
 
 **Returns:** Promise resolving to the deletion transaction result
 
 **Example:**
+
 ```typescript
 const result = await client.delete_provider(walletAddress, providerAddress);
 ```
@@ -255,6 +275,7 @@ get_consumer(wallet_address: string, consumer_address: string, load_reservations
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `consumer_address` (string): Address of the consumer to retrieve
 - `load_reservations` (boolean, optional): Flag to include consumer's reservations
@@ -262,6 +283,7 @@ get_consumer(wallet_address: string, consumer_address: string, load_reservations
 **Returns:** Promise resolving to StorageConsumer object
 
 **Example:**
+
 ```typescript
 const consumer = await client.get_consumer(walletAddress, consumerAddress, true);
 ```
@@ -275,6 +297,7 @@ get_consumers(wallet_address: string, skip?: number, take?: number): Promise<Sto
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `skip` (number, optional): Number of items to skip for pagination (default: 0)
 - `take` (number, optional): Number of items to take per page (default: 10)
@@ -282,6 +305,7 @@ get_consumers(wallet_address: string, skip?: number, take?: number): Promise<Sto
 **Returns:** Promise resolving to an array of StorageConsumer objects
 
 **Example:**
+
 ```typescript
 const consumers = await client.get_consumers(walletAddress, 10, 5);
 ```
@@ -295,11 +319,13 @@ get_consumer_count(wallet_address: string): Promise<number>
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 
 **Returns:** Promise resolving to the total number of consumers
 
 **Example:**
+
 ```typescript
 const count = await client.get_consumer_count(walletAddress);
 ```
@@ -313,12 +339,14 @@ get_consumer_reservations(wallet_address: string, consumer_address: string): Pro
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `consumer_address` (string): Address of the consumer
 
 **Returns:** Promise resolving to an array of StorageReservation objects
 
 **Example:**
+
 ```typescript
 const reservations = await client.get_consumer_reservations(walletAddress, consumerAddress);
 ```
@@ -332,6 +360,7 @@ register_consumer(wallet_address: string, consumer_address: string, consumer_des
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet registering the consumer
 - `consumer_address` (string): Address for the new consumer
 - `consumer_description` (string): Description of the consumer
@@ -339,6 +368,7 @@ register_consumer(wallet_address: string, consumer_address: string, consumer_des
 **Returns:** Promise resolving to the registration transaction result
 
 **Example:**
+
 ```typescript
 const result = await client.register_consumer(
   walletAddress,
@@ -356,6 +386,7 @@ update_consumer(wallet_address: string, consumer_address: string, consumer_descr
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `consumer_address` (string): Address of the consumer to update
 - `consumer_description` (string): New description for the consumer
@@ -363,6 +394,7 @@ update_consumer(wallet_address: string, consumer_address: string, consumer_descr
 **Returns:** Promise resolving to the update transaction result
 
 **Example:**
+
 ```typescript
 const result = await client.update_consumer(
   walletAddress,
@@ -380,12 +412,14 @@ delete_consumer(wallet_address: string, consumer_address: string): Promise<Trans
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `consumer_address` (string): Address of the consumer to delete
 
 **Returns:** Promise resolving to the deletion transaction result
 
 **Example:**
+
 ```typescript
 const result = await client.delete_consumer(walletAddress, consumerAddress);
 ```
@@ -401,6 +435,7 @@ register_unit(wallet_address: string, provider_address: string, capacity: number
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet registering the unit
 - `provider_address` (string): Address of the provider owning the unit
 - `capacity` (number): Capacity of the storage unit in gigabytes
@@ -409,6 +444,7 @@ register_unit(wallet_address: string, provider_address: string, capacity: number
 **Returns:** Promise resolving to the registration transaction result
 
 **Example:**
+
 ```typescript
 const result = await client.register_unit(
   walletAddress,
@@ -427,6 +463,7 @@ get_unit(wallet_address: string, unit_id: number, load_reservations?: boolean): 
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `unit_id` (number): Identifier of the storage unit
 - `load_reservations` (boolean, optional): Flag to include unit's reservations
@@ -434,6 +471,7 @@ get_unit(wallet_address: string, unit_id: number, load_reservations?: boolean): 
 **Returns:** Promise resolving to StorageUnit object
 
 **Example:**
+
 ```typescript
 const unit = await client.get_unit(walletAddress, 123, true);
 console.log(`Unit capacity: ${unit.capacity}GB, Available: ${unit.available}GB`);
@@ -448,12 +486,14 @@ get_unit_reservations(wallet_address: string, unit_id: number): Promise<StorageR
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `unit_id` (number): Identifier of the storage unit
 
 **Returns:** Promise resolving to an array of StorageReservation objects
 
 **Example:**
+
 ```typescript
 const reservations = await client.get_unit_reservations(walletAddress, unitId);
 ```
@@ -467,6 +507,7 @@ delete_unit(wallet_address: string, provider_address: string, unit_id: number): 
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider owning the unit
 - `unit_id` (number): Identifier of the storage unit
@@ -476,6 +517,7 @@ delete_unit(wallet_address: string, provider_address: string, unit_id: number): 
 **Throws:** Will throw if unit has active reservations
 
 **Example:**
+
 ```typescript
 const result = await client.delete_unit(walletAddress, providerAddress, unitId);
 ```
@@ -495,6 +537,7 @@ enter_maintenance(
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider owning the unit
 - `unit_id` (number): Identifier of the storage unit
@@ -506,6 +549,7 @@ enter_maintenance(
 **Throws:** Will throw if unit has active reservations that conflict with the maintenance window
 
 **Example:**
+
 ```typescript
 const startDate = new Date('2024-01-15T00:00:00Z');
 const endDate = new Date('2024-01-16T00:00:00Z');
@@ -528,6 +572,7 @@ exit_maintenance(wallet_address: string, provider_address: string, unit_id: numb
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider owning the unit
 - `unit_id` (number): Identifier of the storage unit
@@ -537,6 +582,7 @@ exit_maintenance(wallet_address: string, provider_address: string, unit_id: numb
 **Throws:** Will throw if unit is not in maintenance mode
 
 **Example:**
+
 ```typescript
 const result = await client.exit_maintenance(walletAddress, providerAddress, unitId);
 ```
@@ -550,6 +596,7 @@ enter_decommissioning(wallet_address: string, provider_address: string, unit_id:
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider owning the unit
 - `unit_id` (number): Identifier of the storage unit
@@ -559,6 +606,7 @@ enter_decommissioning(wallet_address: string, provider_address: string, unit_id:
 **Throws:** Will throw if unit has active reservations
 
 **Example:**
+
 ```typescript
 const result = await client.enter_decommissioning(walletAddress, providerAddress, unitId);
 ```
@@ -572,6 +620,7 @@ exit_decommissioning(wallet_address: string, provider_address: string, unit_id: 
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider owning the unit
 - `unit_id` (number): Identifier of the storage unit
@@ -581,6 +630,7 @@ exit_decommissioning(wallet_address: string, provider_address: string, unit_id: 
 **Throws:** Will throw if unit is not in decommissioning mode
 
 **Example:**
+
 ```typescript
 const result = await client.exit_decommissioning(walletAddress, providerAddress, unitId);
 ```
@@ -596,12 +646,14 @@ get_reservation(wallet_address: string, reservation_id: number): Promise<Storage
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet requesting the information
 - `reservation_id` (number): Identifier of the reservation
 
 **Returns:** Promise resolving to StorageReservation object
 
 **Example:**
+
 ```typescript
 const reservation = await client.get_reservation(walletAddress, reservationId);
 console.log(`Reserved: ${reservation.reserved_gb}GB, In use: ${reservation.inuse_bytes} bytes`);
@@ -621,6 +673,7 @@ reserve_unit(
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `consumer_address` (string): Address of the consumer requesting storage
 - `unit_id` (number): Identifier of the storage unit to reserve
@@ -628,11 +681,13 @@ reserve_unit(
 
 **Returns:** Promise resolving to the reservation creation transaction result
 
-**Throws:** 
+**Throws:**
+
 - Will throw if unit doesn't have enough available capacity
 - Will throw if unit is in maintenance or decommissioning mode
 
 **Example:**
+
 ```typescript
 const result = await client.reserve_unit(
   walletAddress,
@@ -651,6 +706,7 @@ delete_reservation(wallet_address: string, consumer_address: string, reservation
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `consumer_address` (string): Address of the consumer who owns the reservation
 - `reservation_id` (number): Identifier of the reservation to delete
@@ -660,6 +716,7 @@ delete_reservation(wallet_address: string, consumer_address: string, reservation
 **Throws:** Will throw if reservation has non-zero inuse_bytes
 
 **Example:**
+
 ```typescript
 const result = await client.delete_reservation(walletAddress, consumerAddress, reservationId);
 ```
@@ -678,6 +735,7 @@ update_inuse_bytes_consumer(
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `consumer_address` (string): Address of the consumer
 - `reservation_id` (number): Identifier of the reservation
@@ -688,6 +746,7 @@ update_inuse_bytes_consumer(
 **Throws:** Will throw if inuse_bytes exceeds reserved amount
 
 **Example:**
+
 ```typescript
 const result = await client.update_inuse_bytes_consumer(
   walletAddress,
@@ -711,6 +770,7 @@ update_inuse_bytes_provider(
 ```
 
 **Parameters:**
+
 - `wallet_address` (string): Address of the wallet making the request
 - `provider_address` (string): Address of the provider
 - `reservation_id` (number): Identifier of the reservation
@@ -718,11 +778,13 @@ update_inuse_bytes_provider(
 
 **Returns:** Promise resolving to the update transaction result
 
-**Throws:** 
+**Throws:**
+
 - Will throw if inuse_bytes exceeds reserved amount
 - Will throw if provider's report differs significantly from consumer's report
 
 **Example:**
+
 ```typescript
 const result = await client.update_inuse_bytes_provider(
   walletAddress,
@@ -773,7 +835,7 @@ const client = new FlashOnStellarClient({
   signTransaction: async (xdrToSign: string) => {
     // Use wallet kit or custom signing logic
     return await walletKit.signTransaction(xdrToSign);
-  }
+  },
 });
 ```
 
@@ -782,9 +844,9 @@ const client = new FlashOnStellarClient({
 ```typescript
 const client = new FlashOnStellarClient({
   contractAddress: 'your-contract-address',
-  network: StellarNetwork.TESTNET
+  network: StellarNetwork.TESTNET,
 });
 
 // Sign with private key when needed
 const signedXdr = await client.signTransactionWithKey(xdrTransaction, privateKey);
-``` 
+```
