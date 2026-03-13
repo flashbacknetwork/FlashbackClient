@@ -31,7 +31,7 @@ describe('StorageClient', () => {
   jest.setTimeout(600000);
 
   const testConfigurations = [
-   /* {
+    /* {
       name: 'S3 to S3 DEV Node (AWS endpoint, GCP provider)',
       config: {
         //endpoint: process.env.TEST_FB_ACCESS_KEY_ID,
@@ -262,7 +262,7 @@ describe('StorageClient', () => {
       const fileStream = fs.createReadStream(testFilePath);
 
       // 1. Head Bucket - Check if bucket exists
-      
+
       let headBucketResponse: HeadBucketCommandOutput;
       try {
         headBucketResponse = await s3Client.send(
@@ -320,12 +320,12 @@ describe('StorageClient', () => {
 
       // 4. Head Object - Get object metadata
       try {
-      const headResponse = await s3Client.send(
-        new HeadObjectCommand({
-          Bucket: bucketName,
-          Key: key,
-        })
-      );
+        const headResponse = await s3Client.send(
+          new HeadObjectCommand({
+            Bucket: bucketName,
+            Key: key,
+          })
+        );
         expect(headResponse.$metadata.httpStatusCode).toBe(200);
         expect(headResponse.ContentLength).toBe(fileStats.size);
       } catch (error) {

@@ -41,4 +41,3 @@ export interface DeleteRepoAiApiKeyResponse {
   success: boolean;
   message: string;
 }
-

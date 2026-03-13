@@ -1,6 +1,6 @@
 export interface SystemEventQueryRequest {
   from_timestamp?: string; // ISO string format
-  to_timestamp?: string;   // ISO string format
+  to_timestamp?: string; // ISO string format
   contextId?: string;
   context?: number;
   event?: number;
@@ -50,7 +50,7 @@ export interface SystemEventReadStatusResponse {
 export class ContextTypeHelper {
   public static readonly contextTypes = [
     'workspace',
-    'bucket', 
+    'bucket',
     'repo',
     'user',
     'org',
@@ -62,13 +62,13 @@ export class ContextTypeHelper {
     'orgkey',
     'aillm',
     'aillmapikey',
-    'conversation'
+    'conversation',
   ] as const;
 
   /**
    * Convert context text to 0-based index
    */
-  static toIndex(context: typeof ContextTypeHelper.contextTypes[number]): number {
+  static toIndex(context: (typeof ContextTypeHelper.contextTypes)[number]): number {
     const index = this.contextTypes.indexOf(context);
     if (index === -1) {
       throw new Error(`Invalid context type: ${context}`);
@@ -79,9 +79,11 @@ export class ContextTypeHelper {
   /**
    * Convert 0-based index to context text
    */
-  static fromIndex(index: number): typeof ContextTypeHelper.contextTypes[number] {
+  static fromIndex(index: number): (typeof ContextTypeHelper.contextTypes)[number] {
     if (index < 0 || index >= this.contextTypes.length) {
-      throw new Error(`Invalid context index: ${index}. Must be between 0 and ${this.contextTypes.length - 1}`);
+      throw new Error(
+        `Invalid context index: ${index}. Must be between 0 and ${this.contextTypes.length - 1}`
+      );
     }
     return this.contextTypes[index];
   }
@@ -96,16 +98,12 @@ export class ContextTypeHelper {
 
 // Helper class for event type translation
 export class EventTypeHelper {
-  public static readonly eventTypes = [
-    'created',
-    'updated', 
-    'deleted'
-  ] as const;
+  public static readonly eventTypes = ['created', 'updated', 'deleted'] as const;
 
   /**
    * Convert event text to 0-based index
    */
-  static toIndex(event: typeof EventTypeHelper.eventTypes[number]): number {
+  static toIndex(event: (typeof EventTypeHelper.eventTypes)[number]): number {
     const index = this.eventTypes.indexOf(event);
     if (index === -1) {
       throw new Error(`Invalid event type: ${event}`);
@@ -116,9 +114,11 @@ export class EventTypeHelper {
   /**
    * Convert 0-based index to event text
    */
-  static fromIndex(index: number): typeof EventTypeHelper.eventTypes[number] {
+  static fromIndex(index: number): (typeof EventTypeHelper.eventTypes)[number] {
     if (index < 0 || index >= this.eventTypes.length) {
-      throw new Error(`Invalid event index: ${index}. Must be between 0 and ${this.eventTypes.length - 1}`);
+      throw new Error(
+        `Invalid event index: ${index}. Must be between 0 and ${this.eventTypes.length - 1}`
+      );
     }
     return this.eventTypes[index];
   }

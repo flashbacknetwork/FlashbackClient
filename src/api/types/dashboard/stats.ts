@@ -19,38 +19,17 @@ export type DashboardScope = 'org' | 'workspace' | 'repo';
 
 export type DashboardWindow = '24h' | '7d' | '30d' | '90d' | '180d' | '365d';
 
-export type DashboardTimeBucketSize =
-  | '5m'
-  | '10m'
-  | '1h'
-  | '6h'
-  | '12h'
-  | '1d';
+export type DashboardTimeBucketSize = '5m' | '10m' | '1h' | '6h' | '12h' | '1d';
 
-export type StorageBreakdownBy =
-  | 'workspaces'
-  | 'repos'
-  | 'buckets'
-  | 'providers'
-  | 'nodes';
+export type StorageBreakdownBy = 'workspaces' | 'repos' | 'buckets' | 'providers' | 'nodes';
 
-export type AiBreakdownBy =
-  | 'workspaces'
-  | 'repos'
-  | 'models'
-  | 'providers'
-  | 'nodes';
+export type AiBreakdownBy = 'workspaces' | 'repos' | 'models' | 'providers' | 'nodes';
 
 export type PrivateChatBreakdownBy = 'models' | 'users';
 
 export type PolicyBreakdownBy = 'rules' | 'users';
 
-export type CreditBreakdownBy =
-  | 'workspaces'
-  | 'repos'
-  | 'models'
-  | 'providers'
-  | 'buckets';
+export type CreditBreakdownBy = 'workspaces' | 'repos' | 'models' | 'providers' | 'buckets';
 
 // ============================================================================
 // SHARED STRUCTURES
@@ -154,10 +133,10 @@ export interface DashboardBreakdownQueryParams {
   limit?: number;
   offset?: number;
   apiKeyId?: string; // Resource filter, applicable to most domains
-  model?: string;    // Resource filter, applicable to AI domains
+  model?: string; // Resource filter, applicable to AI domains
   bucketId?: string; // Resource filter, applicable to Storage Gateway
-  ruleId?: string;   // Resource filter, applicable to Policies
-  userId?: string;   // Resource filter, applicable to Private Chat
+  ruleId?: string; // Resource filter, applicable to Policies
+  userId?: string; // Resource filter, applicable to Private Chat
 }
 
 // ============================================================================

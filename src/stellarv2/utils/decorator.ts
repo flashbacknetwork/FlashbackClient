@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ClientContext } from "../client";
+import { ClientContext } from '../client';
 
-export function withSignature<T extends (...args: any[]) => Promise<any>>(
-  method: T,
-): T {
+export function withSignature<T extends (...args: any[]) => Promise<any>>(method: T): T {
   return async function (
     this: { getContext?: () => ClientContext; context?: ClientContext },
     ...args: Parameters<T>
@@ -16,13 +13,13 @@ export function withSignature<T extends (...args: any[]) => Promise<any>>(
       context = this.context;
     } else {
       throw new Error(
-        "FlashOnStellarClient: getContext method or context property is required for write operations",
+        'FlashOnStellarClient: getContext method or context property is required for write operations'
       );
     }
-    
+
     if (!context.signTransaction) {
       throw new Error(
-        "FlashOnStellarClient: signTransaction method is required for write operations",
+        'FlashOnStellarClient: signTransaction method is required for write operations'
       );
     }
     return method.apply(this, args);
@@ -30,9 +27,10 @@ export function withSignature<T extends (...args: any[]) => Promise<any>>(
 }
 
 // For arrow functions/properties
-export function withSignatureProperty<
-  T extends (...args: any[]) => Promise<any>,
->(target: any, propertyKey: string | symbol) {
+export function withSignatureProperty<T extends (...args: any[]) => Promise<any>>(
+  target: any,
+  propertyKey: string | symbol
+) {
   const value = target[propertyKey];
   Object.defineProperty(target, propertyKey, {
     configurable: true,
@@ -47,13 +45,13 @@ export function withSignatureProperty<
           context = this.context;
         } else {
           throw new Error(
-            "FlashOnStellarClient: getContext method or context property is required for write operations",
+            'FlashOnStellarClient: getContext method or context property is required for write operations'
           );
         }
-        
+
         if (!context.signTransaction) {
           throw new Error(
-            "FlashOnStellarClient: signTransaction method is required for write operations",
+            'FlashOnStellarClient: signTransaction method is required for write operations'
           );
         }
         return value.apply(this, args);

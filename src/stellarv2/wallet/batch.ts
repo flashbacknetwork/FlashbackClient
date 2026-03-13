@@ -1,5 +1,5 @@
-import { ClientContext } from "../client/index";
-import { prepareTransaction, sendTransaction } from "./transaction";
+import { ClientContext } from '../client/index';
+import { prepareTransaction, sendTransaction } from './transaction';
 
 /* Usage example
 
@@ -42,15 +42,7 @@ await client.batch_write(wallet_address, [
 // Type for the argument structure used in contract calls
 export type ContractArg = {
   value: string | number | bigint | boolean | null | undefined;
-  type:
-    | "string"
-    | "symbol"
-    | "address"
-    | "u32"
-    | "i32"
-    | "u64"
-    | "i64"
-    | "bool";
+  type: 'string' | 'symbol' | 'address' | 'u32' | 'i32' | 'u64' | 'i64' | 'bool';
 };
 
 // Type for read operations that can be batched
@@ -83,29 +75,23 @@ export type BatchedWriteOperation = {
 export async function batchReadOperations<T>(
   context: ClientContext,
   wallet_address: string,
-  operations: BatchedOperation<T>[],
+  operations: BatchedOperation<T>[]
 ): Promise<T[]> {
   const contractCalls = operations.map(({ operation, params }) => ({
     method: operation,
     args: [
-      { value: wallet_address, type: "address" as const },
-      ...params.map((param) => ({ value: param, type: "string" as const })),
+      { value: wallet_address, type: 'address' as const },
+      ...params.map((param) => ({ value: param, type: 'string' as const })),
     ],
   }));
 
-  const response = await prepareTransaction(
-    context,
-    wallet_address,
-    contractCalls,
-  );
+  const response = await prepareTransaction(context, wallet_address, contractCalls);
 
   if (!response.isSuccess || !response.isReadOnly) {
-    throw new Error("Batch read operation failed");
+    throw new Error('Batch read operation failed');
   }
 
-  const results = Array.isArray(response.result)
-    ? response.result
-    : [response.result];
+  const results = Array.isArray(response.result) ? response.result : [response.result];
 
   return operations.map(({ transform }, index) => transform(results[index]));
 }
@@ -120,7 +106,7 @@ export async function batchReadOperations<T>(
 export function createReadOperation<T>(
   method: string,
   getArgs: (wallet_address: string, ...extraParams: any[]) => ContractArg[],
-  transformResult: (result: any) => T,
+  transformResult: (result: any) => T
 ): ReadOperation<T> {
   return {
     method,
@@ -131,22 +117,22 @@ export function createReadOperation<T>(
 
 export function createOperationFromMethod<T>(
   method: string,
-  transformResult: (result: any) => T,
+  transformResult: (result: any) => T
 ): ReadOperation<T> {
   return createReadOperation<T>(
     method,
     (wallet_address: string, ...extraParams: any[]) => {
       // First arg is always wallet_address
-      const args: ContractArg[] = [{ value: wallet_address, type: "address" }];
+      const args: ContractArg[] = [{ value: wallet_address, type: 'address' }];
 
       // Add any extra params as strings (or we could make this more sophisticated)
       extraParams.forEach((param) => {
-        args.push({ value: param, type: "string" });
+        args.push({ value: param, type: 'string' });
       });
 
       return args;
     },
-    transformResult,
+    transformResult
   );
 }
 
@@ -160,26 +146,20 @@ export function createOperationFromMethod<T>(
 export async function batchWriteOperations(
   context: ClientContext,
   wallet_address: string,
-  operations: BatchedWriteOperation[],
+  operations: BatchedWriteOperation[]
 ): Promise<void> {
   const contractCalls = operations.map(({ operation, params }) => ({
     method: operation,
     args: [
-      { value: wallet_address, type: "address" as const },
-      ...params.map((param) => ({ value: param, type: "string" as const })),
+      { value: wallet_address, type: 'address' as const },
+      ...params.map((param) => ({ value: param, type: 'string' as const })),
     ],
   }));
 
-  const response = await prepareTransaction(
-    context,
-    wallet_address,
-    contractCalls,
-  );
+  const response = await prepareTransaction(context, wallet_address, contractCalls);
 
   if (response.isSuccess && !response.isReadOnly) {
-    const signedTxXDR = await context.signTransaction!(
-      response.result as string,
-    );
+    const signedTxXDR = await context.signTransaction!(response.result as string);
     await sendTransaction(context, signedTxXDR);
   }
 }

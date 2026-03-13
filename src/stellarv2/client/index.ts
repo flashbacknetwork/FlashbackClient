@@ -1,4 +1,9 @@
-import { executeMultiWalletTransactions, sendTransaction, signTransaction, StellarNetwork } from '../wallet/transaction';
+import {
+  executeMultiWalletTransactions,
+  sendTransaction,
+  signTransaction,
+  StellarNetwork,
+} from '../wallet/transaction';
 import { ConsumerOps } from './consumer';
 import { ProviderOps } from './provider';
 import { BucketOps } from './bucket';
@@ -107,7 +112,7 @@ export class FlashOnStellarClientV2 {
    * @returns Promise resolving to the sent transaction
    */
   sendTransaction = async (xdrToSend: string, bDebug: boolean = false) => {
-      return sendTransaction(this.getContext(), xdrToSend, bDebug);
+    return sendTransaction(this.getContext(), xdrToSend, bDebug);
   };
 
   /**
@@ -127,7 +132,9 @@ export class FlashOnStellarClientV2 {
   async getStableAssetAddress(): Promise<string> {
     // This would call the get_stable_asset_address() method on the contract
     // Implementation depends on the transaction layer
-    throw new Error('getStableAssetAddress not implemented - requires transaction layer implementation');
+    throw new Error(
+      'getStableAssetAddress not implemented - requires transaction layer implementation'
+    );
   }
 
   /**
@@ -137,7 +144,9 @@ export class FlashOnStellarClientV2 {
   async getLedgerSequence(): Promise<number> {
     // This would call the get_ledger_sequence() method on the contract
     // Implementation depends on the transaction layer
-    throw new Error('getLedgerSequence not implemented - requires transaction layer implementation');
+    throw new Error(
+      'getLedgerSequence not implemented - requires transaction layer implementation'
+    );
   }
 
   /**
@@ -159,13 +168,20 @@ export class FlashOnStellarClientV2 {
   async setStableAssetAddress(stable_asset_address: string): Promise<boolean> {
     // This would call the set_stable_asset_address() method on the contract
     // Implementation depends on the transaction layer
-    throw new Error('setStableAssetAddress not implemented - requires transaction layer implementation');
+    throw new Error(
+      'setStableAssetAddress not implemented - requires transaction layer implementation'
+    );
   }
 
-  changeTrust = async (source: string, issuerPublikKey: string, asset_ticker: string, bRemove: boolean): Promise<void> => {
-      const xdr = await changeTrustXDR(this.network, source, issuerPublikKey, asset_ticker, bRemove);
-      const signedXDR = await this.signTransaction!(xdr);
-      return this.sendTransaction(signedXDR);
+  changeTrust = async (
+    source: string,
+    issuerPublikKey: string,
+    asset_ticker: string,
+    bRemove: boolean
+  ): Promise<void> => {
+    const xdr = await changeTrustXDR(this.network, source, issuerPublikKey, asset_ticker, bRemove);
+    const signedXDR = await this.signTransaction!(xdr);
+    return this.sendTransaction(signedXDR);
   };
 
   /**
@@ -184,7 +200,7 @@ export class FlashOnStellarClientV2 {
         this.consumers.getConsumerCount(),
         this.providers.getProviderCount(),
         this.buckets.getBucketCount(),
-        this.deals.getDealCount()
+        this.deals.getDealCount(),
       ]);
 
       // Get active deals count
@@ -196,7 +212,7 @@ export class FlashOnStellarClientV2 {
         providerCount,
         bucketCount,
         dealCount,
-        activeDealCount
+        activeDealCount,
       };
     } catch (error) {
       console.error('Error getting system stats:', error);
@@ -205,7 +221,7 @@ export class FlashOnStellarClientV2 {
         providerCount: 0,
         bucketCount: 0,
         dealCount: 0,
-        activeDealCount: 0
+        activeDealCount: 0,
       };
     }
   }
@@ -226,7 +242,7 @@ export class FlashOnStellarClientV2 {
         this.providers.getProvider(provider_id),
         this.buckets.getBucketsByProvider(provider_id),
         this.deals.getDealsByProvider(provider_id),
-        this.deals.getActiveDeals(0, 1000) // Get all active deals and filter by provider
+        this.deals.getActiveDeals(0, 1000), // Get all active deals and filter by provider
       ]);
 
       if (!provider) {
@@ -234,13 +250,13 @@ export class FlashOnStellarClientV2 {
       }
 
       // Filter active deals for this provider
-      const providerActiveDeals = activeDeals.filter(deal => deal.provider_id === provider_id);
+      const providerActiveDeals = activeDeals.filter((deal) => deal.provider_id === provider_id);
 
       return {
         provider,
         buckets,
         deals,
-        activeDeals: providerActiveDeals
+        activeDeals: providerActiveDeals,
       };
     } catch (error) {
       console.error('Error getting provider info:', error);
@@ -249,21 +265,18 @@ export class FlashOnStellarClientV2 {
   }
 
   registerAsConsumerProvider = withSignature(
-      async (address: string, description: string): Promise<void> => {
-        await executeMultiWalletTransactions(this.getContext(), address, [
-          {
-            method: "register_consumer",
-            additionalArgs: [       
-              { value: description, type: 'string' }]
-          },
-          {
-            method: "register_provider",
-            additionalArgs: [
-              { value: description, type: 'string' }
-            ]
-          }
-        ]);
-      }
+    async (address: string, description: string): Promise<void> => {
+      await executeMultiWalletTransactions(this.getContext(), address, [
+        {
+          method: 'register_consumer',
+          additionalArgs: [{ value: description, type: 'string' }],
+        },
+        {
+          method: 'register_provider',
+          additionalArgs: [{ value: description, type: 'string' }],
+        },
+      ]);
+    }
   );
 
   /**
@@ -280,7 +293,7 @@ export class FlashOnStellarClientV2 {
       const [consumer, deals, activeDeals] = await Promise.all([
         this.consumers.getConsumer(consumer_id),
         this.deals.getDealsByConsumer(consumer_id),
-        this.deals.getActiveDeals(0, 1000) // Get all active deals and filter by consumer
+        this.deals.getActiveDeals(0, 1000), // Get all active deals and filter by consumer
       ]);
 
       if (!consumer) {
@@ -288,12 +301,12 @@ export class FlashOnStellarClientV2 {
       }
 
       // Filter active deals for this consumer
-      const consumerActiveDeals = activeDeals.filter(deal => deal.consumer_id === consumer_id);
+      const consumerActiveDeals = activeDeals.filter((deal) => deal.consumer_id === consumer_id);
 
       return {
         consumer,
         deals,
-        activeDeals: consumerActiveDeals
+        activeDeals: consumerActiveDeals,
       };
     } catch (error) {
       console.error('Error getting consumer info:', error);
@@ -307,7 +320,10 @@ export class FlashOnStellarClientV2 {
    * @param bucket_id - ID of the bucket
    * @returns Promise resolving to comprehensive bucket information
    */
-  async getBucketInfo(provider_id: string, bucket_id: number): Promise<{
+  async getBucketInfo(
+    provider_id: string,
+    bucket_id: number
+  ): Promise<{
     bucket: any;
     provider: any;
     activeDeals: any[];
@@ -316,7 +332,7 @@ export class FlashOnStellarClientV2 {
       const [bucket, provider, activeDeals] = await Promise.all([
         this.buckets.getBucket(provider_id, bucket_id),
         this.providers.getProvider(provider_id),
-        this.deals.getActiveDeals(0, 1000) // Get all active deals and filter by bucket
+        this.deals.getActiveDeals(0, 1000), // Get all active deals and filter by bucket
       ]);
 
       if (!bucket) {
@@ -324,12 +340,12 @@ export class FlashOnStellarClientV2 {
       }
 
       // Filter active deals for this bucket
-      const bucketActiveDeals = activeDeals.filter(deal => deal.bucket_id === bucket_id);
+      const bucketActiveDeals = activeDeals.filter((deal) => deal.bucket_id === bucket_id);
 
       return {
         bucket,
         provider,
-        activeDeals: bucketActiveDeals
+        activeDeals: bucketActiveDeals,
       };
     } catch (error) {
       console.error('Error getting bucket info:', error);

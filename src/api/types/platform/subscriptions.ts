@@ -1,4 +1,4 @@
-import { PeriodType } from "./quota";
+import { PeriodType } from './quota';
 
 export interface SubscriptionPeriodResponse {
   id: string;
@@ -33,8 +33,8 @@ export interface BuySubscriptionRequest {
 
 export interface BuySubscriptionResponse {
   success: boolean;
-  checkoutUrl?: string;  // Stripe's hosted checkout URL
-  sessionId?: string;    // Keep for tracking/debugging
+  checkoutUrl?: string; // Stripe's hosted checkout URL
+  sessionId?: string; // Keep for tracking/debugging
   message?: string;
   error_code?: string;
 }
@@ -87,7 +87,7 @@ export interface CancelSubscriptionResponse {
   success: boolean;
   message?: string;
   error_code?: string;
-} 
+}
 
 export interface CreateBillingPortalResponse {
   success: boolean;
@@ -151,7 +151,12 @@ export interface CancelPendingPaymentResponse {
 // Error response interface (shared across endpoints)
 export interface PendingPaymentErrorResponse {
   success: false;
-  error_code: 'NO_PENDING_PAYMENT' | 'USER_NOT_FOUND' | 'NO_ORGANIZATION' | 'SUBSCRIPTION_PERIOD_NOT_FOUND' | 'INTERNAL_ERROR';
+  error_code:
+    | 'NO_PENDING_PAYMENT'
+    | 'USER_NOT_FOUND'
+    | 'NO_ORGANIZATION'
+    | 'SUBSCRIPTION_PERIOD_NOT_FOUND'
+    | 'INTERNAL_ERROR';
   message: string;
   debug_info?: {
     error_message: string;

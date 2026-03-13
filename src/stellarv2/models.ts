@@ -105,7 +105,7 @@ export interface Deal {
   last_settled_ts: bigint;
 }
 
-export interface DealInfo  {
+export interface DealInfo {
   deal: Deal;
   bucket: Bucket;
   provider_name: string;
@@ -192,4 +192,4 @@ export interface DealConsumptionUpdateParams {
 export interface DealSLAUpdateParams {
   sla_avg_latency_ms: number;
   sla_avg_uptime_pct: number;
-} 
+}

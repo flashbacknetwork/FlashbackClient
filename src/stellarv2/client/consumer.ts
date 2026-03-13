@@ -22,19 +22,17 @@ export class ConsumerOps {
    */
   registerConsumer = withSignature(
     async (consumer_id: string, description: string): Promise<void> => {
-      await executeWalletTransaction(this.context, consumer_id, "register_consumer", [
-        { value: description, type: 'string' }
+      await executeWalletTransaction(this.context, consumer_id, 'register_consumer', [
+        { value: description, type: 'string' },
       ]);
     }
   );
 
-  registerFullUser = withSignature(
-    async (user_id: string, description: string): Promise<void> => {
-      await executeWalletTransaction(this.context, user_id, "register_full_user", [
-        { value: description, type: 'string' }
-      ]);
-    }
-  );
+  registerFullUser = withSignature(async (user_id: string, description: string): Promise<void> => {
+    await executeWalletTransaction(this.context, user_id, 'register_full_user', [
+      { value: description, type: 'string' },
+    ]);
+  });
 
   /**
    * Updates an existing consumer's information
@@ -44,8 +42,8 @@ export class ConsumerOps {
    */
   updateConsumer = withSignature(
     async (consumer_id: string, description: string): Promise<void> => {
-      await executeWalletTransaction(this.context, consumer_id, "update_consumer", [
-        { value: description, type: 'string' }
+      await executeWalletTransaction(this.context, consumer_id, 'update_consumer', [
+        { value: description, type: 'string' },
       ]);
     }
   );
@@ -55,12 +53,9 @@ export class ConsumerOps {
    * @param consumer_id - Address of the consumer to delete
    * @returns Promise resolving to the deletion result
    */
-  deleteConsumer = withSignature(
-    async (consumer_id: string): Promise<void> => {
-      await executeWalletTransaction(this.context, consumer_id, "delete_consumer", [
-      ]);
-    }
-  );
+  deleteConsumer = withSignature(async (consumer_id: string): Promise<void> => {
+    await executeWalletTransaction(this.context, consumer_id, 'delete_consumer', []);
+  });
 
   /**
    * Retrieves consumer information
@@ -70,9 +65,7 @@ export class ConsumerOps {
   async getConsumer(consumer_id: string): Promise<Consumer | null> {
     const response = await prepareTransaction(this.context, consumer_id, {
       method: 'get_consumer',
-      args: [
-        { value: consumer_id, type: 'address' }
-      ]
+      args: [{ value: consumer_id, type: 'address' }],
     });
 
     if (!response.isSuccess) {
@@ -93,7 +86,7 @@ export class ConsumerOps {
   async getConsumerCount(): Promise<number> {
     const response = await prepareTransaction(this.context, '', {
       method: 'get_consumer_count',
-      args: []
+      args: [],
     });
 
     if (!response.isSuccess) {
@@ -118,8 +111,8 @@ export class ConsumerOps {
       method: 'get_consumers',
       args: [
         { value: skip, type: 'u32' },
-        { value: take, type: 'u32' }
-      ]
+        { value: take, type: 'u32' },
+      ],
     });
 
     if (!response.isSuccess) {
@@ -176,4 +169,4 @@ export class ConsumerOps {
 
     return activeDealIds;
   }
-} 
+}

@@ -1,6 +1,17 @@
 import { ClientContext } from '.';
-import { Deal, DealCreateParams, DealConsumptionUpdateParams, DealSLAUpdateParams, DealInfo } from '../models';
-import { ContractMethodResponse, executeWalletTransaction, executeServerTransaction, prepareTransaction } from '../wallet/transaction';
+import {
+  Deal,
+  DealCreateParams,
+  DealConsumptionUpdateParams,
+  DealSLAUpdateParams,
+  DealInfo,
+} from '../models';
+import {
+  ContractMethodResponse,
+  executeWalletTransaction,
+  executeServerTransaction,
+  prepareTransaction,
+} from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
 /**
@@ -30,15 +41,20 @@ export class DealOps {
       fb_repo_id: string,
       params: DealCreateParams
     ): Promise<any> => {
-      const response: ContractMethodResponse = await executeWalletTransaction(this.context, consumer_id, "create_deal", [
-        { value: provider_id, type: 'address' },
-        { value: bucket_id, type: 'u32' },
-        { value: fb_repo_id, type: 'string' },
-        { value: params.duration_secs, type: 'u64' },
-        { value: params.agreed_storage_mb, type: 'u64' },
-        { value: params.agreed_egress_mb, type: 'u64' },
-        { value: params.api_compatibility, type: 'string' }
-      ]);
+      const response: ContractMethodResponse = await executeWalletTransaction(
+        this.context,
+        consumer_id,
+        'create_deal',
+        [
+          { value: provider_id, type: 'address' },
+          { value: bucket_id, type: 'u32' },
+          { value: fb_repo_id, type: 'string' },
+          { value: params.duration_secs, type: 'u64' },
+          { value: params.agreed_storage_mb, type: 'u64' },
+          { value: params.agreed_egress_mb, type: 'u64' },
+          { value: params.api_compatibility, type: 'string' },
+        ]
+      );
 
       if (!response.isSuccess) {
         console.error('Contract call failed - isSuccess is false');
@@ -46,11 +62,11 @@ export class DealOps {
       }
 
       const result = response.result;
-      
+
       if (typeof result === 'number') {
         return result;
       }
-      
+
       console.error('Result is not a number, throwing error. Result:', result);
       return result;
     }
@@ -64,27 +80,19 @@ export class DealOps {
    * @returns Promise resolving to the acceptance result
    */
   setDealAccepted = withSignature(
-    async (
-      provider_id: string,
-      consumer_id: string,
-      deal_id: number
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "set_deal_accepted", [
+    async (provider_id: string, consumer_id: string, deal_id: number): Promise<void> => {
+      await executeWalletTransaction(this.context, provider_id, 'set_deal_accepted', [
         { value: consumer_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
+        { value: deal_id, type: 'u32' },
       ]);
     }
   );
 
   setDealRejected = withSignature(
-    async (
-      provider_id: string,
-      consumer_id: string,
-      deal_id: number
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "set_deal_rejected", [
+    async (provider_id: string, consumer_id: string, deal_id: number): Promise<void> => {
+      await executeWalletTransaction(this.context, provider_id, 'set_deal_rejected', [
         { value: consumer_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
+        { value: deal_id, type: 'u32' },
       ]);
     }
   );
@@ -105,7 +113,7 @@ export class DealOps {
       amount_usd: bigint,
       fb_repo_id: string
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, consumer_id, "set_deal_funded", [
+      await executeWalletTransaction(this.context, consumer_id, 'set_deal_funded', [
         { value: provider_id, type: 'address' },
         { value: deal_id, type: 'u32' },
         { value: amount_usd, type: 'u128' },
@@ -122,14 +130,10 @@ export class DealOps {
    * @returns Promise resolving to the completion result
    */
   setDealCompleted = withSignature(
-    async (
-      consumer_id: string,
-      provider_id: string,
-      deal_id: number
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, consumer_id, "set_deal_completed", [
+    async (consumer_id: string, provider_id: string, deal_id: number): Promise<void> => {
+      await executeWalletTransaction(this.context, consumer_id, 'set_deal_completed', [
         { value: provider_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
+        { value: deal_id, type: 'u32' },
       ]);
     }
   );
@@ -142,14 +146,10 @@ export class DealOps {
    * @returns Promise resolving to the cancellation result
    */
   setDealCancelled = withSignature(
-    async (
-      consumer_id: string,
-      provider_id: string,
-      deal_id: number
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "set_deal_cancelled", [
+    async (consumer_id: string, provider_id: string, deal_id: number): Promise<void> => {
+      await executeWalletTransaction(this.context, provider_id, 'set_deal_cancelled', [
         { value: consumer_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
+        { value: deal_id, type: 'u32' },
       ]);
     }
   );
@@ -162,15 +162,11 @@ export class DealOps {
    * @returns Promise resolving to the deletion result
    */
   deleteDeal = withSignature(
-    async (
-      consumer_id: string,
-      provider_id: string,
-      deal_id: number
-    ): Promise<void> => {
-      await executeWalletTransaction(this.context, '', "delete_deal", [
+    async (consumer_id: string, provider_id: string, deal_id: number): Promise<void> => {
+      await executeWalletTransaction(this.context, '', 'delete_deal', [
         { value: consumer_id, type: 'address' },
         { value: provider_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
+        { value: deal_id, type: 'u32' },
       ]);
     }
   );
@@ -190,10 +186,10 @@ export class DealOps {
       deal_id: number,
       amount_usd: bigint
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, consumer_id, "deposit_to_deal", [
+      await executeWalletTransaction(this.context, consumer_id, 'deposit_to_deal', [
         { value: provider_id, type: 'address' },
         { value: deal_id, type: 'u32' },
-        { value: amount_usd, type: 'u128' }
+        { value: amount_usd, type: 'u128' },
       ]);
     }
   );
@@ -205,18 +201,14 @@ export class DealOps {
    * @param deal_id - ID of the deal to retrieve
    * @returns Promise resolving to Deal object or null if not found
    */
-  async getDeal(
-    consumer_id: string,
-    provider_id: string,
-    deal_id: number
-  ): Promise<Deal | null> {
+  async getDeal(consumer_id: string, provider_id: string, deal_id: number): Promise<Deal | null> {
     const response = await prepareTransaction(this.context, consumer_id, {
       method: 'get_deal',
       args: [
         { value: consumer_id, type: 'address' },
         { value: provider_id, type: 'address' },
-        { value: deal_id, type: 'u32' }
-      ]
+        { value: deal_id, type: 'u32' },
+      ],
     });
 
     if (!response.isSuccess) {
@@ -237,7 +229,7 @@ export class DealOps {
   async getDealCount(): Promise<number> {
     const response = await prepareTransaction(this.context, '', {
       method: 'get_deal_count',
-      args: []
+      args: [],
     });
 
     if (!response.isSuccess) {
@@ -262,8 +254,8 @@ export class DealOps {
       method: 'get_deals',
       args: [
         { value: skip, type: 'u32' },
-        { value: take, type: 'u32' }
-      ]
+        { value: take, type: 'u32' },
+      ],
     });
 
     if (!response.isSuccess) {
@@ -285,9 +277,7 @@ export class DealOps {
   async getDealsByConsumer(consumer_id: string): Promise<DealInfo[]> {
     const response = await prepareTransaction(this.context, consumer_id, {
       method: 'get_deals_by_consumer',
-      args: [
-        { value: consumer_id, type: 'address' }
-      ]
+      args: [{ value: consumer_id, type: 'address' }],
     });
 
     if (!response.isSuccess) {
@@ -309,9 +299,7 @@ export class DealOps {
   async getDealsByProvider(provider_id: string): Promise<DealInfo[]> {
     const response = await prepareTransaction(this.context, provider_id, {
       method: 'get_deals_by_provider',
-      args: [
-        { value: provider_id, type: 'address' }
-      ]
+      args: [{ value: provider_id, type: 'address' }],
     });
 
     if (!response.isSuccess) {
@@ -336,8 +324,8 @@ export class DealOps {
       method: 'get_active_deals',
       args: [
         { value: skip, type: 'u32' },
-        { value: take, type: 'u32' }
-      ]
+        { value: take, type: 'u32' },
+      ],
     });
 
     if (!response.isSuccess) {
@@ -359,20 +347,21 @@ export class DealOps {
    * @returns Promise resolving to the payment result
    */
   payPendingConsumption = withSignature(
-    async (
-      provider_id: string,
-      consumer_id: string,
-      deal_id: number
-    ): Promise<void> => {
+    async (provider_id: string, consumer_id: string, deal_id: number): Promise<void> => {
       const args = [
         { value: provider_id, type: 'address' as const },
         { value: consumer_id, type: 'address' as const },
-        { value: deal_id, type: 'u32' as const }
+        { value: deal_id, type: 'u32' as const },
       ];
       if (this.context.serverSourceAddress) {
-        await executeServerTransaction(this.context, this.context.serverSourceAddress, "pay_pending_consumption", args);
+        await executeServerTransaction(
+          this.context,
+          this.context.serverSourceAddress,
+          'pay_pending_consumption',
+          args
+        );
       } else {
-        await executeWalletTransaction(this.context, '', "pay_pending_consumption", args);
+        await executeWalletTransaction(this.context, '', 'pay_pending_consumption', args);
       }
     }
   );
@@ -397,12 +386,17 @@ export class DealOps {
         { value: consumer_id, type: 'address' as const },
         { value: deal_id, type: 'u32' as const },
         { value: params.storage_mb, type: 'u64' as const },
-        { value: params.egress_mb, type: 'u64' as const }
+        { value: params.egress_mb, type: 'u64' as const },
       ];
       if (this.context.serverSourceAddress) {
-        await executeServerTransaction(this.context, this.context.serverSourceAddress, "update_deal_consumption", args);
+        await executeServerTransaction(
+          this.context,
+          this.context.serverSourceAddress,
+          'update_deal_consumption',
+          args
+        );
       } else {
-        await executeWalletTransaction(this.context, '', "update_deal_consumption", args);
+        await executeWalletTransaction(this.context, '', 'update_deal_consumption', args);
       }
     }
   );
@@ -427,12 +421,17 @@ export class DealOps {
         { value: consumer_id, type: 'address' as const },
         { value: deal_id, type: 'u32' as const },
         { value: params.sla_avg_latency_ms, type: 'u32' as const },
-        { value: params.sla_avg_uptime_pct, type: 'u32' as const }
+        { value: params.sla_avg_uptime_pct, type: 'u32' as const },
       ];
       if (this.context.serverSourceAddress) {
-        await executeServerTransaction(this.context, this.context.serverSourceAddress, "update_deal_sla", args);
+        await executeServerTransaction(
+          this.context,
+          this.context.serverSourceAddress,
+          'update_deal_sla',
+          args
+        );
       } else {
-        await executeWalletTransaction(this.context, '', "update_deal_sla", args);
+        await executeWalletTransaction(this.context, '', 'update_deal_sla', args);
       }
     }
   );
@@ -478,7 +477,7 @@ export class DealOps {
 
     return {
       balance_consumer: deal.balance_consumer,
-      balance_provider: deal.balance_provider
+      balance_provider: deal.balance_provider,
     };
   }
-} 
+}

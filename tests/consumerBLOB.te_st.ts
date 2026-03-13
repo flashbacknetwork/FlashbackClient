@@ -26,7 +26,6 @@ describe('StorageClient', () => {
   jest.setTimeout(600000);
 
   const testConfigurations = [
-    
     {
       name: 'Azure to S3',
       config: {
@@ -167,7 +166,7 @@ describe('StorageClient', () => {
     try {
       const properties = await blockBlobClient.getProperties();
       expect(properties._response.status).toBe(200);
-      expect(properties.contentLength).toBe(fileStats.size);  
+      expect(properties.contentLength).toBe(fileStats.size);
     } catch (error) {
       console.error('Error getting blob properties:', error);
     }
@@ -305,7 +304,7 @@ describe('StorageClient', () => {
       const endpointUrl = new URL(config.endpoint);
       const customHostname = `${config.accountName}.${endpointUrl.hostname}`;
       const customEndpoint = `${endpointUrl.protocol}//${customHostname}${endpointUrl.port ? ':' + endpointUrl.port : ''}`;
-      
+
       // Use explicit credential with custom endpoint instead of connection string
       const blobServiceClient = new BlobServiceClient(customEndpoint, creds);
       const containerClient = blobServiceClient.getContainerClient(containerName);

@@ -39,7 +39,7 @@ describe('StorageClient', () => {
       },
       bucketName: process.env.TEST_GCP_BUCKET!,
     },
-/*
+    /*
     {
       name: 'GCS to S3 Configuration (AWS endpoint)',
       config: {
@@ -192,7 +192,7 @@ describe('StorageClient', () => {
         throw error;
       }
       // 2. Upload File
-      
+
       try {
         const uploadResponse = await bucket.upload(testFilePath, {
           destination: filePath,
@@ -377,4 +377,3 @@ describe('StorageClient', () => {
     }
   );
 });
-

@@ -110,4 +110,3 @@ export interface GetAiModelsResponse {
   success: boolean;
   models: AiModelDTO[];
 }
-

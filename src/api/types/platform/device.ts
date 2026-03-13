@@ -1,125 +1,125 @@
 export interface DeviceListResponse {
-    success: boolean;
-    devices: Array<DeviceItem>;
-  }
-  
-  export interface SessionListResponse {
-    success: boolean;
-    sessions: Array<SessionItem>;
-  }
+  success: boolean;
+  devices: Array<DeviceItem>;
+}
 
-  export interface DeviceDetailsResponse {
-    success: boolean;
-    device: DeviceItem;
-  }
+export interface SessionListResponse {
+  success: boolean;
+  sessions: Array<SessionItem>;
+}
 
-  export interface DeviceItem {
-      id: string;
-      deviceName: string;
-      deviceType: string;
-      os: string;
-      browser: string;
-      ipAddress?: string;
-      country?: string;
-      city?: string;
-      isTrusted: boolean;
-      trustLevel: string;
-      lastSeen: string;
-      createdAt: string;
-      trustExpiresAt?: string;
-      userAgent?: string;
-      deviceFingerprint?: string;
-      sessions?: Array<SessionItem>;
-  }
-  
-  export interface SessionItem {
-    id: string;
-    ipAddress?: string;
-    location?: string;
-    startedAt: string;
-    lastActivity: string;
-    expiresAt: string;
-    loginMethod: string;
-  }
+export interface DeviceDetailsResponse {
+  success: boolean;
+  device: DeviceItem;
+}
 
-  export interface TrustDeviceRequest {
-    fingerprint: string;
-  }
+export interface DeviceItem {
+  id: string;
+  deviceName: string;
+  deviceType: string;
+  os: string;
+  browser: string;
+  ipAddress?: string;
+  country?: string;
+  city?: string;
+  isTrusted: boolean;
+  trustLevel: string;
+  lastSeen: string;
+  createdAt: string;
+  trustExpiresAt?: string;
+  userAgent?: string;
+  deviceFingerprint?: string;
+  sessions?: Array<SessionItem>;
+}
 
-  export interface TrustDeviceResponse {
-    success: boolean;
-    message: string;
-    trustExpiresAt: string;
-  }
+export interface SessionItem {
+  id: string;
+  ipAddress?: string;
+  location?: string;
+  startedAt: string;
+  lastActivity: string;
+  expiresAt: string;
+  loginMethod: string;
+}
 
-  export interface UntrustDeviceResponse {
-    success: boolean;
-    message: string;
-  }
+export interface TrustDeviceRequest {
+  fingerprint: string;
+}
 
-  export interface RemoveDeviceResponse {
-    success: boolean;
-    message: string;
-  }
+export interface TrustDeviceResponse {
+  success: boolean;
+  message: string;
+  trustExpiresAt: string;
+}
 
-  export interface RevokeSessionResponse {
-    success: boolean;
-    message: string;
-  }
+export interface UntrustDeviceResponse {
+  success: boolean;
+  message: string;
+}
 
-  export interface RevokeAllSessionsResponse {
-    success: boolean;
-    message: string;
-  }
+export interface RemoveDeviceResponse {
+  success: boolean;
+  message: string;
+}
 
-  export interface SessionHeartbeatResponse {
-    success: boolean;
-    message: string;
-    newExpiry: string;
-  }
+export interface RevokeSessionResponse {
+  success: boolean;
+  message: string;
+}
 
-  export interface DeviceInfo {
-    userAgent: string;
-    ipAddress?: string;
-    deviceType: 'DESKTOP' | 'MOBILE' | 'TABLET';
-    os: string;
-    browser: string;
-    screenResolution?: string;
-    timezone?: string;
-    language?: string;
-    platform?: string;
-    hardwareConcurrency?: number;
-    deviceMemory?: number;
-  }
-  
-  export interface GeolocationInfo {
-    country?: string;
-    city?: string;
-    region?: string;
-    timezone?: string;
-  }
-  
-  export interface DeviceFingerprint {
-    fingerprint: string;
-    deviceInfo: DeviceInfo;
-    geolocation: GeolocationInfo;
-  }
+export interface RevokeAllSessionsResponse {
+  success: boolean;
+  message: string;
+}
 
-  export enum TrustEventType {
-    LOGIN_ATTEMPT,
-    FAILED_LOGIN_ATTEMPT,
-    SUCCESSFUL_LOGIN,
-    FAILED_LOGIN,
-    PASSWORD_RESET_ATTEMPT,
-    SUCCESSFUL_PASSWORD_RESET,
-    FAILED_PASSWORD_RESET,
-    TWO_FACTOR_ATTEMPT,
-    SUCCESSFUL_TWO_FACTOR,
-    FAILED_TWO_FACTOR,
-    DEVICE_UNTRUSTED,
-    DEVICE_TRUSTED,
-    DEVICE_REMOVED,
-    USER_UNTRUSTED,
-    USER_TRUSTED,
-    USER_REMOVED,
-  }
+export interface SessionHeartbeatResponse {
+  success: boolean;
+  message: string;
+  newExpiry: string;
+}
+
+export interface DeviceInfo {
+  userAgent: string;
+  ipAddress?: string;
+  deviceType: 'DESKTOP' | 'MOBILE' | 'TABLET';
+  os: string;
+  browser: string;
+  screenResolution?: string;
+  timezone?: string;
+  language?: string;
+  platform?: string;
+  hardwareConcurrency?: number;
+  deviceMemory?: number;
+}
+
+export interface GeolocationInfo {
+  country?: string;
+  city?: string;
+  region?: string;
+  timezone?: string;
+}
+
+export interface DeviceFingerprint {
+  fingerprint: string;
+  deviceInfo: DeviceInfo;
+  geolocation: GeolocationInfo;
+}
+
+export enum TrustEventType {
+  LOGIN_ATTEMPT,
+  FAILED_LOGIN_ATTEMPT,
+  SUCCESSFUL_LOGIN,
+  FAILED_LOGIN,
+  PASSWORD_RESET_ATTEMPT,
+  SUCCESSFUL_PASSWORD_RESET,
+  FAILED_PASSWORD_RESET,
+  TWO_FACTOR_ATTEMPT,
+  SUCCESSFUL_TWO_FACTOR,
+  FAILED_TWO_FACTOR,
+  DEVICE_UNTRUSTED,
+  DEVICE_TRUSTED,
+  DEVICE_REMOVED,
+  USER_UNTRUSTED,
+  USER_TRUSTED,
+  USER_REMOVED,
+}

@@ -63,9 +63,9 @@ export interface NodeInfo {
 }
 
 export interface NodeInfoResponse {
-  success: true,
-  data: NodeInfo[],
-  total: number,
+  success: true;
+  data: NodeInfo[];
+  total: number;
 }
 
 export enum ServiceFlag {

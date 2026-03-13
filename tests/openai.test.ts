@@ -1,4 +1,3 @@
-
 /* eslint-disable no-undef */
 import { describe, jest, test, expect } from '@jest/globals';
 import OpenAI from 'openai';
@@ -9,9 +8,9 @@ describe('OpenAI Chat Completions Test', () => {
   test('should call chat completions API with generated credentials', async () => {
     // Generate API key/secret pair
     //const apiKey = 'sk-vi_igsCNRun6WIGbLudGt_h3Te6YzeH3nIEyndSwI1YAAAAA';  // local
-    const apiKey = 'sk-wPHuxJekvOS7vFuQGDWl7o5QkkbgyHgcic47XOpQzHIAAAAA';   // test
+    const apiKey = 'sk-wPHuxJekvOS7vFuQGDWl7o5QkkbgyHgcic47XOpQzHIAAAAA'; // test
     //const apiKey = 'sk-k5q_fQqUz-0tRm8Z1VgoEszM3Oh2Wp3J3TLZzmhA_fUAAAAA';  // prod
-    
+
     // Create OpenAI client with localhost base URL
     const openai = new OpenAI({
       apiKey: apiKey,
@@ -23,7 +22,10 @@ describe('OpenAI Chat Completions Test', () => {
       // Make chat completions request
       const models = await openai.models.list();
       console.log('Models:', models);
-      const modelList = ['gpt-4o-mini', 'claude-sonnet-4-20250514', 'gemini-2.5-flash'
+      const modelList = [
+        'gpt-4o-mini',
+        'claude-sonnet-4-20250514',
+        'gemini-2.5-flash',
         //, 'mistral.mistral-large-2402-v1'];
       ];
       for (const model of modelList) {
@@ -32,8 +34,9 @@ describe('OpenAI Chat Completions Test', () => {
           messages: [
             {
               role: 'user',
-              content: 'Our worker John Carter is asking for a raise. Please help me draft a short letter to the CEO of the company as mandated by the organization\'s policies.'
-            }
+              content:
+                "Our worker John Carter is asking for a raise. Please help me draft a short letter to the CEO of the company as mandated by the organization's policies.",
+            },
           ],
           temperature: 0.5,
           store: true,
@@ -45,14 +48,13 @@ describe('OpenAI Chat Completions Test', () => {
           },
         });
         console.log('\n✅ Chat Completions Request successful!', response._request_id);
-        expect(response).toBeDefined(); 
+        expect(response).toBeDefined();
         //expect(response.choices[0].message.content).toContain('Hello, world!');
       }
-
     } catch (error: any) {
       console.log('\n❌ Chat Completions Request failed:');
       console.log('==================================');
-      
+
       if (error.response) {
         console.log(`Status: ${error.response.status}`);
         console.log(`Status Text: ${error.response.statusText}`);
@@ -65,19 +67,19 @@ describe('OpenAI Chat Completions Test', () => {
         console.log('Error setting up request:');
         console.log(error.message);
       }
-      
+
       // Log the headers that were sent
       console.log('\n📋 Headers that were sent:');
       console.log('==========================');
       console.log(`Authorization: Bearer ${apiKey}`);
       console.log(`Content-Type: application/json`);
       console.log(`User-Agent: openai-node/${require('openai/package.json').version}`);
-      
+
       // Re-throw the error so the test fails
       throw error;
     }
   });
-/*
+  /*
   test('should call models API with generated credentials', async () => {
     const apiKey = 'sk-5751ead0784dbe18621b7401ebab87b4c5de1a604f13ecb32efc8d4f2e6e9fd0';
 
@@ -106,7 +108,7 @@ describe('OpenAI Chat Completions Test', () => {
     }
   });
 */
-/*
+  /*
   test('should call embeddings API with generated credentials', async () => {
     const apiKey = 'sk-5751ead0784dbe18621b7401ebab87b4c5de1a604f13ecb32efc8d4f2e6e9fd0';
 

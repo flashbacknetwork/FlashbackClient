@@ -92,7 +92,7 @@ export class FlashbackAuthClient extends OAuth2Client {
     const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
     const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url');
     const signatureInput = `${encodedHeader}.${encodedPayload}`;
-    
+
     const crypto = require('crypto');
     const sign = crypto.createSign('RSA-SHA256');
     sign.update(signatureInput);
@@ -103,7 +103,7 @@ export class FlashbackAuthClient extends OAuth2Client {
     const formData = new URLSearchParams();
     formData.append('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
     formData.append('assertion', assertion);
-    
+
     const response = await axios.post(this.customTokenUri, formData, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

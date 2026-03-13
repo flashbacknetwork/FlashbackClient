@@ -76,10 +76,7 @@ import {
   NodeStatsQueryWithBucketParams,
   NodeStatsDailyQueryWithBucketParams,
 } from './types/storage/stats';
-import {
-  AiStatsQueryParams,
-  AiStatsResponse,
-} from './types/ai/stats';
+import { AiStatsQueryParams, AiStatsResponse } from './types/ai/stats';
 
 import { NodeInfo, NodeInfoResponse, RegisterRequest, ServiceFlag } from './types/storage/bridge';
 import { GetOrganizationKeysResponse } from './types/storage/noderegistration';
@@ -112,51 +109,120 @@ import {
   CancelPendingPaymentResponse,
 } from './types/platform/subscriptions';
 import { AuthTypes, WorkspaceTypes } from '.';
-import { MFAMethodsResponse, 
-  MFASetupRequest, 
-  MFASetupResponse, 
-  MFAStatusResponse, 
-  MFAVerificationSetupRequest, 
-  MFAVerificationSetupResponse, 
-  MFAEnableRequest, 
-  MFAEnableResponse, 
-  MFADisableResponse, 
-  MFAPrimaryRequest, 
-  MFAPrimaryResponse, 
-  MFAResetResponse, 
-  MFAOrganizationEnforceRequest, 
-  MFAOrganizationEnforceResponse, 
+import {
+  MFAMethodsResponse,
+  MFASetupRequest,
+  MFASetupResponse,
+  MFAStatusResponse,
+  MFAVerificationSetupRequest,
+  MFAVerificationSetupResponse,
+  MFAEnableRequest,
+  MFAEnableResponse,
+  MFADisableResponse,
+  MFAPrimaryRequest,
+  MFAPrimaryResponse,
+  MFAResetResponse,
+  MFAOrganizationEnforceRequest,
+  MFAOrganizationEnforceResponse,
   MagicLinkActivationRequest,
   MagicLinkActivationResponse,
-  MagicLinkSendResponse, 
-  PasskeyAuthOptionsResult, 
-  PasskeyCompleteRegistrationRequest, 
-  PasskeyCompleteRegistrationResponse, 
+  MagicLinkSendResponse,
+  PasskeyAuthOptionsResult,
+  PasskeyCompleteRegistrationRequest,
+  PasskeyCompleteRegistrationResponse,
   MFAVerificationRequest,
   MFAVerificationResult,
   MFAVerificationLoginResponse,
-  MFAResetRequest
+  MFAResetRequest,
 } from './types/platform/mfa';
-import { DeleteSettingsRequest, GetSettingsResponse, PartialUpdateSettingsRequest, UpdateSettingsRequest } from './types/platform/settings';
+import {
+  DeleteSettingsRequest,
+  GetSettingsResponse,
+  PartialUpdateSettingsRequest,
+  UpdateSettingsRequest,
+} from './types/platform/settings';
 import { UpdateUserRoleResponse, UserRoleResponse } from './types/platform/roles';
 import { UserProfileResponse } from './types/platform/roles';
-import { CreateOrgUserRequest, 
-  CreateOrgUserResponse, 
-  DeleteOrgUserResponse, 
-  GetOrganizationResponse, 
-  ListOrgUsersResponse, 
-  OrgUserResponse, 
-  UpdateOrganizationBody, 
-  UpdateOrganizationResponse, 
-  UpdateOrgUserRequest, 
-  UpdateOrgUserResponse } from './types/platform/organization';
-import { SystemEventQueryRequest, SystemEventQueryResponse, SystemEventReadIdsRequest, SystemEventReadStatusResponse } from './types/platform/systemevent';
-import { PreVerifyEmailResponse, UserUpdateRequest, UserUpdateResponse } from './types/platform/user';
-import { CreateRepoAiApiKeyRequest, CreateRepoAiApiKeyResponse, DeleteRepoAiApiKeyResponse, GetRepoAiApiKeysResponse, RepoAiApiKeyDTO, UpdateRepoAiApiKeyRequest, UpdateRepoAiApiKeyResponse } from './types/ai/aiapikey';
-import { AiLlmStatsResponse, CreateAiLlmRequest, CreateAiLlmResponse, DeleteAiLlmResponse, GetAiLlmsResponse, UpdateAiLlmRequest, UpdateAiLlmResponse, ValidateAiLlmResponse, GetAiModelsRequest, GetAiModelsResponse } from './types/ai/aillm';
-import { CreatePolicyRequest, GetPoliciesQuery, GetPolicyViolationsQuery, GetPolicyViolationsResponse, GetPolicyAlertsQuery, GetPolicyAlertsResponse, PolicyDTO, UpdatePolicyRequest, PolicyValidationRequest, PolicyValidationResponse, PolicyRecommendationRequest, PolicyRecommendationResponse } from './types/ai/policy';
-import { CreateConversationRequest, CreateConversationResponse, SendPromptRequest, SendPromptResponse, GetConversationsRequest, GetConversationsResponse, GetConversationMessagesResponse, GetConversationMessagesRequest, DeleteConversationRequest, DeleteConversationResponse } from './types/ai/conversation';
-import { GetLinksRequest, GetLinksResponse, CreateLinkRequest, CreateLinkResponse, UpdateLinkRequest, UpdateLinkResponse, DeleteLinkResponse, GetLinkByTokenResponse } from './types/platform/links';
+import {
+  CreateOrgUserRequest,
+  CreateOrgUserResponse,
+  DeleteOrgUserResponse,
+  GetOrganizationResponse,
+  ListOrgUsersResponse,
+  OrgUserResponse,
+  UpdateOrganizationBody,
+  UpdateOrganizationResponse,
+  UpdateOrgUserRequest,
+  UpdateOrgUserResponse,
+} from './types/platform/organization';
+import {
+  SystemEventQueryRequest,
+  SystemEventQueryResponse,
+  SystemEventReadIdsRequest,
+  SystemEventReadStatusResponse,
+} from './types/platform/systemevent';
+import {
+  PreVerifyEmailResponse,
+  UserUpdateRequest,
+  UserUpdateResponse,
+} from './types/platform/user';
+import {
+  CreateRepoAiApiKeyRequest,
+  CreateRepoAiApiKeyResponse,
+  DeleteRepoAiApiKeyResponse,
+  GetRepoAiApiKeysResponse,
+  RepoAiApiKeyDTO,
+  UpdateRepoAiApiKeyRequest,
+  UpdateRepoAiApiKeyResponse,
+} from './types/ai/aiapikey';
+import {
+  AiLlmStatsResponse,
+  CreateAiLlmRequest,
+  CreateAiLlmResponse,
+  DeleteAiLlmResponse,
+  GetAiLlmsResponse,
+  UpdateAiLlmRequest,
+  UpdateAiLlmResponse,
+  ValidateAiLlmResponse,
+  GetAiModelsRequest,
+  GetAiModelsResponse,
+} from './types/ai/aillm';
+import {
+  CreatePolicyRequest,
+  GetPoliciesQuery,
+  GetPolicyViolationsQuery,
+  GetPolicyViolationsResponse,
+  GetPolicyAlertsQuery,
+  GetPolicyAlertsResponse,
+  PolicyDTO,
+  UpdatePolicyRequest,
+  PolicyValidationRequest,
+  PolicyValidationResponse,
+  PolicyRecommendationRequest,
+  PolicyRecommendationResponse,
+} from './types/ai/policy';
+import {
+  CreateConversationRequest,
+  CreateConversationResponse,
+  SendPromptRequest,
+  SendPromptResponse,
+  GetConversationsRequest,
+  GetConversationsResponse,
+  GetConversationMessagesResponse,
+  GetConversationMessagesRequest,
+  DeleteConversationRequest,
+  DeleteConversationResponse,
+} from './types/ai/conversation';
+import {
+  GetLinksRequest,
+  GetLinksResponse,
+  CreateLinkRequest,
+  CreateLinkResponse,
+  UpdateLinkRequest,
+  UpdateLinkResponse,
+  DeleteLinkResponse,
+  GetLinkByTokenResponse,
+} from './types/platform/links';
 import {
   GetCreditsBalanceResponse,
   GetCreditsTransactionsRequest,
@@ -238,8 +304,8 @@ export class ApiClient implements IApiClient {
   };
 
   public authenticate = async (
-    token: string, 
-    provider: ProviderType, 
+    token: string,
+    provider: ProviderType,
     deviceInfo?: DeviceInfo,
     activationUid?: string,
     activationToken?: string
@@ -432,11 +498,15 @@ export class ApiClient implements IApiClient {
     });
   };
 
-  private exchangeGoogleCode = async (data: GoogleExchangeCodeRequest): Promise<OAuth2ResponseDTO> => {
+  private exchangeGoogleCode = async (
+    data: GoogleExchangeCodeRequest
+  ): Promise<OAuth2ResponseDTO> => {
     return this.makeRequest<OAuth2ResponseDTO>('auth/google/exchange', 'POST', data);
   };
 
-  private exchangeMicrosoftCode = async (data: MicrosoftExchangeCodeRequest): Promise<OAuth2ResponseDTO> => {
+  private exchangeMicrosoftCode = async (
+    data: MicrosoftExchangeCodeRequest
+  ): Promise<OAuth2ResponseDTO> => {
     return this.makeRequest<OAuth2ResponseDTO>('auth/microsoft/exchange', 'POST', data);
   };
 
@@ -454,8 +524,15 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<CreateBucketResponse>('bucket', 'POST', data);
   };
 
-  public getStorageBuckets = async (workspaceId?: string, walletAddress?: string): Promise<GetBucketsResponse> => {
-    return this.makeRequest<GetBucketsResponse>('bucket?workspaceId=' + workspaceId + '&walletAddress=' + walletAddress, 'GET', null);
+  public getStorageBuckets = async (
+    workspaceId?: string,
+    walletAddress?: string
+  ): Promise<GetBucketsResponse> => {
+    return this.makeRequest<GetBucketsResponse>(
+      'bucket?workspaceId=' + workspaceId + '&walletAddress=' + walletAddress,
+      'GET',
+      null
+    );
   };
 
   public validateStorageBucket = async (
@@ -480,7 +557,9 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<StorageBucket[]>('bucket/available', 'GET', null);
   };
 
-  public getStorageBucketStatus = async (bucketId: string): Promise<StorageBucketStatusResponse> => {
+  public getStorageBucketStatus = async (
+    bucketId: string
+  ): Promise<StorageBucketStatusResponse> => {
     return this.makeRequest<StorageBucketStatusResponse>(`bucket/${bucketId}/status`, 'GET', null);
   };
 
@@ -496,14 +575,23 @@ export class ApiClient implements IApiClient {
     if (workspaceId) {
       queryParams.append('workspaceId', workspaceId);
     }
-    return this.makeRequest<GetProviderApiKeysResponse>('apikeys?' + queryParams.toString(), 'GET', null);
+    return this.makeRequest<GetProviderApiKeysResponse>(
+      'apikeys?' + queryParams.toString(),
+      'GET',
+      null
+    );
   };
 
-  public createApiKey = async (data: CreateProviderApiKeyRequest): Promise<CreateProviderApiKeyResponse> => {
+  public createApiKey = async (
+    data: CreateProviderApiKeyRequest
+  ): Promise<CreateProviderApiKeyResponse> => {
     return this.makeRequest<CreateProviderApiKeyResponse>('apikeys', 'POST', data);
   };
 
-  public updateApiKey = async (apiKeyId: string, data: UpdateProviderApiKeyRequest): Promise<UpdateProviderApiKeyResponse> => {
+  public updateApiKey = async (
+    apiKeyId: string,
+    data: UpdateProviderApiKeyRequest
+  ): Promise<UpdateProviderApiKeyResponse> => {
     return this.makeRequest<UpdateProviderApiKeyResponse>(`apikeys/${apiKeyId}`, 'PUT', data);
   };
 
@@ -515,11 +603,17 @@ export class ApiClient implements IApiClient {
   // Function overloads for createStorageRepo
   public createStorageRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
   public createStorageRepo(data: CreateRepoWithBucketsRequest): Promise<CreateRepoResponse>;
-  public async createStorageRepo(data: CreateRepoRequest | CreateRepoWithBucketsRequest): Promise<CreateRepoResponse> {
+  public async createStorageRepo(
+    data: CreateRepoRequest | CreateRepoWithBucketsRequest
+  ): Promise<CreateRepoResponse> {
     return this.makeRequest<CreateRepoResponse>('repo', 'POST', data);
   }
 
-  public getStorageRepos = async (workspaceId?: string, walletAddress?: string, repoId?: string): Promise<GetReposResponse> => {
+  public getStorageRepos = async (
+    workspaceId?: string,
+    walletAddress?: string,
+    repoId?: string
+  ): Promise<GetReposResponse> => {
     const queryParams = new URLSearchParams();
     if (workspaceId) {
       queryParams.append('workspaceId', workspaceId);
@@ -543,7 +637,10 @@ export class ApiClient implements IApiClient {
 
   // Function overloads for updateStorageRepo
   public updateStorageRepo(repoId: string, data: UpdateRepoRequest): Promise<UpdateRepoResponse>;
-  public updateStorageRepo(repoId: string, data: UpdateRepoWithBucketsRequest): Promise<UpdateRepoResponse>;
+  public updateStorageRepo(
+    repoId: string,
+    data: UpdateRepoWithBucketsRequest
+  ): Promise<UpdateRepoResponse>;
   public async updateStorageRepo(
     repoId: string,
     data: UpdateRepoRequest | UpdateRepoWithBucketsRequest
@@ -557,16 +654,26 @@ export class ApiClient implements IApiClient {
 
   // Function overloads for validateNewRepoUnits
   public validateNewRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
-  public validateNewRepoUnits(data: ValidateRepoBucketsRequest): Promise<ValidateRepoBucketsResponse>;
+  public validateNewRepoUnits(
+    data: ValidateRepoBucketsRequest
+  ): Promise<ValidateRepoBucketsResponse>;
   public async validateNewRepoUnits(
     data: ValidateRepoUnitsRequest | ValidateRepoBucketsRequest
   ): Promise<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse> {
-    return this.makeRequest<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse>('repo/validate', 'POST', data);
+    return this.makeRequest<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse>(
+      'repo/validate',
+      'POST',
+      data
+    );
   }
 
   // Function overloads for validateUpdateRepoUnits
-  public validateUpdateRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
-  public validateUpdateRepoUnits(data: ValidateRepoBucketsRequest): Promise<ValidateRepoBucketsResponse>;
+  public validateUpdateRepoUnits(
+    data: ValidateRepoUnitsRequest
+  ): Promise<ValidateRepoUnitsResponse>;
+  public validateUpdateRepoUnits(
+    data: ValidateRepoBucketsRequest
+  ): Promise<ValidateRepoBucketsResponse>;
   public async validateUpdateRepoUnits(
     data: ValidateRepoUnitsRequest | ValidateRepoBucketsRequest
   ): Promise<ValidateRepoUnitsResponse | ValidateRepoBucketsResponse> {
@@ -607,12 +714,21 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<PreVerifyEmailResponse>('user/pre-verify-email', 'POST', { token });
   };
 
-  public validateRegistration = async (token: string, password?: string): Promise<RegisterResponse> => {
+  public validateRegistration = async (
+    token: string,
+    password?: string
+  ): Promise<RegisterResponse> => {
     return this.makeRequest<RegisterResponse>('/user/verify-email', 'POST', { token, password });
   };
 
-  public resendVerificationEmail = async (verificationTokenId: string): Promise<ResendVerificationEmailResponse> => {
-    return this.makeRequest<ResendVerificationEmailResponse>(`user/resend-verification/${verificationTokenId}`, 'POST', null);
+  public resendVerificationEmail = async (
+    verificationTokenId: string
+  ): Promise<ResendVerificationEmailResponse> => {
+    return this.makeRequest<ResendVerificationEmailResponse>(
+      `user/resend-verification/${verificationTokenId}`,
+      'POST',
+      null
+    );
   };
 
   public userLogin = async (data: LoginBody): Promise<LoginResponse> => {
@@ -645,7 +761,10 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<QuotaResponse>('user/quota', 'GET', null);
   };
 
-  public updateUser = async (userId: string, data: UserUpdateRequest): Promise<UserUpdateResponse> => {
+  public updateUser = async (
+    userId: string,
+    data: UserUpdateRequest
+  ): Promise<UserUpdateResponse> => {
     return this.makeRequest<UserUpdateResponse>(`user/${userId}`, 'PUT', data);
   };
 
@@ -693,7 +812,10 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<CreateLinkResponse>('links', 'POST', data);
   };
 
-  public updateLink = async (linkId: string, data: UpdateLinkRequest): Promise<UpdateLinkResponse> => {
+  public updateLink = async (
+    linkId: string,
+    data: UpdateLinkRequest
+  ): Promise<UpdateLinkResponse> => {
     return this.makeRequest<UpdateLinkResponse>(`links/${linkId}`, 'PUT', data);
   };
 
@@ -702,7 +824,11 @@ export class ApiClient implements IApiClient {
   };
 
   public getLink = async (linkId: string, token: string): Promise<GetLinkByTokenResponse> => {
-    return this.makeRequest<GetLinkByTokenResponse>(`links/${linkId}?token=${encodeURIComponent(token)}`, 'GET', null);
+    return this.makeRequest<GetLinkByTokenResponse>(
+      `links/${linkId}?token=${encodeURIComponent(token)}`,
+      'GET',
+      null
+    );
   };
 
   ////// Stats API
@@ -717,7 +843,9 @@ export class ApiClient implements IApiClient {
   // Function overloads for getDailyStats
   public getDailyStats(params: StatsQueryParams): Promise<StatsResponse>;
   public getDailyStats(params: StatsQueryWithBucketParams): Promise<StatsResponse>;
-  public async getDailyStats(params: StatsQueryParams | StatsQueryWithBucketParams): Promise<StatsResponse> {
+  public async getDailyStats(
+    params: StatsQueryParams | StatsQueryWithBucketParams
+  ): Promise<StatsResponse> {
     this.validateDateRange(params.startDate, params.endDate);
 
     const queryParams = new URLSearchParams();
@@ -732,7 +860,7 @@ export class ApiClient implements IApiClient {
 
     if (params.repoId && params.repoId.length > 0)
       queryParams.append('repoId', params.repoId.join(','));
-    
+
     // Handle both unitId and bucketId
     if ('unitId' in params && params.unitId && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
@@ -750,7 +878,9 @@ export class ApiClient implements IApiClient {
   // Function overloads for getMinuteStats
   public getMinuteStats(params: StatsQueryParams): Promise<StatsResponse>;
   public getMinuteStats(params: StatsQueryWithBucketParams): Promise<StatsResponse>;
-  public async getMinuteStats(params: StatsQueryParams | StatsQueryWithBucketParams): Promise<StatsResponse> {
+  public async getMinuteStats(
+    params: StatsQueryParams | StatsQueryWithBucketParams
+  ): Promise<StatsResponse> {
     this.validateDateRange(params.startDate, params.endDate);
 
     const queryParams = new URLSearchParams();
@@ -765,7 +895,7 @@ export class ApiClient implements IApiClient {
 
     if (params.repoId && params.repoId.length > 0)
       queryParams.append('repoId', params.repoId.join(','));
-    
+
     // Handle both unitId and bucketId
     if ('unitId' in params && params.unitId && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
@@ -825,7 +955,11 @@ export class ApiClient implements IApiClient {
       queryParams.append('conversationUuid', params.conversationUuid.join(','));
     }
 
-    return this.makeRequest<AiStatsResponse>(`aistats/daily?${queryParams.toString()}`, 'GET', null);
+    return this.makeRequest<AiStatsResponse>(
+      `aistats/daily?${queryParams.toString()}`,
+      'GET',
+      null
+    );
   }
 
   public async getAiStatsMinute(params: AiStatsQueryParams): Promise<AiStatsResponse> {
@@ -872,17 +1006,23 @@ export class ApiClient implements IApiClient {
       queryParams.append('conversationUuid', params.conversationUuid.join(','));
     }
 
-    return this.makeRequest<AiStatsResponse>(`aistats/minute?${queryParams.toString()}`, 'GET', null);
+    return this.makeRequest<AiStatsResponse>(
+      `aistats/minute?${queryParams.toString()}`,
+      'GET',
+      null
+    );
   }
 
   // Function overloads for getNodeStatsMinute
   public getNodeStatsMinute(params: NodeStatsQueryParams): Promise<NodeStatsMinuteResponse>;
-  public getNodeStatsMinute(params: NodeStatsQueryWithBucketParams): Promise<NodeStatsMinuteResponse>;
+  public getNodeStatsMinute(
+    params: NodeStatsQueryWithBucketParams
+  ): Promise<NodeStatsMinuteResponse>;
   public async getNodeStatsMinute(
     params: NodeStatsQueryParams | NodeStatsQueryWithBucketParams
   ): Promise<NodeStatsMinuteResponse> {
     const queryParams = new URLSearchParams();
-    
+
     // Handle both unitId and bucketId
     if ('unitId' in params && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
@@ -914,19 +1054,21 @@ export class ApiClient implements IApiClient {
 
   // Function overloads for getNodeStatsDaily
   public getNodeStatsDaily(params: NodeStatsDailyQueryParams): Promise<NodeStatsDailyResponse>;
-  public getNodeStatsDaily(params: NodeStatsDailyQueryWithBucketParams): Promise<NodeStatsDailyResponse>;
+  public getNodeStatsDaily(
+    params: NodeStatsDailyQueryWithBucketParams
+  ): Promise<NodeStatsDailyResponse>;
   public async getNodeStatsDaily(
     params: NodeStatsDailyQueryParams | NodeStatsDailyQueryWithBucketParams
   ): Promise<NodeStatsDailyResponse> {
     const queryParams = new URLSearchParams();
-    
+
     // Handle both unitId and bucketId
     if ('unitId' in params && params.unitId.length > 0) {
       queryParams.append('unitId', params.unitId.join(','));
     } else if ('bucketId' in params && params.bucketId.length > 0) {
       queryParams.append('bucketId', params.bucketId.join(','));
     }
-    
+
     if (params.startDate) {
       queryParams.append('startDate', params.startDate.toString());
     }
@@ -964,7 +1106,9 @@ export class ApiClient implements IApiClient {
     );
   };
 
-  public getBucketStats = async (params?: { bucketId?: string[] }): Promise<BucketStatsResponse> => {
+  public getBucketStats = async (params?: {
+    bucketId?: string[];
+  }): Promise<BucketStatsResponse> => {
     const queryParams = new URLSearchParams();
     if (params && params.bucketId && params.bucketId.length > 0) {
       queryParams.append('bucketId', params.bucketId.join(','));
@@ -984,8 +1128,15 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<NodeInfoResponse>(`organization/${orgId}/nodes`, 'GET', null);
   };
 
-  public deletePrivateNode = async (orgId: string, nodeId: string): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>(`organization/${orgId}/node/${nodeId}`, 'DELETE', null);
+  public deletePrivateNode = async (
+    orgId: string,
+    nodeId: string
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      `organization/${orgId}/node/${nodeId}`,
+      'DELETE',
+      null
+    );
   };
 
   public sendFeedbackEmail = async (data: FormData): Promise<ActionResponse> => {
@@ -1001,7 +1152,9 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<MySubscriptionResponse>('subscriptions/my', 'GET', null);
   };
 
-  public buySubscription = async (data: BuySubscriptionRequest): Promise<BuySubscriptionResponse> => {
+  public buySubscription = async (
+    data: BuySubscriptionRequest
+  ): Promise<BuySubscriptionResponse> => {
     return this.makeRequest<BuySubscriptionResponse>('subscriptions/buy', 'POST', data);
   };
 
@@ -1027,17 +1180,31 @@ export class ApiClient implements IApiClient {
   public createBillingPortal = async (): Promise<CreateBillingPortalResponse> => {
     return this.makeRequest<CreateBillingPortalResponse>('subscriptions/portal', 'POST', null);
   };
-  
-  public getCheckoutSessionStatus = async (id: string): Promise<GetCheckoutSessionStatusResponse> => {
-    return this.makeRequest<GetCheckoutSessionStatusResponse>(`subscriptions/checkout-session/${id}`, 'GET', null);
+
+  public getCheckoutSessionStatus = async (
+    id: string
+  ): Promise<GetCheckoutSessionStatusResponse> => {
+    return this.makeRequest<GetCheckoutSessionStatusResponse>(
+      `subscriptions/checkout-session/${id}`,
+      'GET',
+      null
+    );
   };
 
   public getPendingPayment = async (): Promise<GetPendingPaymentResponse> => {
-    return this.makeRequest<GetPendingPaymentResponse>('subscriptions/pending-payment', 'GET', null);
+    return this.makeRequest<GetPendingPaymentResponse>(
+      'subscriptions/pending-payment',
+      'GET',
+      null
+    );
   };
-  
+
   public cancelPendingPayment = async (): Promise<CancelPendingPaymentResponse> => {
-    return this.makeRequest<CancelPendingPaymentResponse>('subscriptions/pending-payment', 'DELETE', null);
+    return this.makeRequest<CancelPendingPaymentResponse>(
+      'subscriptions/pending-payment',
+      'DELETE',
+      null
+    );
   };
 
   ////// Device Management API
@@ -1075,7 +1242,11 @@ export class ApiClient implements IApiClient {
   };
 
   public updateSessionHeartbeat = async (sessionId: string): Promise<SessionHeartbeatResponse> => {
-    return this.makeRequest<SessionHeartbeatResponse>(`sessions/${sessionId}/heartbeat`, 'POST', null);
+    return this.makeRequest<SessionHeartbeatResponse>(
+      `sessions/${sessionId}/heartbeat`,
+      'POST',
+      null
+    );
   };
 
   ////// MFA Status & Methods API
@@ -1092,11 +1263,15 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<MFASetupResponse>('mfa/setup', 'POST', request);
   };
 
-  public verifyMFASetup = async (request: MFAVerificationSetupRequest): Promise<MFAVerificationSetupResponse> => {
+  public verifyMFASetup = async (
+    request: MFAVerificationSetupRequest
+  ): Promise<MFAVerificationSetupResponse> => {
     return this.makeRequest<MFAVerificationSetupResponse>('mfa/verify-setup', 'POST', request);
   };
 
-  public verifyMFALogin = async (request: MFAVerificationRequest): Promise<MFAVerificationLoginResponse> => {
+  public verifyMFALogin = async (
+    request: MFAVerificationRequest
+  ): Promise<MFAVerificationLoginResponse> => {
     return this.makeRequest<MFAVerificationLoginResponse>('mfa/verify-login', 'POST', request);
   };
   ////// MFA Management API
@@ -1117,8 +1292,14 @@ export class ApiClient implements IApiClient {
   };
 
   ////// Organization MFA API
-  public enforceOrganizationMFA = async (request: MFAOrganizationEnforceRequest): Promise<MFAOrganizationEnforceResponse> => {
-    return this.makeRequest<MFAOrganizationEnforceResponse>('mfa/organization/enforce', 'POST', request);
+  public enforceOrganizationMFA = async (
+    request: MFAOrganizationEnforceRequest
+  ): Promise<MFAOrganizationEnforceResponse> => {
+    return this.makeRequest<MFAOrganizationEnforceResponse>(
+      'mfa/organization/enforce',
+      'POST',
+      request
+    );
   };
 
   ////// Magic Link MFA API
@@ -1126,7 +1307,9 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<MagicLinkSendResponse>('mfa/magic-link/send', 'POST', null);
   };
 
-  public activateMagicLink = async (data: MagicLinkActivationRequest): Promise<MagicLinkActivationResponse> => {
+  public activateMagicLink = async (
+    data: MagicLinkActivationRequest
+  ): Promise<MagicLinkActivationResponse> => {
     return this.makeRequest<MagicLinkActivationResponse>('mfa/magic-link/activate', 'POST', data);
   };
 
@@ -1135,58 +1318,101 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<PasskeyAuthOptionsResult>('mfa/passkey/auth-options', 'POST', null);
   };
 
-  public completePasskeyRegistration = async (request: PasskeyCompleteRegistrationRequest): Promise<PasskeyCompleteRegistrationResponse> => {
-    return this.makeRequest<PasskeyCompleteRegistrationResponse>('mfa/passkey/complete-registration', 'POST', request);
+  public completePasskeyRegistration = async (
+    request: PasskeyCompleteRegistrationRequest
+  ): Promise<PasskeyCompleteRegistrationResponse> => {
+    return this.makeRequest<PasskeyCompleteRegistrationResponse>(
+      'mfa/passkey/complete-registration',
+      'POST',
+      request
+    );
   };
 
   public getUserSettings = async (): Promise<GetSettingsResponse> => {
     return this.makeRequest<GetSettingsResponse>('settings/user', 'GET');
   };
-  
-  public updateUserSettings = async (request: UpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>('settings/user', 'POST', request);
+
+  public updateUserSettings = async (
+    request: UpdateSettingsRequest
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      'settings/user',
+      'POST',
+      request
+    );
   };
-  
-  public partialUpdateUserSettings = async (request: PartialUpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
+
+  public partialUpdateUserSettings = async (
+    request: PartialUpdateSettingsRequest
+  ): Promise<{ success: boolean; message: string }> => {
     return this.makeRequest<{ success: boolean; message: string }>('settings/user', 'PUT', request);
   };
-  
-  public deleteUserSettingsKeys = async (request: DeleteSettingsRequest): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>('settings/user', 'DELETE', request);
+
+  public deleteUserSettingsKeys = async (
+    request: DeleteSettingsRequest
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      'settings/user',
+      'DELETE',
+      request
+    );
   };
-  
+
   // Organization Settings Methods
   public getOrganizationSettings = async (): Promise<GetSettingsResponse> => {
     return this.makeRequest<GetSettingsResponse>('settings/organization', 'GET');
   };
-  
-  public updateOrganizationSettings = async (request: UpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>('settings/organization', 'POST', request);
+
+  public updateOrganizationSettings = async (
+    request: UpdateSettingsRequest
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      'settings/organization',
+      'POST',
+      request
+    );
   };
-  
-  public partialUpdateOrganizationSettings = async (request: PartialUpdateSettingsRequest): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>('settings/organization', 'PUT', request);
+
+  public partialUpdateOrganizationSettings = async (
+    request: PartialUpdateSettingsRequest
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      'settings/organization',
+      'PUT',
+      request
+    );
   };
-  
-  public deleteOrganizationSettingsKeys = async (request: DeleteSettingsRequest): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>('settings/organization', 'DELETE', request);
+
+  public deleteOrganizationSettingsKeys = async (
+    request: DeleteSettingsRequest
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      'settings/organization',
+      'DELETE',
+      request
+    );
   };
 
   // Role/profile management methods
   public getUserProfile = async (): Promise<UserProfileResponse> => {
     return this.makeRequest<UserProfileResponse>('user/profile', 'GET', null);
   };
-  
+
   public getUserById = async (userId: string): Promise<UserRoleResponse> => {
     return this.makeRequest<UserRoleResponse>(`user/${userId}`, 'GET', null);
   };
-  
-  public updateUserRole = async (userId: string, orgRole: number): Promise<UpdateUserRoleResponse> => {
+
+  public updateUserRole = async (
+    userId: string,
+    orgRole: number
+  ): Promise<UpdateUserRoleResponse> => {
     return this.makeRequest<UpdateUserRoleResponse>(`user/${userId}/role`, 'PUT', { orgRole });
   };
 
   ////// Workspace Management API
-  public createWorkspace = async (request: WorkspaceTypes.CreateWorkspaceRequest): Promise<WorkspaceTypes.CreateWorkspaceResponse> => {
+  public createWorkspace = async (
+    request: WorkspaceTypes.CreateWorkspaceRequest
+  ): Promise<WorkspaceTypes.CreateWorkspaceResponse> => {
     return this.makeRequest<WorkspaceTypes.CreateWorkspaceResponse>('workspace', 'POST', request);
   };
 
@@ -1198,25 +1424,58 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<WorkspaceTypes.GetWorkspaceResponse>(`workspace/${id}`, 'GET', null);
   };
 
-  public updateWorkspace = async (id: string, request: WorkspaceTypes.UpdateWorkspaceRequest): Promise<WorkspaceTypes.UpdateWorkspaceResponse> => {
-    return this.makeRequest<WorkspaceTypes.UpdateWorkspaceResponse>(`workspace/${id}`, 'PUT', request);
+  public updateWorkspace = async (
+    id: string,
+    request: WorkspaceTypes.UpdateWorkspaceRequest
+  ): Promise<WorkspaceTypes.UpdateWorkspaceResponse> => {
+    return this.makeRequest<WorkspaceTypes.UpdateWorkspaceResponse>(
+      `workspace/${id}`,
+      'PUT',
+      request
+    );
   };
 
   public deleteWorkspace = async (id: string): Promise<WorkspaceTypes.DeleteWorkspaceResponse> => {
-    return this.makeRequest<WorkspaceTypes.DeleteWorkspaceResponse>(`workspace/${id}`, 'DELETE', null);
+    return this.makeRequest<WorkspaceTypes.DeleteWorkspaceResponse>(
+      `workspace/${id}`,
+      'DELETE',
+      null
+    );
   };
 
   ////// Workspace User Management API
-  public addUserToWorkspace = async (workspaceId: string, request: WorkspaceTypes.AddUserToWorkspaceRequest): Promise<WorkspaceTypes.AddUserToWorkspaceResponse> => {
-    return this.makeRequest<WorkspaceTypes.AddUserToWorkspaceResponse>(`workspace/${workspaceId}/users`, 'POST', request);
+  public addUserToWorkspace = async (
+    workspaceId: string,
+    request: WorkspaceTypes.AddUserToWorkspaceRequest
+  ): Promise<WorkspaceTypes.AddUserToWorkspaceResponse> => {
+    return this.makeRequest<WorkspaceTypes.AddUserToWorkspaceResponse>(
+      `workspace/${workspaceId}/users`,
+      'POST',
+      request
+    );
   };
 
-  public updateWorkspaceUserRole = async (workspaceId: string, userId: string, request: WorkspaceTypes.UpdateUserRoleRequest): Promise<WorkspaceTypes.UpdateUserRoleResponse> => {
-    return this.makeRequest<WorkspaceTypes.UpdateUserRoleResponse>(`workspace/${workspaceId}/users/${userId}`, 'PUT', request);
+  public updateWorkspaceUserRole = async (
+    workspaceId: string,
+    userId: string,
+    request: WorkspaceTypes.UpdateUserRoleRequest
+  ): Promise<WorkspaceTypes.UpdateUserRoleResponse> => {
+    return this.makeRequest<WorkspaceTypes.UpdateUserRoleResponse>(
+      `workspace/${workspaceId}/users/${userId}`,
+      'PUT',
+      request
+    );
   };
 
-  public removeUserFromWorkspace = async (workspaceId: string, userId: string): Promise<WorkspaceTypes.RemoveUserFromWorkspaceResponse> => {
-    return this.makeRequest<WorkspaceTypes.RemoveUserFromWorkspaceResponse>(`workspace/${workspaceId}/users/${userId}`, 'DELETE', null);
+  public removeUserFromWorkspace = async (
+    workspaceId: string,
+    userId: string
+  ): Promise<WorkspaceTypes.RemoveUserFromWorkspaceResponse> => {
+    return this.makeRequest<WorkspaceTypes.RemoveUserFromWorkspaceResponse>(
+      `workspace/${workspaceId}/users/${userId}`,
+      'DELETE',
+      null
+    );
   };
 
   // Organization Users Management
@@ -1224,19 +1483,34 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<ListOrgUsersResponse>('organization/users', 'GET', null);
   };
 
-  public createOrganizationUser = async (request: CreateOrgUserRequest): Promise<CreateOrgUserResponse> => {
+  public createOrganizationUser = async (
+    request: CreateOrgUserRequest
+  ): Promise<CreateOrgUserResponse> => {
     return this.makeRequest<CreateOrgUserResponse>('organization/users', 'POST', request);
   };
 
   public resendTeamUserInvitation = async (userId: string): Promise<ActionResponse> => {
-    return this.makeRequest<ActionResponse>(`organization/users/${userId}/resend-invitation`, 'POST', null);
+    return this.makeRequest<ActionResponse>(
+      `organization/users/${userId}/resend-invitation`,
+      'POST',
+      null
+    );
   };
 
-  public getOrganizationUser = async (userId: string): Promise<OrgUserResponse | { success: false; message: string }> => {
-    return this.makeRequest<OrgUserResponse | { success: false; message: string }>(`organization/users/${userId}`, 'GET', null);
+  public getOrganizationUser = async (
+    userId: string
+  ): Promise<OrgUserResponse | { success: false; message: string }> => {
+    return this.makeRequest<OrgUserResponse | { success: false; message: string }>(
+      `organization/users/${userId}`,
+      'GET',
+      null
+    );
   };
 
-  public updateOrganizationUser = async (userId: string, request: UpdateOrgUserRequest): Promise<UpdateOrgUserResponse> => {
+  public updateOrganizationUser = async (
+    userId: string,
+    request: UpdateOrgUserRequest
+  ): Promise<UpdateOrgUserResponse> => {
     return this.makeRequest<UpdateOrgUserResponse>(`organization/users/${userId}`, 'PUT', request);
   };
 
@@ -1244,15 +1518,24 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<DeleteOrgUserResponse>(`organization/users/${userId}`, 'DELETE', null);
   };
 
-  public activateOrganizationUser = async (userId: string): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>(`organization/users/${userId}/activate`, 'POST', null);
+  public activateOrganizationUser = async (
+    userId: string
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      `organization/users/${userId}/activate`,
+      'POST',
+      null
+    );
   };
 
   public getOrganization = async (orgId: string): Promise<GetOrganizationResponse> => {
     return this.makeRequest<GetOrganizationResponse>(`organization/${orgId}`, 'GET', null);
   };
-  
-  public updateOrganization = async (orgId: string, request: UpdateOrganizationBody): Promise<UpdateOrganizationResponse> => {
+
+  public updateOrganization = async (
+    orgId: string,
+    request: UpdateOrganizationBody
+  ): Promise<UpdateOrganizationResponse> => {
     return this.makeRequest<UpdateOrganizationResponse>(`organization/${orgId}`, 'PUT', request);
   };
 
@@ -1263,15 +1546,24 @@ export class ApiClient implements IApiClient {
   };
 
   public deleteOrgKeys = async (idOrg: string): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>(`organization/${idOrg}/key`, 'DELETE');
+    return this.makeRequest<{ success: boolean; message: string }>(
+      `organization/${idOrg}/key`,
+      'DELETE'
+    );
   };
 
   public getOrgKeys = async (idOrg: string): Promise<GetOrganizationKeysResponse> => {
     return this.makeRequest<GetOrganizationKeysResponse>(`organization/${idOrg}/key`, 'GET');
   };
 
-  public deleteOrgKey = async (idOrg: string, keyId: string): Promise<{ success: boolean; message: string }> => {
-    return this.makeRequest<{ success: boolean; message: string }>(`organization/${idOrg}/key/${keyId}`, 'DELETE');
+  public deleteOrgKey = async (
+    idOrg: string,
+    keyId: string
+  ): Promise<{ success: boolean; message: string }> => {
+    return this.makeRequest<{ success: boolean; message: string }>(
+      `organization/${idOrg}/key/${keyId}`,
+      'DELETE'
+    );
   };
 
   // Node Registration API calls
@@ -1284,18 +1576,24 @@ export class ApiClient implements IApiClient {
   };
 
   // System Event API calls
-  public getSystemEvents = async (data: SystemEventQueryRequest): Promise<SystemEventQueryResponse> => {
+  public getSystemEvents = async (
+    data: SystemEventQueryRequest
+  ): Promise<SystemEventQueryResponse> => {
     return this.makeRequest<SystemEventQueryResponse>('systemevent', 'POST', data);
   };
 
-  public markSystemEventAsRead = async (systemEventLogId: number | number[]): Promise<SystemEventReadStatusResponse> => {
+  public markSystemEventAsRead = async (
+    systemEventLogId: number | number[]
+  ): Promise<SystemEventReadStatusResponse> => {
     const body: SystemEventReadIdsRequest = Array.isArray(systemEventLogId)
       ? { ids: systemEventLogId }
       : { id: systemEventLogId };
     return this.makeRequest<SystemEventReadStatusResponse>('systemevent/read', 'POST', body);
   };
 
-  public markSystemEventAsUnread = async (systemEventLogId: number | number[]): Promise<SystemEventReadStatusResponse> => {
+  public markSystemEventAsUnread = async (
+    systemEventLogId: number | number[]
+  ): Promise<SystemEventReadStatusResponse> => {
     const body: SystemEventReadIdsRequest = Array.isArray(systemEventLogId)
       ? { ids: systemEventLogId }
       : { id: systemEventLogId };
@@ -1335,7 +1633,10 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetAiLlmsResponse>('ai/llm/available', 'GET', null);
   };
 
-  public updateAiLlm = async (id: string, data: UpdateAiLlmRequest): Promise<UpdateAiLlmResponse> => {
+  public updateAiLlm = async (
+    id: string,
+    data: UpdateAiLlmRequest
+  ): Promise<UpdateAiLlmResponse> => {
     return this.makeRequest<UpdateAiLlmResponse>(`ai/llm/${id}`, 'PUT', data);
   };
 
@@ -1348,7 +1649,10 @@ export class ApiClient implements IApiClient {
   };
 
   ////// AI API Key API calls
-  public createRepoAiApiKey = async (repoId: string, data: CreateRepoAiApiKeyRequest): Promise<CreateRepoAiApiKeyResponse> => {
+  public createRepoAiApiKey = async (
+    repoId: string,
+    data: CreateRepoAiApiKeyRequest
+  ): Promise<CreateRepoAiApiKeyResponse> => {
     return this.makeRequest<CreateRepoAiApiKeyResponse>(`repo/${repoId}/ai/apikey`, 'POST', data);
   };
 
@@ -1361,15 +1665,28 @@ export class ApiClient implements IApiClient {
     apikeyId: string,
     data: UpdateRepoAiApiKeyRequest
   ): Promise<UpdateRepoAiApiKeyResponse> => {
-    return this.makeRequest<UpdateRepoAiApiKeyResponse>(`repo/${repoId}/ai/apikey/${apikeyId}`, 'PUT', data);
+    return this.makeRequest<UpdateRepoAiApiKeyResponse>(
+      `repo/${repoId}/ai/apikey/${apikeyId}`,
+      'PUT',
+      data
+    );
   };
 
-  public deleteRepoAiApiKey = async (repoId: string, apikeyId: string): Promise<DeleteRepoAiApiKeyResponse> => {
-    return this.makeRequest<DeleteRepoAiApiKeyResponse>(`repo/${repoId}/ai/apikey/${apikeyId}`, 'DELETE', null);
+  public deleteRepoAiApiKey = async (
+    repoId: string,
+    apikeyId: string
+  ): Promise<DeleteRepoAiApiKeyResponse> => {
+    return this.makeRequest<DeleteRepoAiApiKeyResponse>(
+      `repo/${repoId}/ai/apikey/${apikeyId}`,
+      'DELETE',
+      null
+    );
   };
 
   ////// Conversation API calls
-  public createConversation = async (data: CreateConversationRequest): Promise<CreateConversationResponse> => {
+  public createConversation = async (
+    data: CreateConversationRequest
+  ): Promise<CreateConversationResponse> => {
     return this.makeRequest<CreateConversationResponse>('conversation', 'POST', data);
   };
 
@@ -1377,10 +1694,16 @@ export class ApiClient implements IApiClient {
     conversationId: string,
     data: SendPromptRequest
   ): Promise<SendPromptResponse> => {
-    return this.makeRequest<SendPromptResponse>(`conversation/${conversationId}/prompt`, 'POST', data);
+    return this.makeRequest<SendPromptResponse>(
+      `conversation/${conversationId}/prompt`,
+      'POST',
+      data
+    );
   };
 
-  public getConversations = async (query: GetConversationsRequest): Promise<GetConversationsResponse> => {
+  public getConversations = async (
+    query: GetConversationsRequest
+  ): Promise<GetConversationsResponse> => {
     const queryParams = new URLSearchParams();
     if (query.take !== undefined) {
       queryParams.append('take', query.take.toString());
@@ -1413,7 +1736,10 @@ export class ApiClient implements IApiClient {
     );
   };
 
-  public getConversationMessages = async (conversationId: string, query: GetConversationMessagesRequest): Promise<GetConversationMessagesResponse> => {
+  public getConversationMessages = async (
+    conversationId: string,
+    query: GetConversationMessagesRequest
+  ): Promise<GetConversationMessagesResponse> => {
     const queryParams = new URLSearchParams();
     if (query.take !== undefined) {
       queryParams.append('take', query.take.toString());
@@ -1421,10 +1747,16 @@ export class ApiClient implements IApiClient {
     if (query.skip !== undefined) {
       queryParams.append('skip', query.skip.toString());
     }
-    return this.makeRequest<GetConversationMessagesResponse>(`conversation/${conversationId}/messages`, 'GET', null);
+    return this.makeRequest<GetConversationMessagesResponse>(
+      `conversation/${conversationId}/messages`,
+      'GET',
+      null
+    );
   };
 
-  public deleteConversation = async (data: DeleteConversationRequest): Promise<DeleteConversationResponse> => {
+  public deleteConversation = async (
+    data: DeleteConversationRequest
+  ): Promise<DeleteConversationResponse> => {
     return this.makeRequest<DeleteConversationResponse>(
       `conversation/${encodeURIComponent(data.conversationId)}?hardDelete=${data.hardDelete}`,
       'DELETE',
@@ -1433,11 +1765,15 @@ export class ApiClient implements IApiClient {
   };
 
   ////// Policy API calls
-  public createPolicy = async (data: CreatePolicyRequest): Promise<{ success: boolean; policy: PolicyDTO }> => {
+  public createPolicy = async (
+    data: CreatePolicyRequest
+  ): Promise<{ success: boolean; policy: PolicyDTO }> => {
     return this.makeRequest<{ success: boolean; policy: PolicyDTO }>('policy', 'POST', data);
   };
 
-  public getPolicies = async (query: GetPoliciesQuery): Promise<{ success: boolean; policies: PolicyDTO[] }> => {
+  public getPolicies = async (
+    query: GetPoliciesQuery
+  ): Promise<{ success: boolean; policies: PolicyDTO[] }> => {
     const queryParams = new URLSearchParams();
     queryParams.append('orgId', query.orgId);
     if (query.workspaceId) {
@@ -1454,21 +1790,31 @@ export class ApiClient implements IApiClient {
   };
 
   public getPolicy = async (policyId: string): Promise<{ success: boolean; policy: PolicyDTO }> => {
-    return this.makeRequest<{ success: boolean; policy: PolicyDTO }>(`policy/${policyId}`, 'GET', null);
+    return this.makeRequest<{ success: boolean; policy: PolicyDTO }>(
+      `policy/${policyId}`,
+      'GET',
+      null
+    );
   };
 
   public updatePolicy = async (
     policyId: string,
     data: UpdatePolicyRequest
   ): Promise<{ success: boolean; policy: PolicyDTO }> => {
-    return this.makeRequest<{ success: boolean; policy: PolicyDTO }>(`policy/${policyId}`, 'PUT', data);
+    return this.makeRequest<{ success: boolean; policy: PolicyDTO }>(
+      `policy/${policyId}`,
+      'PUT',
+      data
+    );
   };
 
   public deletePolicy = async (policyId: string): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>(`policy/${policyId}`, 'DELETE', null);
   };
 
-  public getPolicyViolations = async (query: GetPolicyViolationsQuery): Promise<GetPolicyViolationsResponse> => {
+  public getPolicyViolations = async (
+    query: GetPolicyViolationsQuery
+  ): Promise<GetPolicyViolationsResponse> => {
     const queryParams = new URLSearchParams();
     if (query.workspaceId) {
       queryParams.append('workspaceId', query.workspaceId);
@@ -1558,7 +1904,9 @@ export class ApiClient implements IApiClient {
     );
   };
 
-  public getPolicyAlerts = async (query: GetPolicyAlertsQuery): Promise<GetPolicyAlertsResponse> => {
+  public getPolicyAlerts = async (
+    query: GetPolicyAlertsQuery
+  ): Promise<GetPolicyAlertsResponse> => {
     const queryParams = new URLSearchParams();
     if (query.workspaceId) {
       queryParams.append('workspaceId', query.workspaceId);
@@ -1636,11 +1984,15 @@ export class ApiClient implements IApiClient {
     );
   };
 
-  public validatePolicies = async (data: PolicyValidationRequest): Promise<PolicyValidationResponse> => {
+  public validatePolicies = async (
+    data: PolicyValidationRequest
+  ): Promise<PolicyValidationResponse> => {
     return this.makeRequest<PolicyValidationResponse>('policy/validate', 'POST', data);
   };
 
-  public recommendPolicies = async (data: PolicyRecommendationRequest): Promise<PolicyRecommendationResponse> => {
+  public recommendPolicies = async (
+    data: PolicyRecommendationRequest
+  ): Promise<PolicyRecommendationResponse> => {
     return this.makeRequest<PolicyRecommendationResponse>('policy/recommend', 'POST', data);
   };
 
@@ -1653,14 +2005,25 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetCreditsBalanceResponse>('credits/balance', 'GET', null);
   };
 
-  public getCreditsTransactions = async (query: GetCreditsTransactionsRequest): Promise<GetCreditsTransactionsResponse> => {
-    const result = await this.makeRequest<GetCreditsTransactionsResponse>('credits/transactions', 'GET', query);
+  public getCreditsTransactions = async (
+    query: GetCreditsTransactionsRequest
+  ): Promise<GetCreditsTransactionsResponse> => {
+    const result = await this.makeRequest<GetCreditsTransactionsResponse>(
+      'credits/transactions',
+      'GET',
+      query
+    );
     return result;
   };
 
   /** Consumption = transactions with direction 'out' (backend uses same endpoint) */
-  public getCreditsConsumption = async (query: GetCreditsConsumptionRequest): Promise<GetCreditsConsumptionResponse> => {
-    return this.makeRequest<GetCreditsConsumptionResponse>('credits/transactions', 'GET', { ...query, direction: 'out' });
+  public getCreditsConsumption = async (
+    query: GetCreditsConsumptionRequest
+  ): Promise<GetCreditsConsumptionResponse> => {
+    return this.makeRequest<GetCreditsConsumptionResponse>('credits/transactions', 'GET', {
+      ...query,
+      direction: 'out',
+    });
   };
 
   public buyCreditsPack = async (body: BuyCreditsPackRequest): Promise<BuyCreditsPackResponse> => {
@@ -1676,8 +2039,14 @@ export class ApiClient implements IApiClient {
   };
 
   /** Get aggregated monthly credit stats for histogram (consumption, purchases, grants, balance) */
-  public getCreditsMonthlyStats = async (query?: GetCreditsMonthlyStatsRequest): Promise<GetCreditsMonthlyStatsResponse> => {
-    const result = await this.makeRequest<GetCreditsMonthlyStatsResponse>('credits/stats/monthly', 'GET', query ?? null);
+  public getCreditsMonthlyStats = async (
+    query?: GetCreditsMonthlyStatsRequest
+  ): Promise<GetCreditsMonthlyStatsResponse> => {
+    const result = await this.makeRequest<GetCreditsMonthlyStatsResponse>(
+      'credits/stats/monthly',
+      'GET',
+      query ?? null
+    );
     return result;
   };
 
@@ -1702,7 +2071,11 @@ export class ApiClient implements IApiClient {
     by: Exclude<StorageBreakdownBy, 'providers'>,
     params: DashboardBreakdownQueryParams
   ): Promise<StorageBreakdownResponse> => {
-    return this.makeRequest<StorageBreakdownResponse>(`v2/stats/storage/breakdown/${by}`, 'GET', params);
+    return this.makeRequest<StorageBreakdownResponse>(
+      `v2/stats/storage/breakdown/${by}`,
+      'GET',
+      params
+    );
   };
 
   /** GET /v2/stats/storage/breakdown/providers — Includes protocol, provider, endpoint. */
@@ -1730,7 +2103,11 @@ export class ApiClient implements IApiClient {
     by: AiBreakdownBy,
     params: DashboardBreakdownQueryParams
   ): Promise<AiGatewayBreakdownResponse> => {
-    return this.makeRequest<AiGatewayBreakdownResponse>(`v2/stats/ai/breakdown/${by}`, 'GET', params);
+    return this.makeRequest<AiGatewayBreakdownResponse>(
+      `v2/stats/ai/breakdown/${by}`,
+      'GET',
+      params
+    );
   };
 
   // ---- Private Chat ----
@@ -1786,7 +2163,11 @@ export class ApiClient implements IApiClient {
   public getPolicyTokenStats = async (
     params: DashboardStatsQueryParams
   ): Promise<PolicyTokenTimeSeriesResponse> => {
-    return this.makeRequest<PolicyTokenTimeSeriesResponse>('v2/stats/policies/tokens', 'GET', params);
+    return this.makeRequest<PolicyTokenTimeSeriesResponse>(
+      'v2/stats/policies/tokens',
+      'GET',
+      params
+    );
   };
 
   /** GET /v2/stats/policies/breakdown/{by} — Policy breakdown by rules or users. */
@@ -1794,7 +2175,11 @@ export class ApiClient implements IApiClient {
     by: PolicyBreakdownBy,
     params: DashboardBreakdownQueryParams
   ): Promise<PolicyBreakdownResponse> => {
-    return this.makeRequest<PolicyBreakdownResponse>(`v2/stats/policies/breakdown/${by}`, 'GET', params);
+    return this.makeRequest<PolicyBreakdownResponse>(
+      `v2/stats/policies/breakdown/${by}`,
+      'GET',
+      params
+    );
   };
 
   // ---- Credits ----
@@ -1811,6 +2196,10 @@ export class ApiClient implements IApiClient {
     by: CreditBreakdownBy,
     params: DashboardBreakdownQueryParams
   ): Promise<CreditBreakdownResponse> => {
-    return this.makeRequest<CreditBreakdownResponse>(`v2/stats/credits/breakdown/${by}`, 'GET', params);
+    return this.makeRequest<CreditBreakdownResponse>(
+      `v2/stats/credits/breakdown/${by}`,
+      'GET',
+      params
+    );
   };
 }

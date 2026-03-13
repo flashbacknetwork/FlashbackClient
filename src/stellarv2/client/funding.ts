@@ -16,23 +16,23 @@ export class FundingOps {
   async getStableAssetName(wallet_address: string): Promise<string> {
     const response = await prepareTransaction(this.context, wallet_address, {
       method: 'get_stable_asset_name',
-      args: []
+      args: [],
     });
     if (response.isSuccess) {
       return response.result as string;
     }
-    return '';  
+    return '';
   }
 
   async getStableAssetAddress(wallet_address: string): Promise<string> {
     const response = await prepareTransaction(this.context, wallet_address, {
       method: 'get_stable_asset_address',
-      args: []
+      args: [],
     });
     if (response.isSuccess) {
       return response.result as string;
     }
-    return '';  
+    return '';
   }
 
   /**
@@ -41,14 +41,12 @@ export class FundingOps {
    * @param amount - Amount to send in the stable asset's smallest unit
    * @returns Promise resolving to the transfer result
    */
-  sendFundsOwner = withSignature(
-    async (receiver: string, amount: bigint): Promise<void> => {
-      await executeWalletTransaction(this.context, '', "send_funds_owner", [
-        { value: receiver, type: 'address' },
-        { value: amount, type: 'i128' }
-      ]);
-    }
-  );
+  sendFundsOwner = withSignature(async (receiver: string, amount: bigint): Promise<void> => {
+    await executeWalletTransaction(this.context, '', 'send_funds_owner', [
+      { value: receiver, type: 'address' },
+      { value: amount, type: 'i128' },
+    ]);
+  });
 
   /**
    * Test faucet function for minting tokens to a receiver (owner only)
@@ -56,26 +54,22 @@ export class FundingOps {
    * @param amount - Amount to mint in the stable asset's smallest unit
    * @returns Promise resolving to the minting result
    */
-  testFaucet = withSignature(
-    async (receiver: string, amount: bigint): Promise<void> => {
-        await executeWalletTransaction(this.context, receiver, "test_faucet", [
-          { value: amount, type: 'i128' }
-        ]);
-      }
-    );
+  testFaucet = withSignature(async (receiver: string, amount: bigint): Promise<void> => {
+    await executeWalletTransaction(this.context, receiver, 'test_faucet', [
+      { value: amount, type: 'i128' },
+    ]);
+  });
 
   /**
    * Changes the admin of the stable asset contract (owner only)
    * @param new_admin - Address of the new admin
    * @returns Promise resolving to the admin change result
    */
-  changeAssetAdmin = withSignature(
-    async (new_admin: string): Promise<void> => {
-      await executeWalletTransaction(this.context, '', "change_asset_admin", [
-        { value: new_admin, type: 'address' }
-      ]);
-    }
-  );
+  changeAssetAdmin = withSignature(async (new_admin: string): Promise<void> => {
+    await executeWalletTransaction(this.context, '', 'change_asset_admin', [
+      { value: new_admin, type: 'address' },
+    ]);
+  });
 
   /**
    * Checks if an address is authorized for the stable asset
@@ -85,7 +79,9 @@ export class FundingOps {
   async isAuthorizedForAsset(address: string): Promise<boolean> {
     // This would typically be a getter method on the stable asset contract
     // Implementation depends on the specific stable asset contract interface
-    throw new Error('isAuthorizedForAsset not implemented - requires stable asset contract interaction');
+    throw new Error(
+      'isAuthorizedForAsset not implemented - requires stable asset contract interaction'
+    );
   }
 
   /**
@@ -98,4 +94,4 @@ export class FundingOps {
     // Implementation depends on the specific stable asset contract interaction
     throw new Error('getAssetBalance not implemented - requires stable asset contract interaction');
   }
-} 
+}

@@ -80,10 +80,16 @@ export interface IApiClient {
   createStorageBucket(data: CreateBucketRequest): Promise<CreateBucketResponse>;
   updateStorageBucket(bucketId: string, data: UpdateBucketRequest): Promise<UpdateBucketResponse>;
   deleteStorageBucket(bucketId: string): Promise<ActionResponse>;
-  validateStorageBucket(bucketId: string, data: ValidateBucketRequest): Promise<ValidateBucketResponse>;
+  validateStorageBucket(
+    bucketId: string,
+    data: ValidateBucketRequest
+  ): Promise<ValidateBucketResponse>;
   getApiKeys(workspaceId?: string): Promise<GetProviderApiKeysResponse>;
   createApiKey(data: CreateProviderApiKeyRequest): Promise<CreateProviderApiKeyResponse>;
-  updateApiKey(apiKeyId: string, data: UpdateProviderApiKeyRequest): Promise<UpdateProviderApiKeyResponse>;
+  updateApiKey(
+    apiKeyId: string,
+    data: UpdateProviderApiKeyRequest
+  ): Promise<UpdateProviderApiKeyResponse>;
   deleteApiKey(apiKeyId: string): Promise<DeleteProviderApiKeyResponse>;
   createStorageRepo(data: CreateRepoRequest): Promise<CreateRepoResponse>;
   getStorageRepos(workspaceId?: string): Promise<GetReposResponse>;

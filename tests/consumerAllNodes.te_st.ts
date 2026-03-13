@@ -1,9 +1,5 @@
 /* eslint-disable no-undef */
-import {
-  S3Client,
-  HeadBucketCommand,
-  HeadBucketCommandOutput,
-} from '@aws-sdk/client-s3';
+import { S3Client, HeadBucketCommand, HeadBucketCommandOutput } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { describe, jest, test, expect } from '@jest/globals';
 import * as fs from 'fs';
@@ -28,18 +24,18 @@ dotenv.config(); // loads the .env file
 describe('StorageClient', () => {
   jest.setTimeout(600000);
 
-  const regions = [ "us-east-1","eu-central-1" ];
-  const providers = [ "aws", "gcp", "azure" ];
-  const apis = [ "s3", "gcs", "blob" ];
-  
-  const testHealthCheck = regions.flatMap(region => 
-    providers.flatMap(provider => 
-      apis.map(api => ( `https://${api}-${region}-${provider}.flashback.tech/health`))
+  const regions = ['us-east-1', 'eu-central-1'];
+  const providers = ['aws', 'gcp', 'azure'];
+  const apis = ['s3', 'gcs', 'blob'];
+
+  const testHealthCheck = regions.flatMap((region) =>
+    providers.flatMap((provider) =>
+      apis.map((api) => `https://${api}-${region}-${provider}.flashback.tech/health`)
     )
   );
 
-  const testS3Configurations = regions.flatMap(region => 
-    providers.map(provider => ({
+  const testS3Configurations = regions.flatMap((region) =>
+    providers.map((provider) => ({
       name: `S3 ${region} ${provider.toUpperCase()} Configuration`,
       config: {
         endpoint: `https://s3-${region}-${provider}.flashback.tech`,
@@ -53,9 +49,9 @@ describe('StorageClient', () => {
       bucketName: process.env.TEST_AWS_S3_BUCKET_STORJ!,
     }))
   );
-  
-  const testGCSConfigurations = regions.flatMap(region => 
-    providers.map(provider => ({
+
+  const testGCSConfigurations = regions.flatMap((region) =>
+    providers.map((provider) => ({
       name: `GCS ${region} ${provider.toUpperCase()} Configuration`,
       config: {
         apiEndpoint: `https://gcs-${region}-${provider}.flashback.tech`,
@@ -69,8 +65,8 @@ describe('StorageClient', () => {
     }))
   );
 
-  const testBLOBConfigurations = regions.flatMap(region => 
-    providers.map(provider => ({
+  const testBLOBConfigurations = regions.flatMap((region) =>
+    providers.map((provider) => ({
       name: `BLOB ${region} ${provider.toUpperCase()} Configuration`,
       config: {
         endpoint: `https://blob-${region}-${provider}.flashback.tech`,
@@ -81,15 +77,10 @@ describe('StorageClient', () => {
     }))
   );
 
-
-  test.each(testHealthCheck)(
-    'Should perform health check for $name',
-    async (url: string) => {
-      const response = await fetch(url);
-      expect(response.status).toBe(200);
-    }
-  );
-
+  test.each(testHealthCheck)('Should perform health check for $name', async (url: string) => {
+    const response = await fetch(url);
+    expect(response.status).toBe(200);
+  });
 
   const testFolderName = 'flashback';
   const testFileName = 'sample.jpg';

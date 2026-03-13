@@ -8,9 +8,9 @@ import { generateOpenAICompatibleKeys } from './src/api';
  */
 function main() {
   console.log('🔑 Generating OpenAI-compatible API key/secret pair...\n');
-  
+
   const { apiKey, secretKey } = generateOpenAICompatibleKeys();
-  
+
   console.log('Generated credentials:');
   console.log('====================');
   console.log(`API Key: ${apiKey}`);

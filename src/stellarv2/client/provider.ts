@@ -22,8 +22,8 @@ export class ProviderOps {
    */
   registerProvider = withSignature(
     async (provider_id: string, description: string): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "register_provider", [
-        { value: description, type: 'string' }
+      await executeWalletTransaction(this.context, provider_id, 'register_provider', [
+        { value: description, type: 'string' },
       ]);
     }
   );
@@ -36,8 +36,8 @@ export class ProviderOps {
    */
   updateProvider = withSignature(
     async (provider_id: string, description: string): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "update_provider", [
-        { value: description, type: 'string' }
+      await executeWalletTransaction(this.context, provider_id, 'update_provider', [
+        { value: description, type: 'string' },
       ]);
     }
   );
@@ -47,12 +47,9 @@ export class ProviderOps {
    * @param provider_id - Address of the provider to delete
    * @returns Promise resolving to the deletion result
    */
-  deleteProvider = withSignature(
-    async (provider_id: string): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "delete_provider", [
-      ]);
-    }
-  );
+  deleteProvider = withSignature(async (provider_id: string): Promise<void> => {
+    await executeWalletTransaction(this.context, provider_id, 'delete_provider', []);
+  });
 
   /**
    * Retrieves provider information
@@ -62,9 +59,7 @@ export class ProviderOps {
   async getProvider(provider_id: string): Promise<Provider | null> {
     const response = await prepareTransaction(this.context, provider_id, {
       method: 'get_provider',
-      args: [
-        { value: provider_id, type: 'address' }
-      ]
+      args: [{ value: provider_id, type: 'address' }],
     });
 
     if (!response.isSuccess) {
@@ -85,7 +80,7 @@ export class ProviderOps {
   async getProviderCount(): Promise<number> {
     const response = await prepareTransaction(this.context, '', {
       method: 'get_provider_count',
-      args: []
+      args: [],
     });
 
     if (!response.isSuccess) {
@@ -110,8 +105,8 @@ export class ProviderOps {
       method: 'get_providers',
       args: [
         { value: skip, type: 'u32' },
-        { value: take, type: 'u32' }
-      ]
+        { value: take, type: 'u32' },
+      ],
     });
 
     if (!response.isSuccess) {
@@ -202,4 +197,4 @@ export class ProviderOps {
 
     return provider.units_count;
   }
-} 
+}

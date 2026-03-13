@@ -1,6 +1,16 @@
 import { ClientContext } from '.';
-import { Bucket, BucketCreateParams, BucketMarketplace, BucketUpdateBasicParams, BucketUpdateConditionsParams } from '../models';
-import { ContractMethodResponse, executeWalletTransaction, prepareTransaction } from '../wallet/transaction';
+import {
+  Bucket,
+  BucketCreateParams,
+  BucketMarketplace,
+  BucketUpdateBasicParams,
+  BucketUpdateConditionsParams,
+} from '../models';
+import {
+  ContractMethodResponse,
+  executeWalletTransaction,
+  prepareTransaction,
+} from '../wallet/transaction';
 import { withSignature } from '../utils/decorator';
 
 /**
@@ -23,7 +33,11 @@ export class BucketOps {
   createBucket = withSignature(
     async (provider_id: string, params: BucketCreateParams): Promise<any> => {
       console.log('Creating bucket with params:', JSON.stringify(params, null, 2));
-      const response: ContractMethodResponse = await executeWalletTransaction(this.context, provider_id, "create_bucket", [
+      const response: ContractMethodResponse = await executeWalletTransaction(
+        this.context,
+        provider_id,
+        'create_bucket',
+        [
           { value: params.name, type: 'string' },
           { value: params.region, type: 'string' },
           { value: params.fb_bucket_id, type: 'string' },
@@ -31,8 +45,9 @@ export class BucketOps {
           { value: params.price_per_gb_storage, type: 'u128' },
           { value: params.price_per_gb_egress, type: 'u128' },
           { value: params.sla_avg_latency_ms, type: 'u32' },
-          { value: params.sla_avg_uptime_pct, type: 'u32' }
-        ]);
+          { value: params.sla_avg_uptime_pct, type: 'u32' },
+        ]
+      );
 
       if (!response.isSuccess) {
         console.error('Contract call failed - isSuccess is false');
@@ -40,11 +55,11 @@ export class BucketOps {
       }
 
       const result = response.result;
-      
+
       if (typeof result === 'number') {
         return result;
       }
-      
+
       console.error('Result is not a number, throwing error. Result:', result);
       return result;
     }
@@ -91,11 +106,11 @@ export class BucketOps {
       bucket_id: number,
       params: BucketUpdateBasicParams
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "update_bucket_basic", [
+      await executeWalletTransaction(this.context, provider_id, 'update_bucket_basic', [
         { value: bucket_id, type: 'u32' },
         { value: params.name || null, type: 'string' },
         { value: params.region || null, type: 'string' },
-        { value: params.country || null, type: 'string' }
+        { value: params.country || null, type: 'string' },
       ]);
     }
   );
@@ -113,14 +128,14 @@ export class BucketOps {
       bucket_id: number,
       params: BucketUpdateConditionsParams
     ): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "update_bucket_conditions", [
+      await executeWalletTransaction(this.context, provider_id, 'update_bucket_conditions', [
         { value: bucket_id, type: 'u32' },
         { value: params.name || null, type: 'string' },
         { value: params.region || null, type: 'string' },
         { value: params.price_per_gb_storage || null, type: 'u128' },
         { value: params.price_per_gb_egress || null, type: 'u128' },
         { value: params.sla_avg_latency_ms || null, type: 'u32' },
-        { value: params.sla_avg_uptime_pct || null, type: 'u32' }
+        { value: params.sla_avg_uptime_pct || null, type: 'u32' },
       ]);
     }
   );
@@ -131,13 +146,11 @@ export class BucketOps {
    * @param bucket_id - ID of the bucket to lock
    * @returns Promise resolving to the lock result
    */
-  lockBucket = withSignature(
-    async (provider_id: string, bucket_id: number): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "lock_bucket", [
-        { value: bucket_id, type: 'u32' }
-      ]);
-    }
-  );
+  lockBucket = withSignature(async (provider_id: string, bucket_id: number): Promise<void> => {
+    await executeWalletTransaction(this.context, provider_id, 'lock_bucket', [
+      { value: bucket_id, type: 'u32' },
+    ]);
+  });
 
   /**
    * Unlocks a bucket to allow modifications
@@ -145,13 +158,11 @@ export class BucketOps {
    * @param bucket_id - ID of the bucket to unlock
    * @returns Promise resolving to the unlock result
    */
-  unlockBucket = withSignature(
-    async (provider_id: string, bucket_id: number): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "unlock_bucket", [
-        { value: bucket_id, type: 'u32' }
-      ]);
-    }
-  );
+  unlockBucket = withSignature(async (provider_id: string, bucket_id: number): Promise<void> => {
+    await executeWalletTransaction(this.context, provider_id, 'unlock_bucket', [
+      { value: bucket_id, type: 'u32' },
+    ]);
+  });
 
   /**
    * Deletes a bucket from the system
@@ -159,13 +170,11 @@ export class BucketOps {
    * @param bucket_id - ID of the bucket to delete
    * @returns Promise resolving to the deletion result
    */
-  deleteBucket = withSignature(
-    async (provider_id: string, bucket_id: number): Promise<void> => {
-      await executeWalletTransaction(this.context, provider_id, "delete_bucket", [
-        { value: bucket_id, type: 'u32' }
-      ]);
-    }
-  );
+  deleteBucket = withSignature(async (provider_id: string, bucket_id: number): Promise<void> => {
+    await executeWalletTransaction(this.context, provider_id, 'delete_bucket', [
+      { value: bucket_id, type: 'u32' },
+    ]);
+  });
 
   /**
    * Retrieves bucket information
@@ -176,9 +185,7 @@ export class BucketOps {
   async getBucket(provider_id: string, bucket_id: number): Promise<Bucket | null> {
     const response = await prepareTransaction(this.context, provider_id, {
       method: 'get_bucket',
-      args: [
-        { value: bucket_id, type: 'u32' }
-      ]
+      args: [{ value: bucket_id, type: 'u32' }],
     });
 
     if (!response.isSuccess) {
@@ -199,7 +206,7 @@ export class BucketOps {
   async getBucketCount(): Promise<number> {
     const response = await prepareTransaction(this.context, '', {
       method: 'get_bucket_count',
-      args: []
+      args: [],
     });
 
     if (!response.isSuccess) {
@@ -228,8 +235,8 @@ export class BucketOps {
       method: 'get_buckets',
       args: [
         { value: skip, type: 'u32' },
-        { value: take, type: 'u32' }
-      ]
+        { value: take, type: 'u32' },
+      ],
     });
 
     if (!response.isSuccess) {
@@ -251,9 +258,7 @@ export class BucketOps {
   async getBucketsByProvider(provider_id: string): Promise<Bucket[]> {
     const response = await prepareTransaction(this.context, provider_id, {
       method: 'get_buckets_by_provider',
-      args: [
-        { value: provider_id, type: 'address' }
-      ]
+      args: [{ value: provider_id, type: 'address' }],
     });
 
     if (!response.isSuccess) {
@@ -287,7 +292,10 @@ export class BucketOps {
    * @param bucket_id - ID of the bucket
    * @returns Promise resolving to pricing information or null if bucket not found
    */
-  async getBucketPricing(provider_id: string, bucket_id: number): Promise<{
+  async getBucketPricing(
+    provider_id: string,
+    bucket_id: number
+  ): Promise<{
     price_per_gb_storage: bigint;
     price_per_gb_egress: bigint;
     max_storage_gb: number;
@@ -302,7 +310,7 @@ export class BucketOps {
       price_per_gb_storage: bucket.price_per_gb_storage,
       price_per_gb_egress: bucket.price_per_gb_egress,
       max_storage_gb: bucket.max_storage_gb,
-      max_egress_gb: bucket.max_egress_gb
+      max_egress_gb: bucket.max_egress_gb,
     };
   }
-} 
+}

@@ -86,4 +86,3 @@ export interface GetLinkByTokenResponse {
   error_code?: string;
   message?: string;
 }
-
