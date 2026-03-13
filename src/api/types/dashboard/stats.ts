@@ -93,6 +93,10 @@ export interface BreakdownMeta {
   limit: number;
   offset: number;
   totalEntities: number;
+  resourceFilter?: {
+    type: 'bucket' | 'model' | 'user' | 'node' | 'rule' | 'apiKey';
+    id: string;
+  };
 }
 
 // ============================================================================
@@ -153,6 +157,7 @@ export interface DashboardBreakdownQueryParams {
   model?: string;    // Resource filter, applicable to AI domains
   bucketId?: string; // Resource filter, applicable to Storage Gateway
   ruleId?: string;   // Resource filter, applicable to Policies
+  userId?: string;   // Resource filter, applicable to Private Chat
 }
 
 // ============================================================================
