@@ -149,6 +149,10 @@ export interface DashboardBreakdownQueryParams {
   includeSeries?: boolean;
   limit?: number;
   offset?: number;
+  apiKeyId?: string; // Resource filter, applicable to most domains
+  model?: string;    // Resource filter, applicable to AI domains
+  bucketId?: string; // Resource filter, applicable to Storage Gateway
+  ruleId?: string;   // Resource filter, applicable to Policies
 }
 
 // ============================================================================
@@ -168,9 +172,10 @@ export interface StorageTimeSeriesPoint extends StorageMetrics {
   entityId?: string;
 }
 
-/** GET /v2/stats/storage?scope=...&id=...&window=...&bucketId=... */
+/** GET /v2/stats/storage?scope=...&id=...&window=...&bucketId=...&apiKeyId=... */
 export interface StorageStatsQueryParams extends DashboardStatsQueryParams {
   bucketId?: string;
+  apiKeyId?: string;
 }
 
 export type StorageTimeSeriesResponse = TimeSeriesResponse<StorageTimeSeriesPoint>;
