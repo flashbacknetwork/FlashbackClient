@@ -314,6 +314,19 @@ export interface StorageBucketStatusResponse {
   nodeStatus: NodeStatusInfo[];
 }
 
+/** Capability bitmask for filtering API keys by provider support (backend Provider.capabilities). */
+export enum ProviderCapability {
+  Storage = 0x1,
+  AI = 0x2,
+}
+
+/** Query params for GET /apikeys. When capability is set, only keys whose provider supports that capability are returned. */
+export interface GetProviderApiKeysParams {
+  workspaceId?: string;
+  /** Filter to providers that support this capability (e.g. ProviderCapability.Storage or ProviderCapability.AI). */
+  capability?: ProviderCapability;
+}
+
 export interface ProviderApiKeyDTO {
   id: string;
   key: string;

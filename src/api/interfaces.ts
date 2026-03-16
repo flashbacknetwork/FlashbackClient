@@ -29,6 +29,7 @@ import {
   UpdateBucketResponse,
   ValidateBucketRequest,
   ValidateBucketResponse,
+  GetProviderApiKeysParams,
   GetProviderApiKeysResponse,
   CreateProviderApiKeyRequest,
   CreateProviderApiKeyResponse,
@@ -84,7 +85,7 @@ export interface IApiClient {
     bucketId: string,
     data: ValidateBucketRequest
   ): Promise<ValidateBucketResponse>;
-  getApiKeys(workspaceId?: string): Promise<GetProviderApiKeysResponse>;
+  getApiKeys(params?: string | GetProviderApiKeysParams): Promise<GetProviderApiKeysResponse>;
   createApiKey(data: CreateProviderApiKeyRequest): Promise<CreateProviderApiKeyResponse>;
   updateApiKey(
     apiKeyId: string,

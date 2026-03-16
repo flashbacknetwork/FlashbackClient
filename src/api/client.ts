@@ -24,6 +24,7 @@ import {
   StorageBucketStatusResponse,
   GetBucketNodeStatsRequest,
   GetBucketNodeStatsResponse,
+  GetProviderApiKeysParams,
   GetProviderApiKeysResponse,
   CreateProviderApiKeyRequest,
   CreateProviderApiKeyResponse,
@@ -570,10 +571,18 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<GetBucketNodeStatsResponse>(`bucket/${bucketId}/stats`, 'POST', data);
   };
 
-  public getApiKeys = async (workspaceId?: string): Promise<GetProviderApiKeysResponse> => {
+  public getApiKeys = async (
+    params?: string | GetProviderApiKeysParams
+  ): Promise<GetProviderApiKeysResponse> => {
     const queryParams = new URLSearchParams();
-    if (workspaceId) {
-      queryParams.append('workspaceId', workspaceId);
+    if (params !== undefined) {
+      if (typeof params === 'string') {
+        queryParams.append('workspaceId', params);
+      } else {
+        if (params.workspaceId) queryParams.append('workspaceId', params.workspaceId);
+        if (params.capability !== undefined)
+          queryParams.append('capability', String(params.capability));
+      }
     }
     return this.makeRequest<GetProviderApiKeysResponse>(
       'apikeys?' + queryParams.toString(),
