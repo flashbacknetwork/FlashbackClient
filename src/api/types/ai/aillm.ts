@@ -11,18 +11,20 @@ export { AiType };
 export interface CreateAiLlmRequest {
   name: string;
   aiType: AiType;
-  endpoint: string;
+  endpoint?: string | null;
   key?: string | null;
-  secret: string;
+  secret?: string | null;
+  apiKeyUuid?: string;
   workspaceId: string;
 }
 
 export interface UpdateAiLlmRequest {
   name?: string;
   aiType?: AiType;
-  endpoint?: string;
+  endpoint?: string | null;
   key?: string | null;
-  secret?: string;
+  secret?: string | null;
+  apiKeyUuid?: string;
 }
 
 export interface AiLlmDTO {
@@ -34,6 +36,7 @@ export interface AiLlmDTO {
   aiType: AiType;
   endpoint: string;
   key: string | null;
+  apiKeyId?: string;
   createdAt: string;
   repos?: {
     id: string;
