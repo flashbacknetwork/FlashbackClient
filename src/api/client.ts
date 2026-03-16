@@ -582,6 +582,7 @@ export class ApiClient implements IApiClient {
         if (params.workspaceId) queryParams.append('workspaceId', params.workspaceId);
         if (params.capability !== undefined)
           queryParams.append('capability', String(params.capability));
+        if (params.provider) queryParams.append('provider', params.provider);
       }
     }
     return this.makeRequest<GetProviderApiKeysResponse>(

@@ -322,11 +322,13 @@ export enum ProviderCapability {
   All = 0xff,
 }
 
-/** Query params for GET /apikeys. When capability is set, only keys whose provider supports that capability are returned. */
+/** Query params for GET /apikeys. When capability is set, only keys whose provider supports that capability are returned. When provider is set, only keys for that provider (e.g. "AWS", "OPENAI") are returned. */
 export interface GetProviderApiKeysParams {
   workspaceId?: string;
   /** Filter to providers that support this capability (e.g. ProviderCapability.Storage or ProviderCapability.AI). */
   capability?: ProviderCapability;
+  /** Filter to API keys for this provider only (e.g. "AWS", "GCP", "OPENAI", "ANTHROPIC"). Use when the user has already chosen a provider (e.g. creating an AWS bucket or OPENAI LLM). */
+  provider?: string;
 }
 
 export interface ProviderApiKeyDTO {
