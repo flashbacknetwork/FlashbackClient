@@ -23,7 +23,7 @@ export type DashboardTimeBucketSize = '5m' | '10m' | '1h' | '6h' | '12h' | '1d';
 
 export type StorageBreakdownBy = 'workspaces' | 'repos' | 'buckets' | 'providers' | 'nodes';
 
-export type AiBreakdownBy = 'workspaces' | 'repos' | 'models' | 'providers' | 'nodes' | 'configs';
+export type AiBreakdownBy = 'workspaces' | 'repos' | 'models' | 'providers' | 'nodes' | 'aiConfigs';
 
 export type PrivateChatBreakdownBy = 'models' | 'users';
 
