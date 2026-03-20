@@ -23,7 +23,7 @@ export type DashboardTimeBucketSize = '5m' | '10m' | '1h' | '6h' | '12h' | '1d';
 
 export type StorageBreakdownBy = 'workspaces' | 'repos' | 'buckets' | 'providers' | 'nodes';
 
-export type AiBreakdownBy = 'workspaces' | 'repos' | 'models' | 'providers' | 'nodes';
+export type AiBreakdownBy = 'workspaces' | 'repos' | 'models' | 'providers' | 'nodes' | 'configs';
 
 export type PrivateChatBreakdownBy = 'models' | 'users';
 
@@ -56,7 +56,7 @@ export interface TimeSeriesMeta {
   window: DashboardWindow;
   timeBucketSize: DashboardTimeBucketSize;
   resourceFilter?: {
-    type: 'bucket' | 'model' | 'user' | 'node' | 'rule' | 'apiKey';
+    type: 'bucket' | 'model' | 'user' | 'node' | 'rule' | 'apiKey' | 'aiLlm';
     id: string;
   };
 }
@@ -73,7 +73,7 @@ export interface BreakdownMeta {
   offset: number;
   totalEntities: number;
   resourceFilter?: {
-    type: 'bucket' | 'model' | 'user' | 'node' | 'rule' | 'apiKey';
+    type: 'bucket' | 'model' | 'user' | 'node' | 'rule' | 'apiKey' | 'aiLlm';
     id: string;
   };
 }
@@ -137,6 +137,7 @@ export interface DashboardBreakdownQueryParams {
   bucketId?: string; // Resource filter, applicable to Storage Gateway
   ruleId?: string; // Resource filter, applicable to Policies
   userId?: string; // Resource filter, applicable to Private Chat
+  aiLlmId?: string; // Resource filter, applicable to AI LLM Configs
 }
 
 // ============================================================================
@@ -205,6 +206,7 @@ export interface AiGatewayTimeSeriesPoint extends AiGatewayMetrics {
 export interface AiGatewayStatsQueryParams extends DashboardStatsQueryParams {
   model?: string;
   apiKeyId?: string;
+  aiLlmId?: string;
 }
 
 export type AiGatewayTimeSeriesResponse = TimeSeriesResponse<AiGatewayTimeSeriesPoint>;
@@ -236,6 +238,7 @@ export interface PrivateChatStatsQueryParams extends DashboardStatsQueryParams {
   model?: string;
   userId?: string;
   apiKeyId?: string;
+  aiLlmId?: string;
 }
 
 export type PrivateChatTimeSeriesResponse = TimeSeriesResponse<PrivateChatTimeSeriesPoint>;
@@ -329,6 +332,7 @@ export interface CreditTimeSeriesPoint extends CreditMetrics {
 /** GET /v2/stats/credits?scope=...&id=...&window=...&apiKeyId=... */
 export interface CreditStatsQueryParams extends DashboardStatsQueryParams {
   apiKeyId?: string;
+  aiLlmId?: string;
 }
 
 export type CreditTimeSeriesResponse = TimeSeriesResponse<CreditTimeSeriesPoint>;
