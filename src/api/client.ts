@@ -554,8 +554,16 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<ActionResponse>(`bucket/${bucketId}`, 'DELETE', null);
   };
 
-  public getAvailableStorageBuckets = async (): Promise<StorageBucket[]> => {
-    return this.makeRequest<StorageBucket[]>('bucket/available', 'GET', null);
+  public getAvailableStorageBuckets = async (workspaceId?: string): Promise<StorageBucket[]> => {
+    const queryParams = new URLSearchParams();
+    if (workspaceId) {
+      queryParams.append('workspaceId', workspaceId);
+    }
+    return this.makeRequest<StorageBucket[]>(
+      'bucket/available?' + queryParams.toString(),
+      'GET',
+      null
+    );
   };
 
   public getStorageBucketStatus = async (

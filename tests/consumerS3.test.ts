@@ -46,8 +46,8 @@ describe('StorageClient', () => {
     {
       name: 'S3 to S3 DEV Node (AWS endpoint, GCP provider)',
       config: {
-        //endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
-        endpoint: 'http://gcs-us-east-1-local.flashback.tech:3002/',
+        endpoint: process.env.TEST_S3_GCP_PROVIDER_URL,
+        //endpoint: 'http://gcs-us-east-1-local.flashback.tech:3002/',
         credentials: {
           accessKeyId: process.env.TEST_FB_STELLAR_REPO!,
           secretAccessKey: process.env.TEST_FB_STELLAR_REPO_SECRET!,
