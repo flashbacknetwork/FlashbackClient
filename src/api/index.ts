@@ -23,6 +23,7 @@ import * as ConversationTypes from './types/ai/conversation';
 import * as AiStatsTypes from './types/ai/stats';
 import * as LinksTypes from './types/platform/links';
 import * as CreditsTypes from './types/platform/credits';
+import * as CloudKeysTypes from './types/platform/cloudkeys';
 import * as DashboardStatsTypes from './types/dashboard/stats';
 
 export {
@@ -52,5 +53,6 @@ export {
   AiStatsTypes,
   LinksTypes,
   CreditsTypes,
+  CloudKeysTypes,
   DashboardStatsTypes,
 };

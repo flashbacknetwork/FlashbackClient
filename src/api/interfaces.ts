@@ -38,6 +38,11 @@ import {
   DeleteProviderApiKeyResponse,
 } from './types/storage/storage';
 import {
+  AddRepoCloudApiKeyRequest,
+  AddRepoCloudApiKeyResponse,
+  ListRepoCloudApiKeysResponse,
+} from './types/platform/cloudkeys';
+import {
   RegisterBody,
   LoginBody,
   RegisterResponse,
@@ -104,6 +109,9 @@ export interface IApiClient {
     data: UpdateRepoKeyRequest
   ): Promise<UpdateRepoKeyResponse>;
   deleteRepoKey(repoId: string, keyId: string): Promise<ActionResponse>;
+  addRepoCloudApiKey(data: AddRepoCloudApiKeyRequest): Promise<AddRepoCloudApiKeyResponse>;
+  listRepoCloudApiKeys(repoId: string): Promise<ListRepoCloudApiKeysResponse>;
+  removeRepoCloudApiKey(repoId: string, repoCloudApiKeyId: string): Promise<ActionResponse>;
   validateNewRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
   validateUpdateRepoUnits(data: ValidateRepoUnitsRequest): Promise<ValidateRepoUnitsResponse>;
   userRegister(registerBody: RegisterBody): Promise<RegisterResponse>;

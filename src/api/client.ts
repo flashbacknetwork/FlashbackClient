@@ -39,6 +39,11 @@ import {
   GetRepoResponse,
   StorageRepoWithBuckets,
 } from './types/storage/storage';
+import {
+  AddRepoCloudApiKeyRequest,
+  AddRepoCloudApiKeyResponse,
+  ListRepoCloudApiKeysResponse,
+} from './types/platform/cloudkeys';
 import { IApiClient, ProviderType } from './interfaces';
 import {
   ActivateResponse,
@@ -721,6 +726,35 @@ export class ApiClient implements IApiClient {
 
   public deleteRepoKey = async (repoId: string, keyId: string): Promise<ActionResponse> => {
     return this.makeRequest<ActionResponse>(`repo/${repoId}/apikey/${keyId}`, 'DELETE', null);
+  };
+
+  public addRepoCloudApiKey = async (
+    data: AddRepoCloudApiKeyRequest
+  ): Promise<AddRepoCloudApiKeyResponse> => {
+    return this.makeRequest<AddRepoCloudApiKeyResponse>(
+      `repo/${data.repoId}/cloud-apikey`,
+      'POST',
+      { apiKeyId: data.apiKeyId }
+    );
+  };
+
+  public listRepoCloudApiKeys = async (repoId: string): Promise<ListRepoCloudApiKeysResponse> => {
+    return this.makeRequest<ListRepoCloudApiKeysResponse>(
+      `repo/${repoId}/cloud-apikey`,
+      'GET',
+      null
+    );
+  };
+
+  public removeRepoCloudApiKey = async (
+    repoId: string,
+    repoCloudApiKeyId: string
+  ): Promise<ActionResponse> => {
+    return this.makeRequest<ActionResponse>(
+      `repo/${repoId}/cloud-apikey/${repoCloudApiKeyId}`,
+      'DELETE',
+      null
+    );
   };
 
   ////// User API
