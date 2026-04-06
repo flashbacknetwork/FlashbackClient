@@ -318,6 +318,8 @@ export interface StorageBucketStatusResponse {
 export enum ProviderCapability {
   Storage = 0x1,
   AI = 0x2,
+  /** Cloud resources (e.g. AWS / GCP / Azure credentials for cloud resource sync). */
+  Cloud = 0x4,
   /** General / all (e.g. OTHER provider). */
   All = 0xff,
 }
@@ -325,7 +327,7 @@ export enum ProviderCapability {
 /** Query params for GET /apikeys. When capability is set, only keys whose provider supports that capability are returned. When provider is set, only keys for that provider (e.g. "AWS", "OPENAI") are returned. */
 export interface GetProviderApiKeysParams {
   workspaceId?: string;
-  /** Filter to providers that support this capability (e.g. ProviderCapability.Storage or ProviderCapability.AI). */
+  /** Filter to providers that support this capability (e.g. Storage, AI, or Cloud). */
   capability?: ProviderCapability;
   /** Filter to API keys for this provider only (e.g. "AWS", "GCP", "OPENAI", "ANTHROPIC"). Use when the user has already chosen a provider (e.g. creating an AWS bucket or OPENAI LLM). */
   provider?: string;
