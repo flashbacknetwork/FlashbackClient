@@ -44,6 +44,36 @@ import {
   AddRepoCloudApiKeyResponse,
   ListRepoCloudApiKeysResponse,
 } from './types/platform/cloudkeys';
+import {
+  ApproveAgentPlanRequest,
+  ApproveAgentPlanResponse,
+  CreateAgentPlanRequest,
+  CreateAgentPlanResponse,
+  CreateAgentTemplateRequest,
+  CreateAgentTemplateResponse,
+  DeleteAgentSnippetResponse,
+  DeleteAgentTemplateResponse,
+  GetAgentPlanResponse,
+  GetAgentSnippetResponse,
+  GetAgentSnippetVersionResponse,
+  GetAgentTemplateLogsResponse,
+  GetAgentTemplateResponse,
+  ListAgentPlansQuery,
+  ListAgentPlansResponse,
+  ListAgentSnippetVersionsResponse,
+  ListAgentSnippetsQuery,
+  ListAgentSnippetsResponse,
+  ListAgentTemplatesQuery,
+  ListAgentTemplatesResponse,
+  ListAgentToolsResponse,
+  RefreshAgentToolsResponse,
+  RejectAgentPlanResponse,
+  ListAgentTemplateLogsQuery,
+  UpdateAgentSnippetRequest,
+  UpdateAgentSnippetResponse,
+  UpdateAgentTemplateRequest,
+  UpdateAgentTemplateResponse,
+} from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
   ActivateResponse,
@@ -294,6 +324,12 @@ export class ApiClient implements IApiClient {
     this.baseURL = baseURL;
     this.headers = {};
     this.debug = false;
+  }
+
+  /** Proxied Agent Engine routes on the FlashBackend (`/api/agentengine/...`). */
+  private agentEnginePath(subpath: string): string {
+    const trimmed = subpath.startsWith('/') ? subpath.slice(1) : subpath;
+    return `api/agentengine/${trimmed}`;
   }
 
   public setDebug = (debug: boolean) => {
@@ -753,6 +789,207 @@ export class ApiClient implements IApiClient {
     return this.makeRequest<ActionResponse>(
       `repo/${repoId}/cloud-apikey/${repoCloudApiKeyId}`,
       'DELETE',
+      null
+    );
+  };
+
+  ////// Agent Engine API (backend proxy → FlashAgentEngine)
+  public createAgentPlan = async (
+    data: CreateAgentPlanRequest
+  ): Promise<CreateAgentPlanResponse> => {
+    return this.makeRequest<CreateAgentPlanResponse>(this.agentEnginePath('plan'), 'POST', data);
+  };
+
+  public getAgentPlan = async (flowId: string): Promise<GetAgentPlanResponse> => {
+    return this.makeRequest<GetAgentPlanResponse>(
+      this.agentEnginePath(`plan/${flowId}`),
+      'GET',
+      null
+    );
+  };
+
+  public listAgentPlans = async (query: ListAgentPlansQuery): Promise<ListAgentPlansResponse> => {
+    const params = new URLSearchParams();
+    params.set('org_id', query.org_id);
+    if (query.limit !== undefined) {
+      params.set('limit', String(query.limit));
+    }
+    if (query.offset !== undefined) {
+      params.set('offset', String(query.offset));
+    }
+    return this.makeRequest<ListAgentPlansResponse>(
+      `${this.agentEnginePath('plans')}?${params.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public approveAgentPlan = async (
+    flowId: string,
+    data?: ApproveAgentPlanRequest
+  ): Promise<ApproveAgentPlanResponse> => {
+    return this.makeRequest<ApproveAgentPlanResponse>(
+      this.agentEnginePath(`plan/${flowId}/approve`),
+      'POST',
+      data ?? {}
+    );
+  };
+
+  public rejectAgentPlan = async (flowId: string): Promise<RejectAgentPlanResponse> => {
+    return this.makeRequest<RejectAgentPlanResponse>(
+      this.agentEnginePath(`plan/${flowId}/reject`),
+      'POST',
+      {}
+    );
+  };
+
+  /** Relative URL path for plan execution SSE (authorize as for other API calls). */
+  public getAgentPlanStreamRelativePath(flowId: string): string {
+    return this.agentEnginePath(`plan/${flowId}/stream`);
+  }
+
+  public listAgentTools = async (): Promise<ListAgentToolsResponse> => {
+    return this.makeRequest<ListAgentToolsResponse>(this.agentEnginePath('tools'), 'GET', null);
+  };
+
+  public refreshAgentTools = async (): Promise<RefreshAgentToolsResponse> => {
+    return this.makeRequest<RefreshAgentToolsResponse>(
+      this.agentEnginePath('tools/refresh'),
+      'POST',
+      {}
+    );
+  };
+
+  public listAgentTemplates = async (
+    query: ListAgentTemplatesQuery
+  ): Promise<ListAgentTemplatesResponse> => {
+    const params = new URLSearchParams();
+    params.set('org_id', query.org_id);
+    if (query.limit !== undefined) {
+      params.set('limit', String(query.limit));
+    }
+    if (query.offset !== undefined) {
+      params.set('offset', String(query.offset));
+    }
+    return this.makeRequest<ListAgentTemplatesResponse>(
+      `${this.agentEnginePath('templates')}?${params.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getAgentTemplate = async (templateId: string): Promise<GetAgentTemplateResponse> => {
+    return this.makeRequest<GetAgentTemplateResponse>(
+      this.agentEnginePath(`templates/${templateId}`),
+      'GET',
+      null
+    );
+  };
+
+  public createAgentTemplate = async (
+    data: CreateAgentTemplateRequest
+  ): Promise<CreateAgentTemplateResponse> => {
+    return this.makeRequest<CreateAgentTemplateResponse>(
+      this.agentEnginePath('templates'),
+      'POST',
+      data
+    );
+  };
+
+  public updateAgentTemplate = async (
+    templateId: string,
+    data: UpdateAgentTemplateRequest
+  ): Promise<UpdateAgentTemplateResponse> => {
+    return this.makeRequest<UpdateAgentTemplateResponse>(
+      this.agentEnginePath(`templates/${templateId}`),
+      'PUT',
+      data
+    );
+  };
+
+  public deleteAgentTemplate = async (templateId: string): Promise<DeleteAgentTemplateResponse> => {
+    return this.makeRequest<DeleteAgentTemplateResponse>(
+      this.agentEnginePath(`templates/${templateId}`),
+      'DELETE',
+      null
+    );
+  };
+
+  public getAgentTemplateLogs = async (
+    templateId: string,
+    query?: ListAgentTemplateLogsQuery
+  ): Promise<GetAgentTemplateLogsResponse> => {
+    const params = new URLSearchParams();
+    if (query?.limit !== undefined) {
+      params.set('limit', String(query.limit));
+    }
+    if (query?.offset !== undefined) {
+      params.set('offset', String(query.offset));
+    }
+    const qs = params.toString();
+    const path =
+      qs.length > 0
+        ? `${this.agentEnginePath(`templates/${templateId}/logs`)}?${qs}`
+        : this.agentEnginePath(`templates/${templateId}/logs`);
+    return this.makeRequest<GetAgentTemplateLogsResponse>(path, 'GET', null);
+  };
+
+  public listAgentSnippets = async (
+    query: ListAgentSnippetsQuery
+  ): Promise<ListAgentSnippetsResponse> => {
+    return this.makeRequest<ListAgentSnippetsResponse>(this.agentEnginePath('snippets'), 'GET', {
+      org_id: query.org_id,
+      provider: query.provider,
+      resource_type: query.resource_type,
+      purpose: query.purpose,
+      reusable: query.reusable === undefined ? undefined : String(query.reusable),
+    });
+  };
+
+  public getAgentSnippet = async (snippetId: string): Promise<GetAgentSnippetResponse> => {
+    return this.makeRequest<GetAgentSnippetResponse>(
+      this.agentEnginePath(`snippets/${snippetId}`),
+      'GET',
+      null
+    );
+  };
+
+  public updateAgentSnippet = async (
+    snippetId: string,
+    data: UpdateAgentSnippetRequest
+  ): Promise<UpdateAgentSnippetResponse> => {
+    return this.makeRequest<UpdateAgentSnippetResponse>(
+      this.agentEnginePath(`snippets/${snippetId}`),
+      'PUT',
+      data
+    );
+  };
+
+  public deleteAgentSnippet = async (snippetId: string): Promise<DeleteAgentSnippetResponse> => {
+    return this.makeRequest<DeleteAgentSnippetResponse>(
+      this.agentEnginePath(`snippets/${snippetId}`),
+      'DELETE',
+      null
+    );
+  };
+
+  public listAgentSnippetVersions = async (
+    snippetId: string
+  ): Promise<ListAgentSnippetVersionsResponse> => {
+    return this.makeRequest<ListAgentSnippetVersionsResponse>(
+      this.agentEnginePath(`snippets/${snippetId}/versions`),
+      'GET',
+      null
+    );
+  };
+
+  public getAgentSnippetVersion = async (
+    snippetId: string,
+    version: number
+  ): Promise<GetAgentSnippetVersionResponse> => {
+    return this.makeRequest<GetAgentSnippetVersionResponse>(
+      this.agentEnginePath(`snippets/${snippetId}/versions/${version}`),
+      'GET',
       null
     );
   };

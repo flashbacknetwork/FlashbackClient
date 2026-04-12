@@ -25,6 +25,7 @@ import * as LinksTypes from './types/platform/links';
 import * as CreditsTypes from './types/platform/credits';
 import * as CloudKeysTypes from './types/platform/cloudkeys';
 import * as DashboardStatsTypes from './types/dashboard/stats';
+import * as AgentEngineTypes from './types/agentengine';
 
 export {
   ApiClient,
@@ -55,4 +56,5 @@ export {
   CreditsTypes,
   CloudKeysTypes,
   DashboardStatsTypes,
+  AgentEngineTypes,
 };
