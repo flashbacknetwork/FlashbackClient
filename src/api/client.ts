@@ -180,6 +180,13 @@ import {
 import { UpdateUserRoleResponse, UserRoleResponse } from './types/platform/roles';
 import { UserProfileResponse } from './types/platform/roles';
 import {
+  CloudResourceDto,
+  UpsertCloudResourcesRequest,
+  UpsertCloudResourcesResponse,
+  ListCloudResourcesQuery,
+  ListCloudResourcesResponse,
+} from './types/cloudresources';
+import {
   CreateOrgUserRequest,
   CreateOrgUserResponse,
   DeleteOrgUserResponse,
@@ -2491,4 +2498,31 @@ export class ApiClient implements IApiClient {
       params
     );
   };
+
+  // ====================================================================
+  // Cloud Resources API
+  // ====================================================================
+
+  public upsertCloudResources = async (
+    repoId: string,
+    data: Omit<UpsertCloudResourcesRequest, 'repoId'>
+  ): Promise<UpsertCloudResourcesResponse> => {
+    return this.makeRequest<UpsertCloudResourcesResponse>(
+      `repos/${repoId}/cloud-resources/upsert`,
+      'POST',
+      data
+    );
+  };
+
+  public listCloudResources = async (
+    repoId: string,
+    query?: ListCloudResourcesQuery
+  ): Promise<ListCloudResourcesResponse> => {
+    return this.makeRequest<ListCloudResourcesResponse>(
+      `repos/${repoId}/cloud-resources`,
+      'GET',
+      query || null
+    );
+  };
 }
+
