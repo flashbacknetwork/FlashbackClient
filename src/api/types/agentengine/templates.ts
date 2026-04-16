@@ -84,3 +84,12 @@ export interface UpdateAgentTemplateResponse {
 export interface DeleteAgentTemplateResponse {
   message: string;
 }
+
+export interface RefreshAgentTemplateBlueprintRequest {
+  parameters?: JsonObject;
+}
+
+export interface RefreshAgentTemplateBlueprintResponse {
+  template: Template;
+  message: string;
+}

@@ -9,9 +9,8 @@ export interface CloudResourceDto {
   accessLevel: string;
   metadata?: Record<string, unknown>;
   isActive: boolean;
+  discoveredAt: string;
   lastSeenAt: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface UpsertCloudResourcesRequest {

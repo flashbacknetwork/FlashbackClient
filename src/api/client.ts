@@ -73,6 +73,8 @@ import {
   UpdateAgentSnippetResponse,
   UpdateAgentTemplateRequest,
   UpdateAgentTemplateResponse,
+  RefreshAgentTemplateBlueprintRequest,
+  RefreshAgentTemplateBlueprintResponse,
 } from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -939,6 +941,17 @@ export class ApiClient implements IApiClient {
         ? `${this.agentEnginePath(`templates/${templateId}/logs`)}?${qs}`
         : this.agentEnginePath(`templates/${templateId}/logs`);
     return this.makeRequest<GetAgentTemplateLogsResponse>(path, 'GET', null);
+  };
+
+  public refreshAgentTemplateBlueprint = async (
+    templateId: string,
+    data?: RefreshAgentTemplateBlueprintRequest
+  ): Promise<RefreshAgentTemplateBlueprintResponse> => {
+    return this.makeRequest<RefreshAgentTemplateBlueprintResponse>(
+      this.agentEnginePath(`templates/${templateId}/refresh-blueprint`),
+      'POST',
+      data ?? {}
+    );
   };
 
   public listAgentSnippets = async (
