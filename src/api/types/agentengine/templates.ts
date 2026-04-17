@@ -18,6 +18,7 @@ export interface Template {
   max_steps?: number;
   max_replan_iterations?: number;
   use_blueprint: boolean;
+  cloud_provider?: string;
   plan_blueprint?: FlowPlan;
   last_run_at?: string;
   created_at: string;
@@ -39,6 +40,7 @@ export interface CreateAgentTemplateRequest {
   max_steps?: number;
   max_replan_iterations?: number;
   use_blueprint: boolean;
+  cloud_provider?: string;
 }
 
 export interface UpdateAgentTemplateRequest {

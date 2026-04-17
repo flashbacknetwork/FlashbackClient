@@ -338,6 +338,8 @@ export interface ProviderApiKeyDTO {
   key: string;
   endpoint?: string;
   region?: string;
+  tenantId?: string;
+  subscriptionId?: string;
   provider: string;
   createdAt: string;
   bucket_count?: number;
@@ -354,6 +356,8 @@ export interface CreateProviderApiKeyRequest {
   secret: string;
   endpoint?: string;
   region?: string;
+  tenantId?: string;
+  subscriptionId?: string;
   provider: string;
   workspaceId: string;
 }

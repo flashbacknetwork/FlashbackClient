@@ -8,6 +8,7 @@ export interface CreateAgentPlanRequest {
   org_id: string;
   user_id: string;
   repo_id?: string;
+  api_key_id?: string;
   repo_api_key?: string;
   service_credentials?: Record<string, string>;
   max_tokens?: number;

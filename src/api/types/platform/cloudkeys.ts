@@ -4,6 +4,12 @@ export interface RepoCloudApiKeyDTO {
   repoId: string;
   apiKeyId: string;
   createdAt: string;
+  /** Enriched from JOIN — provider name e.g. 'AWS', 'GCP', 'AZURE' */
+  provider: string;
+  /** Non-sensitive display prefix of the key */
+  keyPrefix: string;
+  region?: string;
+  endpoint?: string;
 }
 
 export interface AddRepoCloudApiKeyRequest {
