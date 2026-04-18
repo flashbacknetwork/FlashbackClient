@@ -371,6 +371,8 @@ export interface UpdateProviderApiKeyRequest {
   secret?: string;
   endpoint?: string;
   region?: string;
+  tenantId?: string;
+  subscriptionId?: string;
   provider?: string;
 }
 
