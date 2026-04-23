@@ -844,6 +844,17 @@ export class ApiClient implements IApiClient {
     );
   };
 
+  public rerunAgentPlan = async (
+    flowId: string,
+    data?: ApproveAgentPlanRequest
+  ): Promise<ApproveAgentPlanResponse> => {
+    return this.makeRequest<ApproveAgentPlanResponse>(
+      this.agentEnginePath(`plan/${flowId}/rerun`),
+      'POST',
+      data ?? {}
+    );
+  };
+
   public rejectAgentPlan = async (flowId: string): Promise<RejectAgentPlanResponse> => {
     return this.makeRequest<RejectAgentPlanResponse>(
       this.agentEnginePath(`plan/${flowId}/reject`),
