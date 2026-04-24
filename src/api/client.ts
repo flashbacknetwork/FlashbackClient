@@ -75,6 +75,9 @@ import {
   UpdateAgentTemplateResponse,
   RefreshAgentTemplateBlueprintRequest,
   RefreshAgentTemplateBlueprintResponse,
+  PromoteAgentPlanRequest,
+  PromoteAgentPlanResponse,
+  GetConversationResponse,
 } from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -855,11 +858,30 @@ export class ApiClient implements IApiClient {
     );
   };
 
+  public getConversation = async (conversationId: string): Promise<GetConversationResponse> => {
+    return this.makeRequest<GetConversationResponse>(
+      this.agentEnginePath(`conversation/${conversationId}`),
+      'GET',
+      null
+    );
+  };
+
   public rejectAgentPlan = async (flowId: string): Promise<RejectAgentPlanResponse> => {
     return this.makeRequest<RejectAgentPlanResponse>(
       this.agentEnginePath(`plan/${flowId}/reject`),
       'POST',
       {}
+    );
+  };
+
+  public promoteAgentPlan = async (
+    flowId: string,
+    data: PromoteAgentPlanRequest
+  ): Promise<PromoteAgentPlanResponse> => {
+    return this.makeRequest<PromoteAgentPlanResponse>(
+      this.agentEnginePath(`plan/${flowId}/promote`),
+      'POST',
+      data
     );
   };
 

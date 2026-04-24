@@ -95,3 +95,13 @@ export interface RefreshAgentTemplateBlueprintResponse {
   template: Template;
   message: string;
 }
+
+export interface PromoteAgentPlanRequest {
+  name: string;
+  description?: string;
+}
+
+export interface PromoteAgentPlanResponse {
+  template: Template;
+  message: string;
+}

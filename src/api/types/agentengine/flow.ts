@@ -66,6 +66,9 @@ export interface FlowPlan {
   artifacts?: string[];
   max_replan_iterations?: number;
   replan_count?: number;
+  // Phase 5: conversation threading
+  conversation_id?: string;
+  parent_plan_id?: string;
   created_at: string;
   updated_at: string;
 }

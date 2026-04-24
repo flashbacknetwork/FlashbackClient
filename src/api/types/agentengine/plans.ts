@@ -14,6 +14,9 @@ export interface CreateAgentPlanRequest {
   max_tokens?: number;
   max_steps?: number;
   max_replan_iterations?: number;
+  // Phase 5: conversational follow-up
+  parent_plan_id?: string;
+  conversation_id?: string;
 }
 
 export interface ValidationIssue {
@@ -63,4 +66,20 @@ export interface RejectAgentPlanResponse {
   message: string;
   flow_id: string;
   status: string;
+}
+
+export interface ConversationTurn {
+  plan_id: string;
+  parent_plan_id?: string;
+  user_prompt: string;
+  summary: string;
+  status: string;
+  step_count: number;
+  created_at: string;
+}
+
+export interface GetConversationResponse {
+  conversation_id: string;
+  turns: ConversationTurn[];
+  count: number;
 }
