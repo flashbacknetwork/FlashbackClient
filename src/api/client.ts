@@ -78,6 +78,13 @@ import {
   PromoteAgentPlanRequest,
   PromoteAgentPlanResponse,
   GetConversationResponse,
+  GetOrgBudgetResponse,
+  SetOrgBudgetRequest,
+  SetOrgBudgetResponse,
+  ListReceiptsQuery,
+  ListReceiptsResponse,
+  SetTemplateTrustRequest,
+  SetTemplateTrustResponse,
 } from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -884,6 +891,39 @@ export class ApiClient implements IApiClient {
       data
     );
   };
+
+  // Phase 7: governance
+  public getOrgBudget = async (orgId: string): Promise<GetOrgBudgetResponse> =>
+    this.makeRequest<GetOrgBudgetResponse>(
+      `${this.agentEnginePath('budget')}?org_id=${encodeURIComponent(orgId)}`,
+      'GET',
+      null
+    );
+
+  public setOrgBudget = async (data: SetOrgBudgetRequest): Promise<SetOrgBudgetResponse> =>
+    this.makeRequest<SetOrgBudgetResponse>(this.agentEnginePath('budget'), 'PUT', data);
+
+  public listReceipts = async (query: ListReceiptsQuery): Promise<ListReceiptsResponse> => {
+    const params = new URLSearchParams({ org_id: query.org_id });
+    if (query.flow_id) params.set('flow_id', query.flow_id);
+    if (query.limit !== undefined) params.set('limit', String(query.limit));
+    if (query.offset !== undefined) params.set('offset', String(query.offset));
+    return this.makeRequest<ListReceiptsResponse>(
+      `${this.agentEnginePath('receipts')}?${params.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public setTemplateTrust = async (
+    templateId: string,
+    data: SetTemplateTrustRequest
+  ): Promise<SetTemplateTrustResponse> =>
+    this.makeRequest<SetTemplateTrustResponse>(
+      this.agentEnginePath(`templates/${templateId}/trust`),
+      'PUT',
+      data
+    );
 
   /** Relative URL path for plan execution SSE (authorize as for other API calls). */
   public getAgentPlanStreamRelativePath(flowId: string): string {
