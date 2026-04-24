@@ -85,6 +85,9 @@ import {
   ListReceiptsResponse,
   SetTemplateTrustRequest,
   SetTemplateTrustResponse,
+  CreateWebhookRequest,
+  CreateWebhookResponse,
+  ListWebhooksResponse,
 } from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -923,6 +926,35 @@ export class ApiClient implements IApiClient {
       this.agentEnginePath(`templates/${templateId}/trust`),
       'PUT',
       data
+    );
+
+  // Phase 8: Webhooks
+  public createWebhook = async (
+    templateId: string,
+    data: CreateWebhookRequest
+  ): Promise<CreateWebhookResponse> =>
+    this.makeRequest<CreateWebhookResponse>(
+      this.agentEnginePath(`templates/${templateId}/webhooks`),
+      'POST',
+      data
+    );
+
+  public listWebhooks = async (templateId: string): Promise<ListWebhooksResponse> =>
+    this.makeRequest<ListWebhooksResponse>(
+      this.agentEnginePath(`templates/${templateId}/webhooks`),
+      'GET',
+      null
+    );
+
+  public deleteWebhook = async (
+    templateId: string,
+    webhookId: string,
+    orgId: string
+  ): Promise<void> =>
+    this.makeRequest<void>(
+      `${this.agentEnginePath(`templates/${templateId}/webhooks/${webhookId}`)}?org_id=${encodeURIComponent(orgId)}`,
+      'DELETE',
+      null
     );
 
   /** Relative URL path for plan execution SSE (authorize as for other API calls). */

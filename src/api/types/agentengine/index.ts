@@ -6,3 +6,4 @@ export * from './snippets';
 export * from './plans';
 export * from './tools';
 export * from './governance';
+export * from './webhooks';
