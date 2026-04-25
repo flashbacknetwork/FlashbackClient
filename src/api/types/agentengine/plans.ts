@@ -14,6 +14,8 @@ export interface CreateAgentPlanRequest {
   max_tokens?: number;
   max_steps?: number;
   max_replan_iterations?: number;
+  /** Phase 13: per-plan override of max_execution_minutes; falls back to template/config default. */
+  max_execution_minutes?: number;
   // Phase 5: conversational follow-up
   parent_plan_id?: string;
   conversation_id?: string;

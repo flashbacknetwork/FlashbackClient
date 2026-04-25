@@ -7,9 +7,20 @@ export type FlowStatus =
   | 'running'
   | 'completed'
   | 'failed'
-  | 'cancelled';
+  | 'cancelled'
+  /** Phase 13: terminal status when the flow exceeds its max_execution_minutes deadline. */
+  | 'timed_out';
 
-export type StepStatus = 'pending' | 'running' | 'completed' | 'failed' | 'skipped';
+export type StepStatus =
+  | 'pending'
+  | 'running'
+  | 'completed'
+  | 'failed'
+  | 'skipped'
+  /** Phase 12: step exceeded its per-step timeout (in-process or watchdog). */
+  | 'timed_out'
+  /** Phase 12: transient state while sleeping between retry attempts. */
+  | 'retrying';
 
 export type StepType = 'tool_call' | 'code_exec' | 'llm_think' | 'map_reduce' | 're_plan';
 
@@ -69,6 +80,8 @@ export interface FlowPlan {
   // Phase 5: conversation threading
   conversation_id?: string;
   parent_plan_id?: string;
+  /** Phase 13: per-flow override of max_execution_minutes; falls back to template/config default. */
+  max_execution_minutes?: number;
   created_at: string;
   updated_at: string;
 }

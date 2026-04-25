@@ -21,6 +21,8 @@ export interface Template {
   cloud_provider?: string;
   plan_blueprint?: FlowPlan;
   last_run_at?: string;
+  /** Phase 13: ceiling on total flow runtime in minutes. Unset → engine default (FLOW_DEFAULT_TIMEOUT_MINUTES, 10). */
+  max_execution_minutes?: number;
   created_at: string;
   updated_at: string;
 }
@@ -41,6 +43,8 @@ export interface CreateAgentTemplateRequest {
   max_replan_iterations?: number;
   use_blueprint: boolean;
   cloud_provider?: string;
+  /** Phase 13: ceiling on total flow runtime in minutes. */
+  max_execution_minutes?: number;
 }
 
 export interface UpdateAgentTemplateRequest {
@@ -57,6 +61,8 @@ export interface UpdateAgentTemplateRequest {
   max_steps?: number;
   max_replan_iterations?: number;
   use_blueprint?: boolean;
+  /** Phase 13: ceiling on total flow runtime in minutes. */
+  max_execution_minutes?: number;
 }
 
 export interface ListAgentTemplatesQuery {
