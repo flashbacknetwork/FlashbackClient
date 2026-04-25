@@ -88,6 +88,10 @@ import {
   CreateWebhookRequest,
   CreateWebhookResponse,
   ListWebhooksResponse,
+  NeedsClarificationResponse,
+  SubmitClarificationRequest,
+  SkipClarificationRequest,
+  GetPlanSessionResponse,
 } from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -816,10 +820,58 @@ export class ApiClient implements IApiClient {
   };
 
   ////// Agent Engine API (backend proxy → FlashAgentEngine)
+  /**
+   * Creates a plan from a user prompt. As of Phase 9, the engine may return a
+   * `NeedsClarificationResponse` (HTTP 202) instead of a plan when the gap
+   * detector decides the prompt is too ambiguous. Callers must discriminate
+   * on the `status` field before rendering:
+   *
+   *   const res = await client.createAgentPlan(req);
+   *   if ('status' in res && res.status === 'needs_clarification') {
+   *     // show ClarificationDialog with res.questions
+   *   } else {
+   *     // normal plan flow: res.plan, res.validation, res.markdown
+   *   }
+   */
   public createAgentPlan = async (
     data: CreateAgentPlanRequest
+  ): Promise<CreateAgentPlanResponse | NeedsClarificationResponse> => {
+    return this.makeRequest<CreateAgentPlanResponse | NeedsClarificationResponse>(
+      this.agentEnginePath('plan'),
+      'POST',
+      data
+    );
+  };
+
+  /** Submits clarification answers and returns the resulting plan. */
+  public submitClarification = async (
+    data: SubmitClarificationRequest
   ): Promise<CreateAgentPlanResponse> => {
-    return this.makeRequest<CreateAgentPlanResponse>(this.agentEnginePath('plan'), 'POST', data);
+    return this.makeRequest<CreateAgentPlanResponse>(
+      this.agentEnginePath('plan/clarify'),
+      'POST',
+      data
+    );
+  };
+
+  /** Skips the clarification questions and plans from the original prompt. */
+  public skipClarification = async (
+    data: SkipClarificationRequest
+  ): Promise<CreateAgentPlanResponse> => {
+    return this.makeRequest<CreateAgentPlanResponse>(
+      this.agentEnginePath('plan/clarify/skip'),
+      'POST',
+      data
+    );
+  };
+
+  /** Polls a clarification session — used by the UI to detect TTL expiry. */
+  public getPlanSession = async (sessionId: string): Promise<GetPlanSessionResponse> => {
+    return this.makeRequest<GetPlanSessionResponse>(
+      this.agentEnginePath(`plan/sessions/${sessionId}`),
+      'GET',
+      null
+    );
   };
 
   public getAgentPlan = async (flowId: string): Promise<GetAgentPlanResponse> => {

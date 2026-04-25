@@ -17,6 +17,10 @@ export interface CreateAgentPlanRequest {
   // Phase 5: conversational follow-up
   parent_plan_id?: string;
   conversation_id?: string;
+  // Phase 9: bypass the gap detector when the caller has already resolved
+  // ambiguity (e.g. internal automation, tests, clarification follow-up).
+  skip_clarification?: boolean;
+  session_id?: string;
 }
 
 export interface ValidationIssue {
