@@ -204,6 +204,7 @@ import {
   UpsertCloudResourcesResponse,
   ListCloudResourcesQuery,
   ListCloudResourcesResponse,
+  GetRepoCloudResourcesTreeResponse,
 } from './types/cloudresources';
 import {
   CreateOrgUserRequest,
@@ -2692,6 +2693,16 @@ export class ApiClient implements IApiClient {
       `repos/${repoId}/cloud-resources`,
       'GET',
       query || null
+    );
+  };
+
+  public getRepoCloudResourcesTree = async (
+    repoId: string
+  ): Promise<GetRepoCloudResourcesTreeResponse> => {
+    return this.makeRequest<GetRepoCloudResourcesTreeResponse>(
+      `repos/${repoId}/cloud-resources/tree`,
+      'GET',
+      null
     );
   };
 }
