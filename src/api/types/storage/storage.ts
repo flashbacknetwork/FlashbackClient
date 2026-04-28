@@ -341,6 +341,7 @@ export interface ProviderApiKeyDTO {
   tenantId?: string;
   subscriptionId?: string;
   provider: string;
+  description?: string;
   createdAt: string;
   bucket_count?: number;
   aillm_count?: number;
@@ -359,6 +360,7 @@ export interface CreateProviderApiKeyRequest {
   tenantId?: string;
   subscriptionId?: string;
   provider: string;
+  description?: string;
   workspaceId: string;
 }
 
@@ -374,6 +376,7 @@ export interface UpdateProviderApiKeyRequest {
   tenantId?: string;
   subscriptionId?: string;
   provider?: string;
+  description?: string;
 }
 
 export interface UpdateProviderApiKeyResponse extends ActionResponse {}
