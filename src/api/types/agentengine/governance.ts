@@ -28,7 +28,8 @@ export interface SetOrgBudgetResponse {
 export interface ExecutionReceipt {
   id: string;
   flow_id: string;
-  step_id: string;
+  /** null for layer-level LLM calls (initial planning, gap detection, completion summary). */
+  step_id?: string;
   org_id: string;
   step_type: string;
   status: string;
@@ -37,6 +38,18 @@ export interface ExecutionReceipt {
   model_used?: string;
   cache_hit: boolean;
   error?: string;
+  wave_index?: number;
+  attempt_number: number;
+  error_category?: string;
+  // Migration 026: per-LLM-call audit fields. layer is the dashboard grouping;
+  // operation is the precise sub-call. prompt/completion/cached split out
+  // resp.Usage. cost_usd_micros is from model_pricing at write time.
+  layer?: string;
+  operation?: string;
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  cached_prompt_tokens?: number;
+  cost_usd_micros?: number;
   created_at: string;
 }
 

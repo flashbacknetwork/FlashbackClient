@@ -24,6 +24,14 @@ export interface ScheduleLog {
   retry_count?: number;
   next_retry_at?: string;
   artifacts?: string[];
+  // Migration 026: per-flow LLM totals aggregated from execution_receipts.
+  // Zero for flows that did no LLM work or pre-026 rows. cost_usd_micros is
+  // USD * 1e6; divide by 1_000_000 for display.
+  prompt_tokens: number;
+  completion_tokens: number;
+  cached_prompt_tokens: number;
+  total_tokens: number;
+  cost_usd_micros: number;
 }
 
 export interface ListAgentTemplateLogsQuery {

@@ -83,6 +83,11 @@ import {
   SetOrgBudgetResponse,
   ListReceiptsQuery,
   ListReceiptsResponse,
+  GetUsageSummaryQuery,
+  GetUsageSummaryResponse,
+  GetUsageReportQuery,
+  GetUsageReportResponse,
+  GetFlowLLMLogResponse,
   SetTemplateTrustRequest,
   SetTemplateTrustResponse,
   CreateWebhookRequest,
@@ -970,6 +975,39 @@ export class ApiClient implements IApiClient {
       null
     );
   };
+
+  // Migration 026: aggregate LLM token/cost reporting.
+  public getUsageSummary = async (
+    query: GetUsageSummaryQuery
+  ): Promise<GetUsageSummaryResponse> => {
+    const params = new URLSearchParams({ org_id: query.org_id });
+    if (query.repo_id) params.set('repo_id', query.repo_id);
+    return this.makeRequest<GetUsageSummaryResponse>(
+      `${this.agentEnginePath('usage/summary')}?${params.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getUsageReport = async (query: GetUsageReportQuery): Promise<GetUsageReportResponse> => {
+    const params = new URLSearchParams({ org_id: query.org_id });
+    if (query.repo_id) params.set('repo_id', query.repo_id);
+    if (query.from) params.set('from', query.from);
+    if (query.to) params.set('to', query.to);
+    if (query.model) params.set('model', query.model);
+    return this.makeRequest<GetUsageReportResponse>(
+      `${this.agentEnginePath('usage/report')}?${params.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getFlowLLMLog = async (flowId: string): Promise<GetFlowLLMLogResponse> =>
+    this.makeRequest<GetFlowLLMLogResponse>(
+      this.agentEnginePath(`plan/${flowId}/llm_log`),
+      'GET',
+      null
+    );
 
   public setTemplateTrust = async (
     templateId: string,
