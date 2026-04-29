@@ -17,6 +17,17 @@ export interface CloudResourceTreeCategoryDTO {
   resources: CloudResourceTreeResourceDTO[];
 }
 
+export interface CloudResourceTreeGroupingDTO {
+  id: string;
+  name: string;
+  providerGroupingId: string;
+  groupingTypeId: string;
+  groupingTypeName: string;
+  level: 'GROUPING' | 'CONTAINER';
+  children: CloudResourceTreeGroupingDTO[];
+  categories: CloudResourceTreeCategoryDTO[];
+}
+
 export interface CloudResourceTreeApiKeyDTO {
   id: string;
   description: string | null;
@@ -24,7 +35,7 @@ export interface CloudResourceTreeApiKeyDTO {
   region: string | null;
   endpoint: string | null;
   keyPrefix: string;
-  categories: CloudResourceTreeCategoryDTO[];
+  groupings: CloudResourceTreeGroupingDTO[];
 }
 
 export interface GetRepoCloudResourcesTreeResponse {
