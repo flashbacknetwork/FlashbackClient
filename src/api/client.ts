@@ -57,6 +57,8 @@ import {
   GetAgentSnippetResponse,
   GetAgentSnippetVersionResponse,
   GetAgentTemplateLogsResponse,
+  ListAdHocLogsQuery,
+  ListAdHocLogsResponse,
   GetAgentTemplateResponse,
   ListAgentPlansQuery,
   ListAgentPlansResponse,
@@ -1137,6 +1139,19 @@ export class ApiClient implements IApiClient {
         ? `${this.agentEnginePath(`templates/${templateId}/logs`)}?${qs}`
         : this.agentEnginePath(`templates/${templateId}/logs`);
     return this.makeRequest<GetAgentTemplateLogsResponse>(path, 'GET', null);
+  };
+
+  // Ad-hoc runs (flows with no template_id). Same row shape as template logs.
+  public listAdHocLogs = async (query: ListAdHocLogsQuery): Promise<ListAdHocLogsResponse> => {
+    const params = new URLSearchParams({ org_id: query.org_id });
+    if (query.repo_id) params.set('repo_id', query.repo_id);
+    if (query.limit !== undefined) params.set('limit', String(query.limit));
+    if (query.offset !== undefined) params.set('offset', String(query.offset));
+    return this.makeRequest<ListAdHocLogsResponse>(
+      `${this.agentEnginePath('adhoc-logs')}?${params.toString()}`,
+      'GET',
+      null
+    );
   };
 
   public refreshAgentTemplateBlueprint = async (

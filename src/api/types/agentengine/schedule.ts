@@ -42,3 +42,17 @@ export interface ListAgentTemplateLogsQuery {
 export interface GetAgentTemplateLogsResponse {
   logs: ScheduleLog[];
 }
+
+// Ad-hoc runs (flows with no template_id). Same row shape as template logs
+// so the dashboard can render both lists with the same component.
+export interface ListAdHocLogsQuery {
+  org_id: string;
+  /** Optional: restrict the list to runs that targeted a specific repo. */
+  repo_id?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface ListAdHocLogsResponse {
+  logs: ScheduleLog[];
+}
