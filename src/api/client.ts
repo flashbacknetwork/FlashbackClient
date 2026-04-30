@@ -212,6 +212,9 @@ import {
   ListCloudResourcesQuery,
   ListCloudResourcesResponse,
   GetRepoCloudResourcesTreeResponse,
+  ListRepoGroupingsQuery,
+  ListRepoGroupingsResponse,
+  ListProvidersResponse,
 } from './types/cloudresources';
 import {
   CreateOrgUserRequest,
@@ -2757,5 +2760,20 @@ export class ApiClient implements IApiClient {
       'GET',
       null
     );
+  };
+
+  public listRepoGroupings = async (
+    repoId: string,
+    query?: ListRepoGroupingsQuery
+  ): Promise<ListRepoGroupingsResponse> => {
+    return this.makeRequest<ListRepoGroupingsResponse>(
+      `repos/${repoId}/groupings`,
+      'GET',
+      query || null
+    );
+  };
+
+  public listProviders = async (): Promise<ListProvidersResponse> => {
+    return this.makeRequest<ListProvidersResponse>(`providers`, 'GET', null);
   };
 }
