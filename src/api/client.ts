@@ -99,6 +99,14 @@ import {
   SubmitClarificationRequest,
   SkipClarificationRequest,
   GetPlanSessionResponse,
+  CreateScheduledTaskRequest,
+  CreateScheduledTaskResponse,
+  UpdateScheduledTaskRequest,
+  UpdateScheduledTaskResponse,
+  GetScheduledTaskResponse,
+  ListScheduledTasksQuery,
+  ListScheduledTasksResponse,
+  GetScheduledTaskLogsResponse,
 } from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -1142,6 +1150,74 @@ export class ApiClient implements IApiClient {
         ? `${this.agentEnginePath(`templates/${templateId}/logs`)}?${qs}`
         : this.agentEnginePath(`templates/${templateId}/logs`);
     return this.makeRequest<GetAgentTemplateLogsResponse>(path, 'GET', null);
+  };
+
+  // --- Scheduled Tasks ---
+
+  public createScheduledTask = async (
+    data: CreateScheduledTaskRequest
+  ): Promise<CreateScheduledTaskResponse> =>
+    this.makeRequest<CreateScheduledTaskResponse>(
+      this.agentEnginePath('scheduled-tasks'),
+      'POST',
+      data
+    );
+
+  public listScheduledTasks = async (
+    query: ListScheduledTasksQuery
+  ): Promise<ListScheduledTasksResponse> => {
+    const params = new URLSearchParams({ org_id: query.org_id });
+    if (query.template_id) params.set('template_id', query.template_id);
+    if (query.active !== undefined) params.set('active', String(query.active));
+    if (query.limit !== undefined) params.set('limit', String(query.limit));
+    return this.makeRequest<ListScheduledTasksResponse>(
+      `${this.agentEnginePath('scheduled-tasks')}?${params.toString()}`,
+      'GET',
+      null
+    );
+  };
+
+  public getScheduledTask = async (
+    taskId: string,
+    orgId: string
+  ): Promise<GetScheduledTaskResponse> =>
+    this.makeRequest<GetScheduledTaskResponse>(
+      `${this.agentEnginePath(`scheduled-tasks/${taskId}`)}?org_id=${encodeURIComponent(orgId)}`,
+      'GET',
+      null
+    );
+
+  public updateScheduledTask = async (
+    taskId: string,
+    orgId: string,
+    data: UpdateScheduledTaskRequest
+  ): Promise<UpdateScheduledTaskResponse> =>
+    this.makeRequest<UpdateScheduledTaskResponse>(
+      `${this.agentEnginePath(`scheduled-tasks/${taskId}`)}?org_id=${encodeURIComponent(orgId)}`,
+      'PUT',
+      data
+    );
+
+  public deleteScheduledTask = async (taskId: string, orgId: string): Promise<void> =>
+    this.makeRequest<void>(
+      `${this.agentEnginePath(`scheduled-tasks/${taskId}`)}?org_id=${encodeURIComponent(orgId)}`,
+      'DELETE',
+      null
+    );
+
+  public getScheduledTaskLogs = async (
+    taskId: string,
+    orgId: string,
+    query?: { limit?: number; offset?: number }
+  ): Promise<GetScheduledTaskLogsResponse> => {
+    const params = new URLSearchParams({ org_id: orgId });
+    if (query?.limit !== undefined) params.set('limit', String(query.limit));
+    if (query?.offset !== undefined) params.set('offset', String(query.offset));
+    return this.makeRequest<GetScheduledTaskLogsResponse>(
+      `${this.agentEnginePath(`scheduled-tasks/${taskId}/logs`)}?${params.toString()}`,
+      'GET',
+      null
+    );
   };
 
   // Ad-hoc runs (flows with no template_id). Same row shape as template logs.
