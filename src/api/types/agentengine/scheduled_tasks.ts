@@ -61,7 +61,9 @@ export interface CreateScheduledTaskRequest extends FineTuneParams {
   active?: boolean;
 }
 
-export type UpdateScheduledTaskRequest = Partial<Omit<CreateScheduledTaskRequest, 'org_id' | 'template_id'>>;
+export type UpdateScheduledTaskRequest = Partial<
+  Omit<CreateScheduledTaskRequest, 'org_id' | 'template_id'>
+>;
 
 export interface ListScheduledTasksQuery {
   org_id: string;
