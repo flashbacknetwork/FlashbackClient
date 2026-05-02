@@ -25,6 +25,17 @@ export interface FineTuneParams {
   code_exec_max_revisions?: number | null;
   /** Tool-call retry count. Null = inherit. */
   max_tool_call_revisions?: number | null;
+  /**
+   * What to do when a scheduled tick fires while a previous run for the
+   * same task is still in flight. Null = inherit (template -> global env
+   * default `DEFAULT_CONCURRENCY_POLICY`).
+   *  - "skip"               : do nothing this tick (default)
+   *  - "stop"               : cancel the running flow and start a new one
+   *  - "stop_after_minutes" : cancel only if running > stop_after_minutes
+   */
+  concurrency_policy?: 'skip' | 'stop' | 'stop_after_minutes' | null;
+  /** Minutes before "stop_after_minutes" kills a running flow. Null = inherit. */
+  concurrency_stop_after_minutes?: number | null;
 }
 
 export interface ScheduledTask extends FineTuneParams {

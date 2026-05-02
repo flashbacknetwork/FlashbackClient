@@ -14,6 +14,11 @@ export interface StepExecutionDetail {
 export interface ScheduleLog {
   id: string;
   template_id: string;
+  /**
+   * Set when the run was triggered from a scheduled_tasks row (Phase 14+).
+   * Empty/undefined for manual UI runs and ad-hoc runs.
+   */
+  scheduled_task_id?: string;
   flow_id: string;
   execution_source?: string;
   parameters?: JsonObject;

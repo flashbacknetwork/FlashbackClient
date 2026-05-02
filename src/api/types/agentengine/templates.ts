@@ -37,6 +37,13 @@ export interface Template {
   code_exec_max_revisions?: number | null;
   /** Tool-call retry override. Null = inherit global. */
   max_tool_call_revisions?: number | null;
+  /**
+   * Concurrency policy for scheduled runs of this template. Null = inherit
+   * global default. Allowed: "skip" | "stop" | "stop_after_minutes".
+   */
+  concurrency_policy?: 'skip' | 'stop' | 'stop_after_minutes' | null;
+  /** Minutes before "stop_after_minutes" kills a still-running flow. */
+  concurrency_stop_after_minutes?: number | null;
   /** ID of the ad-hoc run this template was promoted from, if any. */
   source_plan_id?: string | null;
   created_at: string;
@@ -68,6 +75,8 @@ export interface CreateAgentTemplateRequest {
   max_parallel_steps?: number | null;
   code_exec_max_revisions?: number | null;
   max_tool_call_revisions?: number | null;
+  concurrency_policy?: 'skip' | 'stop' | 'stop_after_minutes' | null;
+  concurrency_stop_after_minutes?: number | null;
   source_plan_id?: string | null;
 }
 
@@ -93,6 +102,8 @@ export interface UpdateAgentTemplateRequest {
   max_parallel_steps?: number | null;
   code_exec_max_revisions?: number | null;
   max_tool_call_revisions?: number | null;
+  concurrency_policy?: 'skip' | 'stop' | 'stop_after_minutes' | null;
+  concurrency_stop_after_minutes?: number | null;
 }
 
 export interface ListAgentTemplatesQuery {
