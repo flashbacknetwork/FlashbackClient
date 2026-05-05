@@ -109,6 +109,15 @@ import {
   ListScheduledTasksQuery,
   ListScheduledTasksResponse,
   GetScheduledTaskLogsResponse,
+  ChatScope,
+  CreateChatSessionRequest,
+  CreateChatSessionResponse,
+  ListChatSessionsResponse,
+  GetChatSessionResponse,
+  PostChatMessageRequest,
+  PostChatMessageResponse,
+  AnswerChatQuestionRequest,
+  AnswerChatQuestionResponse,
 } from './types/agentengine';
 import { IApiClient, ProviderType } from './interfaces';
 import {
@@ -469,7 +478,12 @@ export class ApiClient implements IApiClient {
     }
   };
 
-  private makeRequest = async <T>(path: string, method: string, data?: any): Promise<T> => {
+  private makeRequest = async <T>(
+    path: string,
+    method: string,
+    data?: any,
+    extraHeaders?: Record<string, string>
+  ): Promise<T> => {
     const isFormData = data instanceof FormData;
     const isGetOrHead = method === 'GET' || method === 'HEAD';
 
@@ -496,7 +510,7 @@ export class ApiClient implements IApiClient {
 
     const options: RequestInit = {
       method,
-      headers: this.headers,
+      headers: { ...this.headers, ...(extraHeaders ?? {}) },
       body,
     };
 
@@ -1093,6 +1107,123 @@ export class ApiClient implements IApiClient {
   /** Relative URL path for plan execution SSE (authorize as for other API calls). */
   public getAgentPlanStreamRelativePath(flowId: string): string {
     return this.agentEnginePath(`plan/${flowId}/stream`);
+  }
+
+  ////// Agent Engine — Chat-mode endpoints
+  //
+  // All chat operations are scoped per (org, repo, user). Callers MUST pass
+  // ChatScope on every call; the engine returns 404 for cross-repo access so
+  // existence is not leaked. Workspace is required at session creation but is
+  // not part of the access tuple (a session belongs to a single repo).
+
+  /**
+   * Per-call scope headers. The dashboard derives these from its
+   * `agentEnvironment` context so each session is isolated to the user's active
+   * (org, repo) tuple.
+   */
+  private chatHeaders(scope: ChatScope): Record<string, string> {
+    return {
+      'X-Org-Id': scope.orgId,
+      'X-Repo-Id': scope.repoId,
+      'X-User-Id': scope.userId,
+      ...(scope.workspaceId ? { 'X-Workspace-Id': scope.workspaceId } : {}),
+    };
+  }
+
+  public createChatSession = async (
+    scope: ChatScope,
+    data: CreateChatSessionRequest
+  ): Promise<CreateChatSessionResponse> => {
+    return this.makeRequest<CreateChatSessionResponse>(
+      this.agentEnginePath('chat/sessions'),
+      'POST',
+      data,
+      this.chatHeaders(scope)
+    );
+  };
+
+  public listChatSessions = async (
+    scope: ChatScope,
+    query?: { limit?: number; cursor?: string }
+  ): Promise<ListChatSessionsResponse> => {
+    const params = new URLSearchParams();
+    if (query?.limit !== undefined) params.set('limit', String(query.limit));
+    if (query?.cursor) params.set('cursor', query.cursor);
+    const qs = params.toString();
+    return this.makeRequest<ListChatSessionsResponse>(
+      this.agentEnginePath(`chat/sessions${qs ? `?${qs}` : ''}`),
+      'GET',
+      null,
+      this.chatHeaders(scope)
+    );
+  };
+
+  public getChatSession = async (
+    scope: ChatScope,
+    conversationId: string,
+    query?: { messagesLimit?: number }
+  ): Promise<GetChatSessionResponse> => {
+    const params = new URLSearchParams();
+    if (query?.messagesLimit !== undefined) {
+      params.set('messages_limit', String(query.messagesLimit));
+    }
+    const qs = params.toString();
+    return this.makeRequest<GetChatSessionResponse>(
+      this.agentEnginePath(
+        `chat/sessions/${encodeURIComponent(conversationId)}${qs ? `?${qs}` : ''}`
+      ),
+      'GET',
+      null,
+      this.chatHeaders(scope)
+    );
+  };
+
+  public deleteChatSession = async (scope: ChatScope, conversationId: string): Promise<void> => {
+    return this.makeRequest<void>(
+      this.agentEnginePath(`chat/sessions/${encodeURIComponent(conversationId)}`),
+      'DELETE',
+      null,
+      this.chatHeaders(scope)
+    );
+  };
+
+  public postChatMessage = async (
+    scope: ChatScope,
+    conversationId: string,
+    data: PostChatMessageRequest
+  ): Promise<PostChatMessageResponse> => {
+    return this.makeRequest<PostChatMessageResponse>(
+      this.agentEnginePath(`chat/sessions/${encodeURIComponent(conversationId)}/messages`),
+      'POST',
+      data,
+      this.chatHeaders(scope)
+    );
+  };
+
+  public answerChatQuestion = async (
+    scope: ChatScope,
+    conversationId: string,
+    turnId: string,
+    data: AnswerChatQuestionRequest
+  ): Promise<AnswerChatQuestionResponse> => {
+    return this.makeRequest<AnswerChatQuestionResponse>(
+      this.agentEnginePath(
+        `chat/sessions/${encodeURIComponent(conversationId)}/messages/${encodeURIComponent(turnId)}/answers`
+      ),
+      'POST',
+      data,
+      this.chatHeaders(scope)
+    );
+  };
+
+  /**
+   * Relative URL path for the chat SSE stream. The dashboard wires this to an
+   * EventSource (use event-source-polyfill so the JWT can flow as a Bearer
+   * header). Scope headers must be sent on the request — the polyfill supports
+   * extra headers natively.
+   */
+  public getChatSessionStreamRelativePath(conversationId: string): string {
+    return this.agentEnginePath(`chat/sessions/${encodeURIComponent(conversationId)}/stream`);
   }
 
   public listAgentTools = async (): Promise<ListAgentToolsResponse> => {

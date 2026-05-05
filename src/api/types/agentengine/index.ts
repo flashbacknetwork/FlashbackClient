@@ -11,3 +11,4 @@ export * from './clarification';
 export * from './usage';
 export * from './llm_log';
 export * from './scheduled_tasks';
+export * from './chat';
