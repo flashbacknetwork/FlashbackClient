@@ -74,6 +74,25 @@ export interface RejectAgentPlanResponse {
   status: string;
 }
 
+// Phase 2 (SSH safety): per-step approval gate. The Binder flags steps
+// targeting a key whose Description matches /(prod|production|live)/i with
+// requires_explicit_approval=true; the executor pauses on those steps and
+// transitions the flow to status `step_approval`. The dashboard surfaces
+// the gate to the user, who clicks Approve or Reject per step.
+export interface ApproveAgentStepResponse {
+  message: string;
+  flow_id: string;
+  step_id: string;
+  status: string;
+}
+
+export interface RejectAgentStepResponse {
+  message: string;
+  flow_id: string;
+  step_id: string;
+  status: string;
+}
+
 export interface ConversationTurn {
   plan_id: string;
   parent_plan_id?: string;

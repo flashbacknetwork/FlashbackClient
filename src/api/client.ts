@@ -70,6 +70,8 @@ import {
   ListAgentToolsResponse,
   RefreshAgentToolsResponse,
   RejectAgentPlanResponse,
+  ApproveAgentStepResponse,
+  RejectAgentStepResponse,
   ListAgentTemplateLogsQuery,
   UpdateAgentSnippetRequest,
   UpdateAgentSnippetResponse,
@@ -950,6 +952,33 @@ export class ApiClient implements IApiClient {
   public rejectAgentPlan = async (flowId: string): Promise<RejectAgentPlanResponse> => {
     return this.makeRequest<RejectAgentPlanResponse>(
       this.agentEnginePath(`plan/${flowId}/reject`),
+      'POST',
+      {}
+    );
+  };
+
+  // Phase 2 (SSH safety): per-step approval gate. Resumes a flow paused at
+  // status `step_approval` because a step bound to a prod-labeled SSH key
+  // requires explicit user confirmation. Approve flips the step back to
+  // pending and re-invokes the executor; Reject marks the step skipped and
+  // cancels the entire flow.
+  public approveAgentStep = async (
+    flowId: string,
+    stepId: string
+  ): Promise<ApproveAgentStepResponse> => {
+    return this.makeRequest<ApproveAgentStepResponse>(
+      this.agentEnginePath(`plan/${flowId}/steps/${stepId}/approve`),
+      'POST',
+      {}
+    );
+  };
+
+  public rejectAgentStep = async (
+    flowId: string,
+    stepId: string
+  ): Promise<RejectAgentStepResponse> => {
+    return this.makeRequest<RejectAgentStepResponse>(
+      this.agentEnginePath(`plan/${flowId}/steps/${stepId}/reject`),
       'POST',
       {}
     );
