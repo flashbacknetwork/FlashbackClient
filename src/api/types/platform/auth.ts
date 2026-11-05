@@ -16,7 +16,36 @@ export interface AuthState {
 
 export interface OAuth2ResponseDTO {
   success: boolean;
-  authState: AuthState;
+  authState?: AuthState;
+  status?: 'authenticated' | 'verification_required' | 'mfa_required' | 'already_verified';
+  challengeId?: string;
+  browserSecret?: string;
+  email?: string;
+  provider?: 'GOOGLE' | 'MICROSOFT' | 'GITHUB';
+  temporaryToken?: string;
+  availableMethods?: Array<{ type: string; name: string; description: string }>;
+  user?: { email: string; name: string; imageUrl: string };
+}
+
+export interface OAuthChallengeVerificationRequest {
+  challengeId: string;
+  token: string;
+  browserSecret: string;
+  activationUid?: string;
+  activationToken?: string;
+  replacePendingSignup?: boolean;
+}
+
+export interface OAuthDeviceRegistrationRequest {
+  provider: ProviderType.GOOGLE | ProviderType.MICROSOFT | ProviderType.GITHUB;
+  deviceInfo: DeviceInfo;
+}
+
+export interface OAuthDeviceRegistrationResponse {
+  success: boolean;
+  deviceId: string;
+  isKnownDevice?: boolean;
+  requiresVerification?: boolean;
 }
 
 export interface RefreshTokenResponse {
@@ -133,6 +162,7 @@ export interface LoginDeviceInfo {
 
 export interface GoogleExchangeCodeRequest {
   code: string;
+  nonce: string;
   activationUid?: string;
   activationToken?: string;
 }
@@ -153,6 +183,7 @@ export interface MicrosoftLoginRequest extends LoginDeviceInfo {
 
 export interface MicrosoftExchangeCodeRequest {
   code: string;
+  nonce: string;
   activationUid?: string;
   activationToken?: string;
 }

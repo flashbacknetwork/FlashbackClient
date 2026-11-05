@@ -133,6 +133,9 @@ import {
   LoginResponse,
   LogoutResponse,
   OAuth2ResponseDTO,
+  OAuthChallengeVerificationRequest,
+  OAuthDeviceRegistrationRequest,
+  OAuthDeviceRegistrationResponse,
   RefreshTokenErrorResponse,
   RefreshTokenResponse,
   RegisterBody,
@@ -429,20 +432,37 @@ export class ApiClient implements IApiClient {
     code: string,
     provider: ProviderType,
     activationUid?: string,
-    activationToken?: string
+    activationToken?: string,
+    nonce?: string
   ): Promise<OAuth2ResponseDTO> => {
     switch (provider) {
       case ProviderType.GOOGLE:
-        return this.exchangeGoogleCode({ code, activationUid, activationToken });
+        if (!nonce) throw new Error('OAuth nonce is required');
+        return this.exchangeGoogleCode({ code, nonce, activationUid, activationToken });
       case ProviderType.GITHUB:
         return this.exchangeGithubCode(code);
       case ProviderType.MICROSOFT:
-        return this.exchangeMicrosoftCode({ code, activationUid, activationToken });
+        if (!nonce) throw new Error('OAuth nonce is required');
+        return this.exchangeMicrosoftCode({ code, nonce, activationUid, activationToken });
       case ProviderType.WEB3_STELLAR:
         return this.exchangeWeb3StellarCode(code);
       default:
         throw new Error(`Unsupported provider: ${provider}`);
     }
+  };
+
+  public verifyOAuthChallenge = async (
+    data: OAuthChallengeVerificationRequest
+  ): Promise<OAuth2ResponseDTO> => {
+    return this.makeRequest<OAuth2ResponseDTO>('auth/oauth/verify', 'POST', data);
+  };
+
+  public registerOAuthDevice = async (
+    token: string,
+    data: OAuthDeviceRegistrationRequest
+  ): Promise<OAuthDeviceRegistrationResponse> => {
+    this.setAuthToken(token);
+    return this.makeRequest<OAuthDeviceRegistrationResponse>('auth/oauth/device', 'POST', data);
   };
 
   private exchangeGithubCode = async (code: string): Promise<OAuth2ResponseDTO> => {
@@ -522,8 +542,7 @@ export class ApiClient implements IApiClient {
     }
     const cleanPath = requestPath;
     if (this.debug) {
-      console.log(`DEBUG: ${method} ${cleanPath} ${JSON.stringify(data)}`);
-      console.log(`DEBUG: ${JSON.stringify(this.headers)}`);
+      console.log(`DEBUG: ${method} ${cleanPath}`);
     }
     const response = await fetch(`${this.baseURL}/${cleanPath}`, options);
     if (this.debug) {

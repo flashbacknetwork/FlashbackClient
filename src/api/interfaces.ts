@@ -54,6 +54,8 @@ import {
   DeactivateResponse,
   RefreshTokenResponse,
   RefreshTokenErrorResponse,
+  OAuthDeviceRegistrationRequest,
+  OAuthDeviceRegistrationResponse,
 } from './types/platform/auth';
 import {
   StatsQueryParams,
@@ -82,6 +84,7 @@ export enum ProviderType {
 
 export interface IApiClient {
   authenticate(token: string, provider: ProviderType): Promise<any>;
+  registerOAuthDevice(token: string, data: OAuthDeviceRegistrationRequest): Promise<OAuthDeviceRegistrationResponse>;
   getStorageBuckets(workspaceId?: string): Promise<GetBucketsResponse>;
   createStorageBucket(data: CreateBucketRequest): Promise<CreateBucketResponse>;
   updateStorageBucket(bucketId: string, data: UpdateBucketRequest): Promise<UpdateBucketResponse>;

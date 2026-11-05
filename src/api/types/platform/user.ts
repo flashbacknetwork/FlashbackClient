@@ -14,4 +14,5 @@ export interface PreVerifyEmailResponse {
   message: string;
   authMethod: string;
   hasPassword: boolean;
+  requiresSignupPassword?: boolean;
 }
