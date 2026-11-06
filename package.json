@@ -6,8 +6,6 @@
     "access": "public"
   },
   "description": "",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "tsc",
     "dev:watch": "nodemon --exec 'npm run dev || exit 1'",
@@ -15,12 +13,13 @@
     "build": "npm run dev",
     "test": "jest",
     "test:offline": "npm run build && jest --runInBand tests/oauthRegistration.test.ts tests/dependencyCompatibility.test.ts && node --test tests/gcsCompatibility.test.cjs tests/stellarCompatibility.test.cjs",
+    "prepublishOnly": "npm run test:offline",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "clean": "rm -rf dist",
     "format": "eslint \"**/*.ts\" --ignore-pattern 'dist/**' --fix && prettier --write . --ignore-path .gitignore",
     "docs": "typedoc",
-    "pub": "npm run build && npm version patch && npm publish --access public"
+    "pub": "npm publish --access public"
   },
   "author": "Javier Ortiz <javier.ortiz@flashback.tech>",
   "license": "MIT",
@@ -35,9 +34,6 @@
     "formdata-node": "^6.0.3",
     "google-auth-library": "^11.3.3",
     "openai": "^6.49.0"
-  },
-  "bin": {
-    "": "./dist/.min.js"
   },
   "exports": {
     "./stellarv2": {

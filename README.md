@@ -33,6 +33,24 @@ signed URLs, and Stellar transaction preparation/signing without cloud
 credentials or submitting a blockchain transaction. The separate OpenAI
 integration suite contacts a real provider and is not part of this command.
 
+## Release
+
+Set the intended version in `package.json` explicitly. `npm run pub` publishes
+that version without incrementing it; its `prepublishOnly` gate runs the offline
+checks first.
+
+For a reviewed release artifact, run `npm run test:offline`, create the tarball
+with `npm pack --pack-destination <release-directory>`, and validate that tarball
+in a separate consumer. Publish the same file with
+`npm publish <release-directory>/flashbacktech-flashbackclient-<version>.tgz --access public`.
+Do not regenerate or edit the candidate after its artifact checks.
+
+The optional live OpenAI integration test requires both
+`FLASHBACK_OPENAI_TEST_API_KEY` and `FLASHBACK_OPENAI_TEST_BASE_URL`; otherwise it
+is skipped. `FLASHBACK_OPENAI_TEST_MODELS` may specify a comma-separated model
+list. Keep credentials outside Git and do not use production credentials for
+this test.
+
 ## Documentation
 
 For comprehensive API documentation, examples, and usage instructions, see the [Documentation](./docs/index.md).
@@ -42,7 +60,7 @@ For comprehensive API documentation, examples, and usage instructions, see the [
 ### Client Library
 
 ```typescript
-import { FlashOnStellarClient, StellarNetwork } from '@flashbacktech/flashbackclient/stellar';
+import { FlashOnStellarClientV2, StellarNetwork } from '@flashbacktech/flashbackclient/stellarv2';
 ```
 
 See the [Stellar README](STELLAR.md) for usage instructions.
