@@ -1,11 +1,7 @@
 import { Storage, StorageOptions, File } from '@google-cloud/storage';
 
-import { FlashbackAuthClient, MockupAuthClient } from './oauth2';
+import { FlashbackAuthClient } from './oauth2';
 import crypto from 'crypto';
-import fetch from 'node-fetch';
-
-const originalRequest = require('gaxios').instance.request;
-const originalFetch = fetch;
 
 export interface ServiceCredentials {
   client_email: string;
@@ -37,18 +33,33 @@ export class FlashbackGCSStorage extends Storage {
       credentials,
       apiEndpoint = 'https://gcs-us-east-1-gcp.flashback.tech',
       tokenScopes = ['READ', 'WRITE'],
+      interceptors_ = [],
       ...rest
     } = opts;
 
     // Ensure the endpoint doesn't have a trailing slash
     const cleanEndpoint = apiEndpoint.replace(/\/$/, '');
     const authClient = new FlashbackAuthClient(cleanEndpoint + '/token', credentials, tokenScopes);
+    const authenticatedAdapter = <T>(options: Parameters<FlashbackAuthClient['request']>[0]) =>
+      new Promise<Awaited<ReturnType<typeof authClient.transporter.request<T>>>>((resolve, reject) => {
+        authClient.request<T>({ ...options, adapter: undefined }, (error, response) => {
+          // Let the outer Gaxios version construct HTTP errors with their response intact.
+          if (response) resolve(response);
+          else reject(error);
+        });
+      });
 
     super({
       ...rest,
       apiEndpoint: cleanEndpoint,
       authClient,
       useAuthWithCustomEndpoint: true,
+      // Storage 8 omits the custom-endpoint auth flag on its resumable-upload path.
+      interceptors_: [...interceptors_, { request: options => ({
+        ...options,
+        uri: 'uri' in options ? options.uri : options.url,
+        adapter: authenticatedAdapter,
+      }) }],
       retryOptions: {
         autoRetry: true,
         maxRetries: 3,
@@ -57,42 +68,10 @@ export class FlashbackGCSStorage extends Storage {
 
     this.credentials = credentials;
     this.apiEndpoint = cleanEndpoint;
-
-    // Intercept Gaxios instance creation
-    require('gaxios').instance.request = async function (opts: any) {
-      // Add auth headers to all requests
-      const headers = await authClient.getRequestHeaders();
-      opts.headers = {
-        ...(opts.headers || {}),
-        ...headers,
-      };
-
-      // Ensure the base URL is used and properly handle query parameters
-      if (!opts.url.startsWith('http')) {
-        // Remove any trailing question marks
-        const cleanUrl = opts.url.replace(/\?+$/, '');
-        opts.url = `${cleanEndpoint}${cleanUrl}`;
-      }
-      return originalRequest.call(this, opts);
-    };
-
-    // Intercept node-fetch
-    (global as any).fetch = async (url: string, options: any = {}) => {
-      const headers = await authClient.getRequestHeaders();
-      const finalUrl = url.startsWith('http') ? url : `${cleanEndpoint}${url}`;
-      return originalFetch(finalUrl, {
-        ...options,
-        headers: {
-          ...(options.headers || {}),
-          ...headers,
-        },
-      });
-    };
   }
 
+  // Retained for callers that previously restored process-global transport hooks.
   cleanup() {
-    require('gaxios').instance.request = originalRequest;
-    (global as any).fetch = originalFetch;
   }
 
   // Override the bucket method to ensure we pass the auth client

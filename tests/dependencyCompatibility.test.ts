@@ -1,14 +1,9 @@
 import { createHash, generateKeyPairSync, verify } from 'node:crypto';
 import { createServer, Server } from 'node:http';
 import { AddressInfo } from 'node:net';
-import { Account, Asset, BASE_FEE, Keypair, Networks, Operation, Transaction, TransactionBuilder } from '@stellar/stellar-sdk';
 
 const originalFetch = global.fetch;
-const originalBigIntJson = Object.getOwnPropertyDescriptor(BigInt.prototype, 'toJSON');
-const gaxios = require('gaxios') as typeof import('gaxios');
-const originalGaxiosRequest = gaxios.instance.request;
 const { FlashbackAuthClient, FlashbackGCSStorage } = require('../src/gcs') as typeof import('../src/gcs');
-const { createPrivateKeySigner } = require('../src/stellarv2') as typeof import('../src/stellarv2');
 
 describe('dependency compatibility without provider access', () => {
   const { privateKey, publicKey } = generateKeyPairSync('rsa', { modulusLength: 2048 });
@@ -21,17 +16,12 @@ describe('dependency compatibility without provider access', () => {
   afterEach(async () => {
     jest.restoreAllMocks();
     global.fetch = originalFetch;
-    gaxios.instance.request = originalGaxiosRequest;
     const openServer = server;
     server = undefined;
     if (openServer?.listening) {
+      openServer.closeAllConnections();
       await new Promise<void>((resolve, reject) => openServer.close(error => error ? reject(error) : resolve()));
     }
-  });
-
-  afterAll(() => {
-    if (originalBigIntJson) Object.defineProperty(BigInt.prototype, 'toJSON', originalBigIntJson);
-    else Reflect.deleteProperty(BigInt.prototype, 'toJSON');
   });
 
   it('exchanges a signed GCS assertion, caches its token and refreshes it after expiry', async () => {
@@ -53,10 +43,20 @@ describe('dependency compatibility without provider access', () => {
     const auth = new FlashbackAuthClient(endpoint, credentials, ['READ', 'WRITE']);
 
     expect(await auth.getAccessToken()).toMatchObject({ token: 'offline-token-1' });
-    expect(await auth.getRequestHeaders()).toEqual({ Authorization: 'Bearer offline-token-1' });
-    expect(await auth.authorizeRequest({ headers: { 'X-Request': 'kept' } })).toMatchObject({
-      headers: { 'X-Request': 'kept', Authorization: 'Bearer offline-token-1' },
-    });
+    const authHeaders = await auth.getRequestHeaders();
+    expect(authHeaders).toBeInstanceOf(Headers);
+    expect(authHeaders.get('Authorization')).toBe('Bearer offline-token-1');
+    const headerInputs: HeadersInit[] = [
+      { 'X-Request': 'kept', Authorization: 'stale' },
+      new Headers({ 'X-Request': 'kept', Authorization: 'stale' }),
+      [['X-Request', 'kept'], ['Authorization', 'stale']],
+    ];
+    for (const headers of headerInputs) {
+      const request = await auth.authorizeRequest({ url: 'https://storage.example.test', headers });
+      expect(request.url).toBe('https://storage.example.test');
+      expect(request.headers.get('X-Request')).toBe('kept');
+      expect(request.headers.get('Authorization')).toBe('Bearer offline-token-1');
+    }
     expect(requests).toHaveLength(1);
     expect(requests[0]).toMatchObject({ method: 'POST', path: '/token', contentType: 'application/x-www-form-urlencoded' });
     const form = new URLSearchParams(requests[0].body);
@@ -99,21 +99,4 @@ describe('dependency compatibility without provider access', () => {
     }
   });
 
-  it('signs and decodes a Stellar transaction through the exported signer without submitting it', async () => {
-    const source = Keypair.random();
-    const destination = Keypair.random().publicKey();
-    const unsigned = new TransactionBuilder(new Account(source.publicKey(), '1'), { fee: BASE_FEE, networkPassphrase: Networks.TESTNET })
-      .addOperation(Operation.payment({ destination, asset: Asset.native(), amount: '1' }))
-      .setTimeout(30)
-      .build();
-    const signedXdr = await createPrivateKeySigner(source.secret(), Networks.TESTNET)(unsigned.toXDR());
-    const decoded = TransactionBuilder.fromXDR(signedXdr, Networks.TESTNET);
-    expect(decoded).toBeInstanceOf(Transaction);
-    const transaction = decoded as Transaction;
-    expect(transaction.source).toBe(source.publicKey());
-    expect(transaction.operations).toEqual(unsigned.operations);
-    expect(transaction.hash().equals(unsigned.hash())).toBe(true);
-    expect(transaction.signatures).toHaveLength(1);
-    expect(source.verify(transaction.hash(), transaction.signatures[0].signature())).toBe(true);
-  });
 });

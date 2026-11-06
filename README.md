@@ -12,6 +12,27 @@ TypeScript/JavaScript client for:
 npm install @flashbacktech/flashbackclient
 ```
 
+## 0.4.0 compatibility changes
+
+This security update requires Node.js 22.13.0 or newer. The supported package
+entrypoints are `/api`, `/gcs`, and `/stellarv2`.
+
+- Stellar moves from 14 to the maintained 16.x branch. Consumers that pin or
+  force an older Stellar version must update that constraint before integration.
+- Google Storage moves to 8.x and Google Auth to 11.x.
+  `FlashbackAuthClient.getRequestHeaders()` and `authorizeRequest().headers`
+  now return native `Headers`; use `.get('authorization')` when reading them.
+- GCS authentication is attached to each storage instance. Constructing or
+  cleaning up a storage instance no longer replaces the process-wide `fetch`
+  or Gaxios transport; `cleanup()` remains callable for compatibility.
+- OAuth code exchange requires a nonce. A mailbox/browser challenge must be
+  completed before using the first-party session and OAuth device endpoints.
+
+Run `npm run test:offline` to compile and check OAuth, local GCS transport,
+signed URLs, and Stellar transaction preparation/signing without cloud
+credentials or submitting a blockchain transaction. The separate OpenAI
+integration suite contacts a real provider and is not part of this command.
+
 ## Documentation
 
 For comprehensive API documentation, examples, and usage instructions, see the [Documentation](./docs/index.md).

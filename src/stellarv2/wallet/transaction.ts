@@ -14,9 +14,6 @@ import {
   BASE_FEE,
   scValToNative,
   Transaction,
-  Memo,
-  MemoType,
-  Operation,
   Keypair,
   FeeBumpTransaction,
   Horizon,
@@ -298,6 +295,29 @@ export const executeMultiWalletTransactions = async (
   }
 };
 
+const contractArgToScVal = (value: unknown, type: unknown): xdr.ScVal => {
+  switch (type) {
+    case 'vec':
+      if (!Array.isArray(value)) return nativeToScVal(null);
+      return xdr.ScVal.scvVec(value.map((item) => {
+        if (!item || typeof item !== 'object' || !('value' in item) || !('type' in item)) {
+          throw new TypeError('Invalid vector argument');
+        }
+        return contractArgToScVal(item.value, item.type);
+      }));
+    case 'bool':
+      if (value !== null && value !== undefined && typeof value !== 'boolean') {
+        throw new TypeError('Boolean argument must be a boolean');
+      }
+      return nativeToScVal(value);
+    case 'string': case 'symbol': case 'address':
+    case 'u32': case 'i32': case 'u64': case 'i64': case 'u128': case 'i128':
+      return nativeToScVal(value, { type });
+    default:
+      throw new TypeError('Unsupported contract argument type');
+  }
+};
+
 const prepareTransaction = async (
   context: ClientContext,
   address: string,
@@ -322,27 +342,7 @@ const prepareTransaction = async (
     const converted = {
       method: call.method,
       args:
-        call.args?.map((arg) => {
-          let scVal;
-          if (arg.type === 'vec') {
-            if (arg.value === null) {
-              // Handle null vectors as None
-              scVal = nativeToScVal(null, { type: 'vec' });
-            } else if (Array.isArray(arg.value)) {
-              // Handle non-empty vectors
-              const vecScVals = (arg.value as Array<{ value: unknown; type: string }>).map((item) =>
-                nativeToScVal(item.value, { type: item.type })
-              );
-              scVal = nativeToScVal({ vec: vecScVals }, { type: 'vec' });
-            } else {
-              // Fallback for invalid vector values
-              scVal = nativeToScVal(null, { type: 'vec' });
-            }
-          } else {
-            scVal = nativeToScVal(arg.value, { type: arg.type });
-          }
-          return scVal;
-        }) || [],
+        call.args?.map((arg) => contractArgToScVal(arg.value, arg.type)) || [],
     };
 
     return converted;
@@ -402,7 +402,7 @@ const signTransaction = async (
   context: ClientContext,
   xdrToSign: string,
   privateKey: string
-): Promise<Transaction<Memo<MemoType>, Operation[]> | FeeBumpTransaction> => {
+): Promise<Transaction | FeeBumpTransaction> => {
   const preparedTransaction = TransactionBuilder.fromXDR(
     xdrToSign,
     context.network.networkPassphrase
